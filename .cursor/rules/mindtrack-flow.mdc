@@ -1,0 +1,312 @@
+---
+alwaysApply: true
+description: MindTrack system flow, architecture, and user role responsibilities for Patient, Doctor, and Admin
+---
+
+# MindTrack System Flow & Architecture
+
+## 🎯 System Overview
+
+MindTrack is a mental health management system for **Wayside Psyche Resources Center** with role-based access for Patients, Doctors, and Admins. Built with PHP, MySQL, TailwindCSS, and Fomantic UI.
+
+---
+
+## 📊 Database Architecture
+
+### Core Structure: User Extension Tables
+
+The system uses a **normalized database structure** with user extension tables:
+
+- **[users](mdc:core/mindtrack_uuid.sql)** - Core authentication table (common fields for all user types)
+- **users_doctor_adds** - Doctor-specific fields only (specialization, license_number, doctor_custom_id)
+- **users_patient_adds** - Patient-specific fields only (birthdate, emergency_contact, patient_custom_id, assigned doctor)
+
+**Key Tables:**
+
+- `users` - All user authentication (role: admin, doctor, patient)
+- `users_doctor_adds` - Extension for doctor-specific data
+- `users_patient_adds` - Extension for patient-specific data
+- `appointment` - Confirmed appointments
+- `booking_request` - Patient booking requests
+- `session_tokens` - Session management
+- `activity_logs` - Audit trail
+
+**UUID Naming Convention:** All primary keys use `uuid` (VARCHAR 36), foreign keys use `{entity}_uuid` format.
+
+See [DATABASE_STRUCTURE.md](mdc:DATABASE_STRUCTURE.md) for complete schema details.
+
+---
+
+## 👥 User Roles & Responsibilities
+
+### 🩺 Patient Side
+
+**Primary Functions:**
+
+- View prescriptions and lab results
+  - Prescriptions act as reminders for medication
+- View upcoming appointments with reminders
+- Provide feedback on treatment progress
+- Update status since last check-up
+- Book new appointments
+- View medical history and diagnosis
+
+**Key Files:**
+
+- Dashboard: [app/patients/index.php](mdc:app/patients/index.php)
+- Patient list: [app/patients/list.php](mdc:app/patients/list.php)
+- Timeline: [app/patients/timeline.php](mdc:app/patients/timeline.php)
+- Appointments: `app/patients/appointments.php`
+- Prescriptions: `app/patients/prescriptions.php`
+
+**Database Relations:**
+
+- Linked to `users` table via `users_patient_adds.user_uuid`
+- Assigned to doctor via `users_patient_adds.doctor_uuid`
+- Has appointments via `appointment.patient_uuid`
+
+---
+
+### 👨‍⚕️ Doctor Side
+
+**Primary Functions:**
+
+- Create and manage prescriptions for patients
+- View patient lab results and medical history
+- Set and manage patient appointments
+- Provide general evaluation/summary of patient condition
+- Document check-up notes and treatment plans
+- Review patient feedback and progress
+
+**Key Files:**
+
+- Dashboard: [app/doctors/index.php](mdc:app/doctors/index.php)
+- Doctor list: [app/doctors/list.php](mdc:app/doctors/list.php)
+- Appointments: `app/doctors/appointments.php`
+
+**Database Relations:**
+
+- Linked to `users` table via `users_doctor_adds.user_uuid`
+- Has assigned patients via `users_patient_adds.doctor_uuid`
+- Manages appointments via `appointment.doctor_uuid`
+
+---
+
+### 🔐 Admin Side
+
+**Primary Functions:**
+
+- Monitor all system activity and logs
+- View comprehensive data across the system
+- Generate and export reports (patient stats, appointments, etc.)
+- Confirm and manage appointment requests
+- Manage user registration and enrollment
+  - Create accounts for new patients, doctors, and staff
+  - Approve/reject registration requests
+- System configuration and maintenance
+
+**Key Files:**
+
+- Dashboard: `app/admin/index.php`
+- User management: `features/users/servers/users.php`
+- Activity logs: View `activity_logs` table
+
+**Database Relations:**
+
+- Has `role = 'admin'` in `users` table
+- Can access all tables for reporting
+- Manages `booking_request` approvals
+- Views `activity_logs` for monitoring
+
+---
+
+## 🔄 Authentication Flow
+
+### Registration Process
+
+1. User visits [app/auth/register.php](mdc:app/auth/register.php)
+2. Fills registration form (validated by Fomantic UI)
+3. AJAX POST to [features/auth/servers/register.php](mdc:features/auth/servers/register.php)
+4. Server validates, generates UUID, hashes password
+5. Creates record in `users` table
+6. Creates extension record in `users_doctor_adds` or `users_patient_adds` based on role
+7. Returns success, redirects to login page (no auto-login)
+
+### Login Process
+
+1. User visits [app/auth/index.php](mdc:app/auth/index.php)
+2. Submits credentials via AJAX to [features/auth/servers/login.php](mdc:features/auth/servers/login.php)
+3. Server queries [models/users.php](mdc:models/users.php) using `singleWhereEmail()` or `singleWhereUsername()`
+4. Verifies password with `password_verify()`
+5. Sets session with `user_uuid`, `role`, etc.
+6. Returns route based on role:
+   - `admin` → `app/patients/` (admin manages all)
+   - `doctor` → `app/doctors/`
+   - `patient` → `app/patients/`
+
+**Session Variables:**
+
+- `$_SESSION['logged_in']` - Boolean
+- `$_SESSION['user_uuid']` - User's UUID
+- `$_SESSION['username']` - Username
+- `$_SESSION['email']` - Email
+- `$_SESSION['role']` - User role (admin, doctor, patient)
+
+---
+
+## 📁 Directory Structure
+
+### App Organization (Domain-Isolated)
+
+```
+app/
+├── landing/          # Public landing page
+├── auth/             # Login & Registration
+│   ├── index.php     # Login page
+│   └── register.php  # Registration page
+├── patients/         # Patient domain
+│   ├── index.php     # Patient dashboard
+│   ├── list.php      # Patient list
+│   ├── timeline.php  # Patient timeline
+│   ├── appointments.php
+│   ├── prescriptions.php
+│   └── settings.php
+├── doctors/          # Doctor domain
+│   ├── index.php     # Doctor dashboard
+│   ├── list.php      # Doctor list
+│   ├── appointments.php
+│   └── settings.php
+└── admin/            # Admin domain
+    ├── index.php     # Admin dashboard
+    ├── users.php     # User management
+    └── settings.php  # Admin settings
+```
+
+### Features (Business Logic)
+
+```
+features/
+├── auth/
+│   └── servers/      # Authentication API
+│       ├── login.php
+│       └── register.php
+├── appointments/
+│   └── servers/      # Appointment API
+└── users/
+    └── servers/      # User management API
+```
+
+### Models (Database Layer)
+
+```
+models/
+├── users.php         # User CRUD operations
+└── attachments.php   # File attachments
+```
+
+See [ARCHITECTURE.md](mdc:ARCHITECTURE.md) for complete structure.
+
+---
+
+## 🔑 Key Technical Patterns
+
+### 1. Server-Driven Routing
+
+Backend determines redirect routes based on user role, frontend follows via AJAX response.
+
+### 2. UUID Primary Keys
+
+All tables use `uuid` (VARCHAR 36) instead of auto-increment integers.
+
+### 3. User Extension Tables
+
+Single `users` table + role-specific extension tables (`users_doctor_adds`, `users_patient_adds`).
+
+### 4. AJAX-Based Forms
+
+All forms submit via AJAX using Fomantic UI validation + jQuery.
+
+### 5. Helper Functions
+
+- `app($path)` - Generate app URLs
+- `apiURL($feature)` - Generate API URLs
+- `generateUUID()` - Create new UUIDs
+- `shared($component)` - Include shared components
+
+See [utils/functions.php](mdc:utils/functions.php) for all helpers.
+
+---
+
+## 🚀 Workflow Examples
+
+### Patient Books Appointment
+
+1. Patient visits `app/patients/appointments.php`
+2. Fills booking form
+3. AJAX POST to `features/appointments/servers/create.php`
+4. Creates record in `booking_request` table with `status='pending'`
+5. Admin receives notification
+6. Admin approves in admin panel
+7. Record moved to `appointment` table with `status='scheduled'`
+8. Patient receives confirmation
+
+### Doctor Creates Prescription
+
+1. Doctor views patient timeline at `app/doctors/patients/timeline.php`
+2. Clicks "Create Prescription"
+3. Fills prescription form
+4. AJAX POST to `features/prescriptions/servers/create.php`
+5. Saves to `prescriptions` table linked to patient
+6. Patient can view in `app/patients/prescriptions.php`
+7. Prescription acts as reminder for patient
+
+### Admin Manages Users
+
+1. Admin visits user management panel
+2. Views pending registration requests from `users` where `status='pending'`
+3. Reviews user details
+4. Approves or rejects
+5. On approval: Updates `status='active'`
+6. User can now login
+7. Action logged in `activity_logs` table
+
+---
+
+## 📚 Additional Documentation
+
+- [DATABASE_STRUCTURE.md](mdc:DATABASE_STRUCTURE.md) - Complete database schema
+- [AUTHENTICATION_FLOW.md](mdc:AUTHENTICATION_FLOW.md) - Authentication details
+- [REGISTRATION_SUMMARY.md](mdc:REGISTRATION_SUMMARY.md) - Registration system
+- [UUID_NAMING_CONVENTION.md](mdc:UUID_NAMING_CONVENTION.md) - UUID naming standards
+- [QUICK_START.md](mdc:QUICK_START.md) - Setup guide
+
+---
+
+## 🎨 Frontend Stack
+
+- **TailwindCSS** - Utility-first styling (layouts, spacing, colors)
+- **Fomantic UI** - Interactive components (forms, modals, buttons)
+- **jQuery** - DOM manipulation and AJAX
+- **Font Awesome** - Icons
+
+**Styling Convention:** Use TailwindCSS for structure, Fomantic UI for interactive components.
+
+---
+
+## 🔧 Development Guidelines
+
+1. **Always use PDO** via [core/conn.php](mdc:core/conn.php), never MySQLi
+2. **Use prepared statements** for all database queries
+3. **Hash passwords** with `password_hash($pwd, PASSWORD_BCRYPT)`
+4. **Generate UUIDs** with `generateUUID()` helper
+5. **Use transactions** for multi-table operations
+6. **Follow naming conventions**: `uuid`, `user_uuid`, `patient_uuid`, etc.
+7. **API responses** must use `apiHeaders()` and return JSON
+8. **Session management** via [core/session.php](mdc:core/session.php)
+9. **Error logging** with `error_log()` for debugging
+
+---
+
+**Version:** 2.0 (Normalized Structure with UUID)  
+**Last Updated:** October 22, 2025  
+**Database:** MySQL with UUID primary keys

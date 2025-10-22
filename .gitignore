@@ -1,2 +1,6 @@
-# vendor
-vendor/
+.env
+composer.lock
+
+/vendor
+/logs
+/uploads
