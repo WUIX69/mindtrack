@@ -1,21 +1,39 @@
 <?php
 require_once __DIR__ . '/../../core/app.php';
 
-// Fetch doctors from database or use dummy data
+// Check if user is logged in and is admin
+if (!isset($_SESSION['logged_in']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ' . app('auth'));
+    exit;
+}
+
+// Fetch doctors from database
 $doctors = [];
 
 try {
-    // Try to fetch from database first
-    $sql = "SELECT * FROM doctors ORDER BY id DESC";
+    $sql = "SELECT 
+                u.uuid,
+                u.first_name, 
+                u.last_name, 
+                u.email, 
+                u.phone,
+                u.status,
+                da.doctor_custom_id,
+                da.specialization,
+                da.license_number
+            FROM users u
+            LEFT JOIN users_doctor_adds da ON u.uuid = da.user_uuid
+            WHERE u.role = 'doctor'
+            ORDER BY u.created_at DESC";
     $stmt = $conn->query($sql);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (!empty($results)) {
         foreach ($results as $doc) {
             $doctors[] = [
-                'id' => $doc['doctor_custom_id'] ?? $doc['id'],
+                'id' => $doc['doctor_custom_id'] ?? 'N/A',
                 'name' => 'Dr. ' . $doc['first_name'] . ' ' . $doc['last_name'],
-                'specialization' => $doc['specialization'],
+                'specialization' => $doc['specialization'] ?? 'General Practitioner',
                 'status' => strtolower($doc['status'] ?? 'active'),
                 'email' => $doc['email'],
                 'phone' => $doc['phone'],

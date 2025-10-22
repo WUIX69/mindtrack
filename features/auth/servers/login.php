@@ -63,7 +63,7 @@ try {
 
         // Determine redirect route based on role
         $redirect_route = match ($user['role']) {
-            'admin' => app('patients'),
+            'admin' => app('admin'),
             'doctor' => app('doctors'),
             'patient' => app('patients'),
             default => app('patients')

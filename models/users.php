@@ -495,4 +495,42 @@ class Users
             return 'DR' . str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
         }
     }
+
+    /**
+     * Get patient-specific data from users_patient_adds
+     */
+    public static function getPatientAdds($user_uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare('
+                SELECT * FROM users_patient_adds 
+                WHERE user_uuid = ? 
+                LIMIT 1
+            ');
+            $stmt->execute([$user_uuid]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get doctor-specific data from users_doctor_adds
+     */
+    public static function getDoctorAdds($user_uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare('
+                SELECT * FROM users_doctor_adds 
+                WHERE user_uuid = ? 
+                LIMIT 1
+            ');
+            $stmt->execute([$user_uuid]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [];
+        }
+    }
 }

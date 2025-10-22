@@ -1,22 +1,48 @@
 <?php
 require_once __DIR__ . '/../../core/app.php';
 
+// Check if user is logged in and is admin
+if (!isset($_SESSION['logged_in']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ' . app('auth'));
+    exit;
+}
+
 // Fetch patients from database
 $patients = [];
 try {
-    $sql = "SELECT patient_custom_id, first_name, last_name, birthdate, email, contact, doctor, diagnosis, status FROM patients ORDER BY id DESC";
+    $sql = "SELECT 
+                u.uuid,
+                u.first_name, 
+                u.last_name, 
+                u.email, 
+                u.phone as contact,
+                u.status,
+                pa.patient_custom_id,
+                pa.birthdate,
+                pa.emergency_contact,
+                CONCAT(d.first_name, ' ', d.last_name) as doctor_name
+            FROM users u
+            LEFT JOIN users_patient_adds pa ON u.uuid = pa.user_uuid
+            LEFT JOIN users d ON pa.doctor_uuid = d.uuid
+            WHERE u.role = 'patient'
+            ORDER BY u.created_at DESC";
     $stmt = $conn->query($sql);
 
     while ($p = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $p['patient_number'] = $p['patient_custom_id'];
+        $p['patient_number'] = $p['patient_custom_id'] ?? 'N/A';
 
-        $dob = new DateTime($p['birthdate']);
-        $today = new DateTime('today');
-        $p['age'] = $dob->diff($today)->y . ' years old';
+        if ($p['birthdate']) {
+            $dob = new DateTime($p['birthdate']);
+            $today = new DateTime('today');
+            $p['age'] = $dob->diff($today)->y . ' years old';
+        } else {
+            $p['age'] = 'N/A';
+        }
 
         $p['status'] = strtolower($p['status']);
         $p['name'] = $p['first_name'] . ' ' . $p['last_name'];
         $p['phone'] = $p['contact'];
+        $p['doctor'] = $p['doctor_name'] ?? 'Not assigned';
 
         $patients[] = $p;
     }
