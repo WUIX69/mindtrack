@@ -28,6 +28,8 @@ try {
     $phone = trim($_POST['phone'] ?? '');
     $role = trim($_POST['role'] ?? 'patient');
 
+    // Role-specific fields removed - all fields are now basic
+
     // Validate required fields
     if (empty($first_name) || empty($last_name) || empty($email) || empty($username) || empty($password)) {
         $response['message'] = 'All required fields must be filled.';
@@ -62,6 +64,9 @@ try {
         $role = 'patient'; // Default to patient if invalid role
     }
 
+    // Role-specific fields are now optional (database allows NULL)
+    // No additional validation needed for role-specific fields
+
     // Check if email already exists
     if (Users::emailExists($email)) {
         $response['message'] = 'Email address is already registered.';
@@ -92,6 +97,8 @@ try {
         'status' => 'active'
     ];
 
+    // Role-specific data removed - all users get basic registration
+
     // Store user in database
     $result = Users::store($userData);
 
@@ -115,9 +122,12 @@ try {
     }
 
 } catch (Exception $e) {
-    // Log error
+    // Log error with more details
     error_log('Registration Error: ' . $e->getMessage());
+    error_log('Registration Error Trace: ' . $e->getTraceAsString());
+    error_log('Registration Data: ' . json_encode($_POST));
     $response['message'] = 'An error occurred during registration. Please try again later.';
+    $response['debug'] = $e->getMessage(); // Remove this in production
 }
 
 echo json_encode($response);

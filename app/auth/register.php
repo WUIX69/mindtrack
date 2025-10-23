@@ -224,11 +224,15 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                     <!-- Role Selection -->
                     <div class="field">
                         <label class="text-sm font-medium text-gray-700">I am registering as</label>
-                        <select name="role" class="ui fluid dropdown" tabindex="8">
+                        <select name="role" class="ui fluid dropdown" tabindex="8" id="roleSelect">
                             <option value="patient">Patient</option>
                             <option value="doctor">Doctor</option>
                         </select>
                     </div>
+
+                    <!-- Patient-specific fields removed - can be added later in profile -->
+
+                    <!-- Role-specific fields removed - can be added later in profile -->
 
                     <!-- Terms -->
                     <div class="field">
@@ -291,6 +295,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
             $('.message .close').on('click', function () {
                 $(this).closest('.message').transition('fade');
             });
+
+            // Role selection no longer shows/hides fields - all fields are now basic
 
             // Validate registration form
             $('#registerForm').form({
@@ -385,7 +391,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                                 prompt: 'You must agree to the terms and conditions'
                             }
                         ]
-                    }
+                    },
+                    // Role-specific fields are now optional - no validation needed
                 },
                 inline: true,
                 on: 'blur',

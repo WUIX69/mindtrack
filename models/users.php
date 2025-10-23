@@ -170,7 +170,7 @@ class Users
             $role = $data['role'] ?? 'patient';
 
             if ($role === 'doctor') {
-                // Insert into users_doctor_adds
+                // Insert into users_doctor_adds with minimal data
                 $stmt = self::conn()->prepare("
                     INSERT INTO users_doctor_adds (
                         uuid, user_uuid, doctor_custom_id, specialization, license_number
@@ -184,11 +184,11 @@ class Users
                     generateUUID(), // UUID for the extension table record
                     $uuid, // Link to the user's UUID
                     $doctor_custom_id,
-                    $data['specialization'] ?? null,
-                    $data['license_number'] ?? null
+                    null, // specialization - will be added later in profile
+                    null  // license_number - will be added later in profile
                 ]);
             } elseif ($role === 'patient') {
-                // Insert into users_patient_adds
+                // Insert into users_patient_adds with minimal data
                 $stmt = self::conn()->prepare("
                     INSERT INTO users_patient_adds (
                         uuid, user_uuid, patient_custom_id, birthdate, 
@@ -203,11 +203,11 @@ class Users
                     generateUUID(), // UUID for the extension table record
                     $uuid, // Link to the user's UUID
                     $patient_custom_id,
-                    $data['birthdate'] ?? null,
-                    $data['emergency_contact'] ?? null,
-                    $data['service_type'] ?? null,
-                    $data['doctor_uuid'] ?? null,
-                    $data['diagnosis'] ?? null
+                    null, // birthdate - will be added later in profile
+                    null, // emergency_contact - will be added later in profile
+                    null, // service_type - will be added later in profile
+                    null, // doctor_uuid - will be assigned later
+                    null  // diagnosis - will be added later
                 ]);
             }
             // Note: Admin role doesn't need an extension table
@@ -220,10 +220,13 @@ class Users
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
+            error_log("SQL Error Code: " . $e->getCode());
+            error_log("User Data: " . json_encode($data));
             self::conn()->rollBack();
             return [
                 'success' => false,
                 'message' => 'User registration failed: ' . $e->getMessage(),
+                'debug' => $e->getMessage() // Remove this in production
             ];
         }
     }

@@ -143,6 +143,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                             </div>
                         </div>
 
+                        <!-- Admin-specific fields removed - can be added later in profile -->
+
                         <!-- Admin Confirmation -->
                         <div class="ui segment bg-yellow-100 border-l-4 border-yellow-400 !border-solid">
                             <div class="field">
@@ -264,7 +266,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                                 prompt: 'Passwords do not match'
                             }
                         ]
-                    }
+                    },
+                    // Department/division is now optional - no validation needed
                 },
                 inline: true,
                 on: 'blur',
