@@ -1,0 +1,7 @@
+.cursor
+.env
+composer.lock
+
+/vendor
+/logs
+/uploads
