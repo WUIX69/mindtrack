@@ -1,5 +1,5 @@
 .cursor
-.env
+# .env
 composer.lock
 
 /vendor
