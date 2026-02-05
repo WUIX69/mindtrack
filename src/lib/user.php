@@ -9,7 +9,7 @@ function userData($uuid = null)
         $uuid = $session->get()['uuid'] ?? null;
     }
 
-    $user = Users::single($uuid);
+    $user = Users::single($uuid)['data'] ?? [];
     $user_formatted_data = [
         'type' => $session->get()['type'] ?? '',
         'name' => $user['firstname'] . ' ' . $user['lastname'] ?? '',
