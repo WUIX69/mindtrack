@@ -3,9 +3,9 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use VetSync\Models\Users;
-use VetSync\Services\FileManager;
-use VetSync\Utils\Php\Helpers;
+use Mindtrack\Models\Users;
+use Mindtrack\Services\FileManager;
+use Mindtrack\Utils\Php\Helpers;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';

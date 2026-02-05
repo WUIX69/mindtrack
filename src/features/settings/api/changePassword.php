@@ -3,7 +3,7 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use VetSync\Models\Users;
+use Mindtrack\Models\Users;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';

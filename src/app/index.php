@@ -4,7 +4,7 @@
 
 <head>
     <?= shared('elements/meta'); ?> <!-- rcs Meta -->
-    <title>Landing - VetSync</title>
+    <title>Landing - Mindtrack</title>
     <?= shared('elements/styles'); ?> <!-- rcs Styles -->
     <link rel="stylesheet" href="<?= asset('lib/swiper/swiper-bundle.min.css'); ?>" /><!-- Link Swiper's CSS -->
 </head>

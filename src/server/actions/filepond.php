@@ -3,7 +3,7 @@
 include '../../core/app.php';
 // apiHeaders();
 
-use VetSync\Services\FileManager;
+use Mindtrack\Services\FileManager;
 
 try {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace VetSync\Services;
+namespace Mindtrack\Services;
 
 use PDO;
 use PDOException;

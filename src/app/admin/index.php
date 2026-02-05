@@ -4,7 +4,7 @@
 
 <head>
     <?= shared('elements/meta') ?>
-    <title>Dashboard - VetSync</title>
+    <title>Dashboard - Mindtrack</title>
     <?= shared('elements/styles') ?>
 </head>
 

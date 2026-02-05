@@ -5,7 +5,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->safeLoad();
 
 $config = [
-    'sub_folder' => 'vetsync',
+    'sub_folder' => 'Mindtrack',
     'root_path' => $_SERVER['DOCUMENT_ROOT'],
     'uri_path' => $_SERVER['REQUEST_URI'],
     'app' => [

@@ -1,8 +1,8 @@
 <?php
 
-use VetSync\Services\SessionManager;
+use Mindtrack\Services\SessionManager;
 
-$sessionName = $_ENV['SESSION_NAME'] ?? 'VETSYNC_SESSION';
+$sessionName = $_ENV['SESSION_NAME'] ?? 'Mindtrack_SESSION';
 
 // Start the session if not already started
 session_name($sessionName);

@@ -36,11 +36,11 @@
     <div class="container-xl">
         <div class="row">
             <div class="col-md-6">
-                <img src="<?= asset('img/contents/bg_log.jpg'); ?>" alt="VetSync Clinic" class="history-image">
+                <img src="<?= asset('img/contents/bg_log.jpg'); ?>" alt="Mindtrack Clinic" class="history-image">
             </div>
             <div class="col-md-6">
                 <h2>Our Journey</h2>
-                <p>Founded by Dr. Josephine Anne Angeles in 2010, VetSync has grown from a small
+                <p>Founded by Dr. Josephine Anne Angeles in 2010, Mindtrack has grown from a small
                     neighborhood clinic into a trusted veterinary care center in San Jose Del Monte,
                     Bulacan. Our commitment to providing exceptional care and building lasting
                     relationships with pets and their families has made us one of the most trusted

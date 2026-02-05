@@ -1,6 +1,6 @@
 <?php
 
-namespace VetSync\Utils\Php;
+namespace Mindtrack\Utils\Php;
 
 class Helpers
 {

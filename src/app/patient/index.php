@@ -4,7 +4,7 @@
 
 <head>
     <?= shared('elements/meta'); ?> <!-- rcs Meta -->
-    <title>User Dashboard - VetSync</title>
+    <title>User Dashboard - Mindtrack</title>
     <?= shared('elements/styles'); ?> <!-- rcs Styles -->
     <link rel="stylesheet" href="<?= featured('dashboard/css/overview.css', true) ?>">
 </head>

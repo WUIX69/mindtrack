@@ -3,7 +3,7 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use VetSync\Models\Users;
+use Mindtrack\Models\Users;
 // global $response;
 // global $session;
 

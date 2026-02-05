@@ -3,14 +3,14 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use VetSync\Models\Products;
-use VetSync\Models\Categories;
-use VetSync\Models\Attachments;
+use Mindtrack\Models\Products;
+use Mindtrack\Models\Categories;
+use Mindtrack\Models\Attachments;
 
-use VetSync\Utils\Php\Helpers;
-use VetSync\Utils\Php\Formatters;
+use Mindtrack\Utils\Php\Helpers;
+use Mindtrack\Utils\Php\Formatters;
 
-use VetSync\Services\FileManager;
+use Mindtrack\Services\FileManager;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     $response['message'] = 'Invalid request method';

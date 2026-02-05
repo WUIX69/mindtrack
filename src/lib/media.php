@@ -1,6 +1,6 @@
 <?php
 
-use VetSync\Models\Attachments;
+use Mindtrack\Models\Attachments;
 
 function media($reference_uuid, $is_all = false)
 {

@@ -7,7 +7,7 @@ $activeLink = uriPagePath();
     <div class="nav">
         <div class="logo">
             <i class='bx bxl-codepen'></i>
-            <a href="<?= app('user') ?>">VetSync</a>
+            <a href="<?= app('user') ?>">Mindtrack</a>
         </div>
         <div class="nav-links">
             <a class="nav-link <?= ($activeLink === 'index' || $activeLink === '') ? 'active' : '' ?>"

@@ -1,8 +1,8 @@
 <?php
 
-namespace VetSync\Services;
+namespace Mindtrack\Services;
 
-use VetSync\Services\Email;
+use Mindtrack\Services\Email;
 
 class Notify
 {

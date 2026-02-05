@@ -1,8 +1,8 @@
 <?php
 
-namespace VetSync\Services;
+namespace Mindtrack\Services;
 
-use VetSync\Models\Attachments;
+use Mindtrack\Models\Attachments;
 
 class FileManager
 {

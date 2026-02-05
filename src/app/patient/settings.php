@@ -5,7 +5,7 @@
 
 <head>
     <?= shared('elements/meta'); ?> <!-- rcs Meta -->
-    <title>Settings - VetSync</title>
+    <title>Settings - Mindtrack</title>
     <?= shared('elements/styles'); ?> <!-- rcs Styles -->
     <link rel="stylesheet" href="<?= featured('settings/css/settings.css', true); ?>">
     <?= shared('elements/filepond/styles'); ?><!-- Filepond -->

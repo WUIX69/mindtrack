@@ -1,5 +1,5 @@
 <?php
-use VetSync\Models\Categories;
+use Mindtrack\Models\Categories;
 $categories = Categories::all('products')['data'] ?? [];
 ?>
 <style>

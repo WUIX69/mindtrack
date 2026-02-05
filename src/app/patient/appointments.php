@@ -5,7 +5,7 @@
 
 <head>
     <?= shared('elements/meta'); ?> <!-- rcs Meta -->
-    <title>My Appointments - VetSync</title>
+    <title>My Appointments - Mindtrack</title>
     <?= shared('elements/styles'); ?> <!-- rcs Styles -->
     <style>
         /*----------- MAIN (Appointments) -----------*/

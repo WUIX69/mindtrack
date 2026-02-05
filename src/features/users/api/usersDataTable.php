@@ -3,9 +3,9 @@
 include '../../../core/app.php';
 apiHeaders();
 
-// use VetSync\Models\Users;
-use VetSync\Utils\Php\Formatters;
-use VetSync\Services\DataTables;
+// use Mindtrack\Models\Users;
+use Mindtrack\Utils\Php\Formatters;
+use Mindtrack\Services\DataTables;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     $response['message'] = 'Invalid usersDataTable request method';

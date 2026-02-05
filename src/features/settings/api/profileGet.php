@@ -3,8 +3,8 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use VetSync\Models\Users;
-use VetSync\Models\Attachments;
+use Mindtrack\Models\Users;
+use Mindtrack\Models\Attachments;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     $response['message'] = 'Invalid request GET method';

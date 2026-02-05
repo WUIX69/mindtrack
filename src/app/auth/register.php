@@ -4,7 +4,7 @@
 
 <head>
     <?= shared('elements/meta') ?> <!-- rcs Meta Tags -->
-    <title>VetSync - Sign Up</title>
+    <title>Mindtrack - Sign Up</title>
     <?= shared('elements/styles'); ?> <!-- rcs Styles -->
 </head>
 
