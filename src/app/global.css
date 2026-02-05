@@ -1,0 +1,374 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
+
+/* Icons */
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Sharp");
+@import url("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css");
+
+* {
+    box-sizing: border-box !important;
+    outline: 0 !important;
+    border: 0 !important;
+    text-decoration: none !important;
+    list-style: none !important;
+}
+
+*:not(.material-icons-sharp):not(.icon):not(.bx) {
+    font-family: "Poppins", sans-serif !important;
+}
+
+:root {
+    --color-background: #f6f6f9;
+    --color-background-variant: #efeff5;
+    --color-white: #fff;
+    --color-dark: #363949;
+    --color-dark-variant: #677483;
+    --color-light: rgba(132, 139, 200, 0.18);
+    --box-shadow: 0 2rem 3rem rgba(132, 139, 200, 0.18);
+    --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    --img-border: 2px solid #eeeeee;
+}
+
+/* Dark mode color scheme that gets applied when .dark-mode-variables class is added to body */
+/* Inverts the light theme colors to create a dark appearance */
+.dark-mode-variables {
+    --color-background: #181a1e;
+    --color-background-variant: #3e454c;
+    --color-white: #202528;
+    --color-dark: #edeffd;
+    --color-dark-variant: #a3bdcc;
+    --color-light: rgba(0, 0, 0, 0.4);
+    --box-shadow: 0 2rem 3rem rgba(0, 0, 0, 0.4);
+}
+
+body {
+    width: 100vw !important;
+    height: 100vh !important;
+    /* font-family: "Poppins", sans-serif !important; */
+    font-size: 1rem !important;
+    /* user-select: none !important; */
+    overflow-x: hidden !important;
+    color: var(--color-dark) !important;
+    background-color: var(--color-background) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* scroll-behavior: smooth !important; */
+}
+
+h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+h2 {
+    font-size: 1.24rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+h3 {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+small {
+    font-size: 0.67rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+small,
+label {
+    color: var(--color-dark);
+}
+
+.ui.small {
+    font-size: 0.82rem;
+    color: var(--color-dark-variant) !important;
+}
+
+p {
+    margin: 0;
+}
+
+.text-danger {
+    color: #ff0060 !important; /* Overriding Bootstrap text-danger */
+}
+
+.container-body {
+    margin: 0 !important;
+    padding: 1.8rem !important;
+}
+
+.container-main {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* .container-main h1 {
+    position: relative;
+    top: -2px;
+} */
+
+.box,
+.card {
+    border-radius: 1.75rem;
+    background: var(--color-white);
+    border: none;
+    box-shadow: var(--box-shadow);
+    padding: 1.9rem !important;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 0;
+    margin: 0;
+}
+
+.box:hover,
+.card:hover {
+    box-shadow: none;
+}
+
+.box-tiny {
+    border-radius: 1rem;
+    background: var(--color-white);
+    border: none;
+    box-shadow: var(--box-shadow);
+    padding: 1.2rem;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.box-tiny:hover {
+    box-shadow: none;
+}
+
+/*--- Top Redirect Button ---*/
+body.scrolled .shared-standalone-content .top-redirect-button {
+    display: block;
+}
+
+.shared-standalone-content .top-redirect-button {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 101;
+    transition: all 0.3s ease;
+}
+
+.shared-standalone-content .top-redirect-button button {
+    background: #00b5ad !important;
+    color: var(--color-white) !important;
+    transition: all 0.3s ease;
+}
+
+.shared-standalone-content .top-redirect-button button:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.shared-standalone-content .top-redirect-button button:hover span {
+    animation: upDown 2s infinite;
+}
+
+@keyframes upDown {
+    0%,
+    100% {
+        transform: translateY(0) scale(1.05);
+    }
+    50% {
+        transform: translateY(-5px) scale(1.05);
+    }
+}
+/*--- Top Redirect Button END ---*/
+
+/*--- Semantic UI Overrides ---*/
+.ui.form .field input,
+.ui.form .field textarea,
+.ui.form .field .ui.dropdown {
+    background: var(--color-background) !important;
+    color: var(--color-dark) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 0.4rem;
+}
+
+.ui.basic.red.pointing.prompt.label {
+    font-size: 0.7rem !important;
+}
+
+.ui.search input {
+    background: var(--color-background) !important;
+    color: var(--color-dark) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.ui.dropdown {
+    background: var(--color-background) !important;
+    color: var(--color-dark) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.ui.dropdown .text:not(.ui.modal *):not(.ui.table *) {
+    color: var(--color-dark);
+}
+
+.ui.dropdown .header {
+    color: var(--color-dark) !important;
+}
+
+.ui.dropdown.compact.labeled.icon {
+    box-shadow: none !important;
+}
+
+.ui.dropdown.compact.clearable {
+    padding-right: 1.6rem;
+}
+
+.ui.dropdown.compact.visible .text,
+.ui.dropdown.compact.visible i.icon:not(.menu i) {
+    color: var(--color-dark-variant) !important;
+}
+
+/* Semantic UI Overrides (Modal) */
+.ui.modal {
+    background: var(--color-white);
+    color: var(--color-dark);
+}
+
+.ui.modal > .header {
+    background: var(--color-white);
+    color: var(--color-dark);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    padding: 1rem 1.5rem;
+    margin: 0;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+
+.ui.modal .content {
+    background: var(--color-white);
+    color: var(--color-dark-variant);
+    margin: 0;
+    padding: 0;
+}
+
+.ui.modal .content .ui.form {
+    padding: 1rem 1.5rem;
+}
+
+.ui.modal .ui.form input,
+.ui.modal .ui.form textarea,
+.ui.modal .ui.dropdown {
+    font-size: 0.72rem !important;
+    border-radius: 0.4rem;
+}
+
+.ui.modal .ui.form .ui.dropdown.selection.search {
+    padding: 0.8rem !important;
+}
+
+.ui.modal .ui.form .ui.dropdown.selection.search .text {
+    z-index: 2;
+}
+
+.ui.modal .ui.form .ui.dropdown.fluid {
+    padding: 0.6rem 0.7rem;
+}
+
+.ui.modal .ui.form .ui.dropdown:not(.selection):not(.multiple) > .remove.icon {
+    margin-top: -0.3rem;
+    margin-right: 0.6rem;
+}
+
+.ui.modal .ui.form .ui.dropdown.search .dropdown.icon {
+    margin-top: -0.35rem;
+}
+
+/* .ui.modal .ui.form .ui.dropdown:not(.search) .dropdown.icon {
+    margin-top: 0.1rem;
+} */
+
+.ui.modal .ui.form .ui.dropdown > .text > .image:not(.icon),
+.ui.dropdown > .text > img {
+    margin-top: -0.3em;
+}
+
+.ui.modal .ui.form .ui.dropdown.selection > .menu > .item,
+.ui.modal .ui.form .ui.dropdown .scrolling.menu .item {
+    margin-left: -0.29rem;
+    font-size: 0.8rem;
+}
+
+.ui.modal .ui.form .field > label {
+    display: block;
+    color: var(--color-dark);
+    font-weight: 500;
+    font-size: 12px;
+    margin-bottom: 0.3rem;
+}
+
+.ui.modal .ui.form .actions {
+    background: var(--color-white);
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    margin-top: 1.2rem;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+}
+
+.ui.modal .ui.button {
+    border-radius: 0.4rem;
+    padding: 0.6rem 1rem;
+    text-transform: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.ui.modal .ui.button:hover {
+    transform: translateY(-2px);
+    font-size: 12px;
+}
+
+.ui.modal .ui.positive.button {
+    background: #6c9bcf;
+}
+
+.ui.modal .ui.positive.button:hover {
+    background: #ff1b6d;
+}
+
+.ui.modal .ui.cancel.button {
+    background: var(--color-background);
+    color: var(--color-dark);
+    margin-right: -0.2rem;
+}
+
+/* Semantic UI Overrides (Flyout) */
+body.pushable > .pusher {
+    /* Adjust the body background again due to pusher */
+    background: var(--color-background);
+}
+
+/* Filepond Overrides */
+.filepond--label-action {
+    text-decoration: underline !important;
+    text-decoration-color: #a7a4a4 !important;
+}
+
+.filepond--drop-label label {
+    font-size: 0.875em !important;
+    color: var(--color-dark-variant);
+}
+
+.filepond--credits {
+    display: none !important;
+}

@@ -1,0 +1,38 @@
+main section.settings .tab-header {
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+main section.settings .tab-header p {
+    font-size: 0.92rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+main section.settings .section-divider {
+    height: 2px;
+    background-color: var(--color-background);
+    margin-top: -1.2rem;
+    margin-bottom: 1.3rem;
+}
+
+main section.settings .ui.form .field input,
+main section.settings .ui.form .field textarea,
+main section.settings .ui.form .field .ui.dropdown .text {
+    font-size: 0.85rem;
+}
+
+main section.settings .tab-header h3,
+main section.settings .ui.form .field label {
+    color: var(--color-dark) !important;
+}
+
+main section.settings .tab-header p {
+    color: var(--color-dark-variant);
+}
+
+main section.settings .ui.form .field input,
+main section.settings .ui.form .field textarea,
+main section.settings .ui.form .field .ui.dropdown {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
