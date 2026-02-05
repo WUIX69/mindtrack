@@ -10,7 +10,7 @@ use Mindtrack\Models\Attachments;
 use Mindtrack\Utils\Php\Helpers;
 use Mindtrack\Utils\Php\Formatters;
 
-use Mindtrack\Services\FileManager;
+use Mindtrack\Lib\FileManager;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     $response['message'] = 'Invalid request method';

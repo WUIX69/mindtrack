@@ -1,8 +1,8 @@
 <?php
 
-namespace Mindtrack\Services;
+namespace Mindtrack\Lib;
 
-use Mindtrack\Services\Email;
+use Mindtrack\Lib\Email;
 
 class Notify
 {

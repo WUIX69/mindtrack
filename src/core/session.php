@@ -1,6 +1,6 @@
 <?php
 
-use Mindtrack\Services\SessionManager;
+use Mindtrack\Lib\SessionManager;
 
 $sessionName = $_ENV['SESSION_NAME'] ?? 'Mindtrack_SESSION';
 

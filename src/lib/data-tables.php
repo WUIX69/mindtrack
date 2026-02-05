@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindtrack\Services;
+namespace Mindtrack\Lib;
 
 use PDO;
 use PDOException;

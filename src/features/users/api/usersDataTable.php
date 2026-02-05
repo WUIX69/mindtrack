@@ -5,7 +5,7 @@ apiHeaders();
 
 // use Mindtrack\Models\Users;
 use Mindtrack\Utils\Php\Formatters;
-use Mindtrack\Services\DataTables;
+use Mindtrack\Lib\DataTables;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     $response['message'] = 'Invalid usersDataTable request method';

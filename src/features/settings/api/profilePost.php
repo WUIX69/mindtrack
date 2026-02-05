@@ -4,7 +4,7 @@ include '../../../core/app.php';
 apiHeaders();
 
 use Mindtrack\Models\Users;
-use Mindtrack\Services\FileManager;
+use Mindtrack\Lib\FileManager;
 use Mindtrack\Utils\Php\Helpers;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

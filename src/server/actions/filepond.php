@@ -3,7 +3,7 @@
 include '../../core/app.php';
 // apiHeaders();
 
-use Mindtrack\Services\FileManager;
+use Mindtrack\Lib\FileManager;
 
 try {
 
