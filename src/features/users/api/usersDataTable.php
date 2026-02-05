@@ -6,6 +6,7 @@ apiHeaders();
 // use Mindtrack\Server\Db\Users;
 use Mindtrack\Utils\Formatters;
 use Mindtrack\Lib\DataTables;
+use Mindtrack\Lib\Media;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     $response['message'] = 'Invalid usersDataTable request method';
@@ -77,7 +78,7 @@ try {
             'telephone' => $user['telephone'] ? $user['telephone'] : '...',
             'dob' => $user['dob'],
             'location' => $user['location'] ? $user['location'] : '...',
-            'profile' => media($user['uuid']),
+            'profile' => Media::get($user['uuid']),
             'created_at' => $user['created_at'],
             'DT_RowAttr' => [
                 'data-user-uuid' => $user['uuid'],

@@ -2,6 +2,7 @@
 
 use Mindtrack\Server\Db\Users;
 use Ramsey\Uuid\Uuid;
+use Mindtrack\Lib\Media;
 
 function uuid()
 {
@@ -20,7 +21,7 @@ function userData($uuid = null)
     $user_formatted_data = [
         'type' => $session->get()['type'] ?? '',
         'name' => $user['firstname'] . ' ' . $user['lastname'] ?? '',
-        'profile' => media($uuid) ?? null,
+        'profile' => Media::get($uuid) ?? null,
     ];
 
     $merged_data = array_merge($user, $user_formatted_data);

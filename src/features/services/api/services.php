@@ -11,6 +11,7 @@ use Mindtrack\Utils\Helpers;
 use Mindtrack\Utils\Formatters;
 
 use Mindtrack\Lib\FileManager;
+use Mindtrack\Lib\Media;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     $response['message'] = 'Invalid request method';
@@ -64,7 +65,7 @@ try {
             $result['data'] = array_map(function ($item) use ($reference_model) {
                 // Format correct data
                 $formattedData = [
-                    'image' => media($item['uuid']),
+                    'image' => Media::get($item['uuid']),
                     'category' => Helpers::categoryName(Categories::single($item['category_id'], $reference_model)['data']),
                     'status' => Helpers::serviceStatus($item['status']),
                     'created_at' => Formatters::dateToMDY($item['created_at']),

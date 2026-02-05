@@ -5,6 +5,7 @@ apiHeaders();
 
 use Mindtrack\Server\Db\Users;
 use Mindtrack\Utils\Formatters;
+use Mindtrack\Lib\Media;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     $response['message'] = 'Invalid getUsers request method';
@@ -36,7 +37,7 @@ try {
 
         } else if ($action === 'singleWhereView') {
             $response = Users::single($user_uuid) ?? [];
-            $response['data']['profile'] = media($response['data']['uuid']);
+            $response['data']['profile'] = Media::get($response['data']['uuid']);
             $response['data']['name'] = $response['data']['firstname'] . ' ' . $response['data']['lastname'];
             $response['data']['dob'] = Formatters::dateToMDY($response['data']['dob']);
             $response['data']['created_at'] = Formatters::timeAgo($response['data']['created_at']);
