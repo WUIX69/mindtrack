@@ -4,7 +4,7 @@ include '../../../core/app.php';
 apiHeaders();
 
 // use Mindtrack\Models\Users;
-use Mindtrack\Utils\Php\Formatters;
+use Mindtrack\Utils\Formatters;
 use Mindtrack\Lib\DataTables;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {

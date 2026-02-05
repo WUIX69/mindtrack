@@ -7,8 +7,8 @@ use Mindtrack\Models\Products;
 use Mindtrack\Models\Categories;
 use Mindtrack\Models\Attachments;
 
-use Mindtrack\Utils\Php\Helpers;
-use Mindtrack\Utils\Php\Formatters;
+use Mindtrack\Utils\Helpers;
+use Mindtrack\Utils\Formatters;
 
 use Mindtrack\Lib\FileManager;
 

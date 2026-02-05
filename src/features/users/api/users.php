@@ -4,7 +4,7 @@ include '../../../core/app.php';
 apiHeaders();
 
 use Mindtrack\Models\Users;
-use Mindtrack\Utils\Php\Formatters;
+use Mindtrack\Utils\Formatters;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     $response['message'] = 'Invalid getUsers request method';

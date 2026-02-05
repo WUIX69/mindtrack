@@ -5,7 +5,7 @@ apiHeaders();
 
 use Mindtrack\Models\Users;
 use Mindtrack\Lib\FileManager;
-use Mindtrack\Utils\Php\Helpers;
+use Mindtrack\Utils\Helpers;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';

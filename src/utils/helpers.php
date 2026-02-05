@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindtrack\Utils\Php;
+namespace Mindtrack\Utils;
 
 class Helpers
 {
