@@ -3,7 +3,7 @@
 include '../../../core/app.php';
 apiHeaders();
 
-// use Mindtrack\Models\Users;
+// use Mindtrack\Server\Db\Users;
 use Mindtrack\Utils\Formatters;
 use Mindtrack\Lib\DataTables;
 

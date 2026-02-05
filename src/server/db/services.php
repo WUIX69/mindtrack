@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindtrack\Models;
+namespace Mindtrack\Server\Db;
 
 use PDO;
 use PDOException;

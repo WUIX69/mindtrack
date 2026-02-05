@@ -3,9 +3,9 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use Mindtrack\Models\Products;
-use Mindtrack\Models\Categories;
-use Mindtrack\Models\Attachments;
+use Mindtrack\Server\Db\Products;
+use Mindtrack\Server\Db\Categories;
+use Mindtrack\Server\Db\Attachments;
 
 use Mindtrack\Utils\Helpers;
 use Mindtrack\Utils\Formatters;

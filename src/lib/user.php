@@ -1,30 +1,6 @@
 <?php
 
-use Ramsey\Uuid\Uuid;
-
-function uuid()
-{
-    $my_uuid = Uuid::uuid4();
-    return $my_uuid->toString();
-}
-
-function getUserByUuid($uuid)
-{
-    global $conn;
-
-    $stmt = $conn->prepare("SELECT * FROM users WHERE uuid = ? LIMIT 1");
-    $stmt->execute([$uuid]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-function getAdminById($id)
-{
-    global $conn;
-
-    $stmt = $conn->prepare("SELECT * FROM administrators WHERE id = ? LIMIT 1");
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+use Mindtrack\Server\Db\Users;
 
 function userData($uuid = null)
 {
@@ -33,7 +9,7 @@ function userData($uuid = null)
         $uuid = $session->get()['uuid'] ?? null;
     }
 
-    $user = getUserByUuid($uuid);
+    $user = Users::single($uuid);
     $user_formatted_data = [
         'type' => $session->get()['type'] ?? '',
         'name' => $user['firstname'] . ' ' . $user['lastname'] ?? '',

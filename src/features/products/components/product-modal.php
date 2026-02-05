@@ -1,5 +1,5 @@
 <?php
-use Mindtrack\Models\Categories;
+use Mindtrack\Server\Db\Categories;
 $categories = Categories::all('products')['data'] ?? [];
 ?>
 <style>

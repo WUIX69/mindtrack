@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindtrack\Models;
+namespace Mindtrack\Server\Db;
 
 use PDO;
 use PDOException;
@@ -54,6 +54,26 @@ class Users
             return [
                 'success' => false,
                 'message' => 'Failed to fetch user: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    public static function singleWhereAdmin($id)
+    {
+        try {
+            $stmt = self::conn()->prepare("SELECT * FROM administrators WHERE id = ? LIMIT 1");
+            $stmt->execute([$id]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
+            return [
+                'success' => true,
+                'message' => 'Admin fetched successfully',
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch admin: ' . $e->getMessage(),
             ];
         }
     }

@@ -3,8 +3,8 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use Mindtrack\Models\Users;
-use Mindtrack\Models\Attachments;
+use Mindtrack\Server\Db\Users;
+use Mindtrack\Server\Db\Attachments;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     $response['message'] = 'Invalid request GET method';

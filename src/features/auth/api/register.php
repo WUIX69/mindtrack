@@ -3,7 +3,7 @@
 include '../../../core/app.php';
 apiHeaders();
 
-use Mindtrack\Models\Users;
+use Mindtrack\Server\Db\Users;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';

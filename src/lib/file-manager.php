@@ -2,7 +2,7 @@
 
 namespace Mindtrack\Lib;
 
-use Mindtrack\Models\Attachments;
+use Mindtrack\Server\Db\Attachments;
 
 class FileManager
 {

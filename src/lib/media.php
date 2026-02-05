@@ -1,6 +1,6 @@
 <?php
 
-use Mindtrack\Models\Attachments;
+use Mindtrack\Server\Db\Attachments;
 
 function media($reference_uuid, $is_all = false)
 {

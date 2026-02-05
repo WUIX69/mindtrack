@@ -3,7 +3,7 @@
 include '../../core/app.php';
 apiHeaders();
 
-use Mindtrack\Models\Categories;
+use Mindtrack\Server\Db\Categories;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     $response['message'] = 'Invalid request method';
