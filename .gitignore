@@ -1,0 +1,12 @@
+.env
+composer.lock
+
+/vendor
+vendor
+
+/logs
+/logs/*
+logs
+
+/src/uploads
+/src/uploads/*
