@@ -35,13 +35,13 @@ $activeLink = uriPagePath();
                             Us</a>
                         <a href="<?= app('auth') ?>" class="nav-link ">Login</a>
                         <div class="actions d-none"><!-- Only show for mobile view -->
-                            <?= partial('components/ui/booknow-btn') ?>
+                            <?= partial('ui/booknow-btn') ?>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <div class="actions">
-                        <?= partial('components/ui/booknow-btn') ?>
+                        <?= partial('ui/booknow-btn') ?>
                     </div>
                 </div>
             </div>

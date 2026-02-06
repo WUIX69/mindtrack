@@ -20,7 +20,7 @@
 
     <div class="container-body">
         <!-- Site Header -->
-        <?= partial('layouts/header'); ?>
+        <?= partial('header'); ?>
 
         <main class="site-main">
             <!-- stats card section -->

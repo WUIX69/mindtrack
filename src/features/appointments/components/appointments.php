@@ -417,6 +417,6 @@
         </div>
     </div>
     <!-- Pagination START -->
-    <?= shared('components/pagination'); ?>
+    <?= shared('pagination'); ?>
     <!-- Pagination END -->
 </section>

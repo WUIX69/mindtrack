@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <!-- Google Map Iframe -->
-                <?= partial('components/ui/google-map'); ?>
+                <?= partial('ui/google-map'); ?>
             </div>
         </div>
     </div>

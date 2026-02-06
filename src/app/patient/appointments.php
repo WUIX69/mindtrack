@@ -228,7 +228,7 @@
 
     <div class="site-cont">
         <!-- Site Header -->
-        <?= partial('layouts/header'); ?>
+        <?= partial('header'); ?>
 
         <main class="site-main">
             <!-- Header -->
@@ -544,7 +544,7 @@
                         </div>
 
                         <!-- Pagination START -->
-                        <?= shared('components/pagination'); ?>
+                        <?= shared('pagination'); ?>
                         <!-- Pagination END -->
                     </div>
                 </div>

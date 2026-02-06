@@ -14,8 +14,8 @@
     <div class="shared-standalone-content">
         <?= shared('layouts/loader/window'); ?> <!-- Window Spinner -->
         <?= shared('layouts/top-redirect-btn'); ?> <!-- Top Redirect Button -->
-        <?= shared('components/booknow-modal'); ?> <!-- Book Now Modal -->
-        <?= partial('layouts/header'); ?> <!-- Header -->
+        <?= shared('booknow-modal'); ?> <!-- Book Now Modal -->
+        <?= partial('header'); ?> <!-- SpecificHeader for landing -->
     </div>
 
     <div class="container-body">
@@ -32,20 +32,20 @@
                     <?= featured('home/components/services'); ?>
 
                     <!-- Testimonials -->
-                    <?= partial('components/testimonials'); ?>
+                    <?= partial('testimonials'); ?>
 
                     <!-- Separator -->
-                    <?= partial('components/separator'); ?>
+                    <?= partial('separator'); ?>
 
                     <!-- Locations -->
                     <?= featured('home/components/location'); ?>
 
                     <!-- Reserve -->
-                    <?= partial('components/reserve'); ?>
+                    <?= partial('reserve'); ?>
                 </main>
             </div>
             <div class="col-12">
-                <?= partial('layouts/footer'); ?> <!-- Footer -->
+                <?= partial('footer'); ?> <!-- Specific Footer for landing -->
             </div>
         </div>
     </div>

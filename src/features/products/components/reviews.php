@@ -204,7 +204,7 @@
                 </div>
 
                 <!-- Pagination Start -->
-                <?= shared('components/pagination'); ?>
+                <?= shared('pagination'); ?>
                 <!-- Pagination End -->
             </div>
 

@@ -22,7 +22,7 @@
 
     <div class="container-body pusher">
         <!-- Sidebar -->
-        <?= partial('layouts/sidebar') ?>
+        <?= partial('sidebar') ?>
 
         <!-- Main Content -->
         <main class="container-main">

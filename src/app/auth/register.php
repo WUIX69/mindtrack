@@ -17,9 +17,9 @@
     <div class="container-body">
         <main class="container-main">
             <section class="auth-section mt-0">
-                <?= partial('components/header-logo') ?> <!-- Header Logo -->
+                <?= partial('header-logo') ?> <!-- Header Logo -->
                 <div class="auth-wrapper box column">
-                    <?= partial('components/header-in') ?> <!-- Section in header -->
+                    <?= partial('header-in') ?> <!-- Section in header -->
                     <form class="ui large form" id="registerForm">
                         <div class="two fields">
                             <div class="field">
@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div class="actions">
-                            <?= partial('components/ui/continue-btn'); ?>
+                            <?= partial('ui/continue-btn'); ?>
                         </div>
                         <div class="ui error message"></div>
                     </form>
@@ -68,7 +68,7 @@
                         Already have an account? <a href="index.php">Login</a>
                     </div>
                 </div>
-                <?= partial('components/terms-privacy') ?> <!-- Terms & Privacy -->
+                <?= partial('terms-privacy') ?> <!-- Terms & Privacy -->
             </section>
         </main>
     </div>

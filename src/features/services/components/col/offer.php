@@ -242,5 +242,5 @@
         </div>
     </div>
 
-    <?= shared('components/pagination'); ?>
+    <?= shared('pagination'); ?>
 </div>

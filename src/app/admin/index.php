@@ -13,14 +13,14 @@
     <div class="shared-standalone-content">
         <?= shared('layouts/loader/window') ?> <!-- Window Spinner -->
         <?= featured('dashboard/components/reminder-modal') ?> <!-- Reminder Modal -->
-        <?= shared('components/flyout') ?> <!-- Flyout -->
+        <?= shared('flyout') ?> <!-- Flyout -->
     </div>
 
     <div class="container-body pusher">
         <!-- Sidebar -->
-        <?= partial('layouts/sidebar') ?>
+        <?= partial('sidebar') ?>
         <!-- Navbar -->
-        <?= partial('layouts/navbar') ?>
+        <?= partial('navbar') ?>
 
         <!-- Main Content -->
         <main class="container-main">

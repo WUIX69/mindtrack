@@ -79,6 +79,13 @@ function featured($path, $is_url = false)
     includeFileHelper('features', $path);
 }
 
+function partial($file = null)
+{
+    $appName = uriAppPath();
+    $path = "app/{$appName}/components";
+    includeFileHelper($path, $file);
+}
+
 function app($link = '')
 {
     // Handle empty link case
