@@ -5,7 +5,7 @@ const $darkMode = $(".dark-mode-toggle");
 
 function darkModeToggle() {
     $darkMode.on("click", function () {
-        $("body").toggleClass("dark-mode-variables");
+        $("body").toggleClass("dark");
         $darkMode.find("span.light").toggleClass("active");
         $darkMode.find("span.dark").toggleClass("active");
         setTimeout(() => {
