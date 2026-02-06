@@ -57,8 +57,8 @@
     <script src="<?= asset('lib/DataTables/responsive.semanticui.min.js') ?>"></script>
 
     <!-- Required for tables -->
-    <script src="<?= utils('js/formatters.js', true) ?>"></script>
-    <script src="<?= utils('js/tableListFilters.js', true) ?>"></script>
+    <script src="<?= shared('utils', 'formatters.php', true) ?>"></script>
+    <script src="<?= shared('utils', 'tableListFilters.php', true) ?>"></script>
 
     <!-- Page Scripts -->
     <script src="<?= featured('users/js/usersDataTable.js', true) ?>"></script>

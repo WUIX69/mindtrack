@@ -1,15 +1,5 @@
 <?php
 
-function tryCatch($callback, $errorMessage = "Error: ")
-{
-    try {
-        return $callback();
-    } catch (Throwable $t) {
-        error_log($errorMessage . $t->getMessage());
-        return false;
-    }
-}
-
 function baseURL($path = '')
 {
     // Get the protocol and host only once per page load
@@ -42,12 +32,14 @@ function includeFileHelper($dir, $file)
     // Construct the full path to the file
     $file_path = $dir_path . $file . '.php';
 
-    tryCatch(function () use ($file_path) {
+    try {
         if (!file_exists($file_path)) {
             throw new Exception("File not found: $file_path");
         }
-        include $file_path; // Include the file
-    }, "$dir file Error, ");
+        include $file_path;
+    } catch (Throwable $t) {
+        error_log("$dir file Error, " . $t->getMessage());
+    }
 }
 
 function urlFileHelper($dir, $file, $is_public = false)
@@ -72,11 +64,12 @@ function asset($file)
     return urlFileHelper('public', $file, true);
 }
 
-function shared($file, $is_url = false)
+function shared($folder = "components", $file, $is_url = false)
 {
+    // shared folder is in src folder (e.g, components, lib, utils, data, schemas, server, utils)
     if ($is_url)
-        return urlFileHelper('shared', $file);
-    includeFileHelper('shared', $file);
+        return urlFileHelper($folder, $file);
+    includeFileHelper($folder, $file);
 }
 
 function featured($path, $is_url = false)
@@ -84,20 +77,6 @@ function featured($path, $is_url = false)
     if ($is_url)
         return urlFileHelper('features', $path);
     includeFileHelper('features', $path);
-}
-
-function partial($file = null)
-{
-    $appName = uriAppPath();
-    $path = "app/{$appName}/partials";
-    includeFileHelper($path, $file);
-}
-
-function utils($file, $is_url = false)
-{
-    if ($is_url)
-        return urlFileHelper('utils', $file);
-    includeFileHelper('utils', $file);
 }
 
 function app($link = '')
@@ -188,11 +167,4 @@ function apiHeaders()
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: DENY');
     header('X-XSS-Protection: 1; mode=block');
-}
-
-function model($model = null)
-{
-    // Classes using PSR-4 autoloading with namespaces don't need to be explicitly included
-    // But we'll keep this for backward compatibility
-    includeFileHelper('model', $model);
 }
