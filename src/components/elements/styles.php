@@ -3,7 +3,7 @@
 $appDirName = uriAppPath();
 $styles = [
     'vendor/fomantic-ui/dist/semantic.min.css',
-    'src/app/global.css',
+    'css/tailwind.css',
     'css/loader/window.css',
 ];
 
