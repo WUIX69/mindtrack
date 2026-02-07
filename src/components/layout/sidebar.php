@@ -19,7 +19,6 @@ $navItems = [
         ['id' => 'schedule', 'label' => 'My Schedule', 'icon' => 'calendar_today', 'url' => app('doctor/schedule.php')],
         ['id' => 'patients', 'label' => 'Patients', 'icon' => 'group', 'url' => app('doctor/patients.php')],
         ['id' => 'notes', 'label' => 'Clinical Notes', 'icon' => 'description', 'url' => app('doctor/notes.php')],
-        ['id' => 'insights', 'label' => 'Insights', 'icon' => 'analytics', 'url' => app('doctor/insights.php')],
     ],
     'patient' => [
         ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('patient')],
