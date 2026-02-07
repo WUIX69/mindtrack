@@ -66,7 +66,7 @@ include __DIR__ . '/../layout.php';
 						Address</label>
 					<div class="relative group">
 						<input
-							class="w-full h-14 rounded-xl border-border bg-muted/30 px-5 text-foreground font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300"
+							class="w-full h-14 rounded-xl border border-border bg-muted/30 px-5 text-foreground font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300"
 							placeholder="name@example.com" type="email" />
 					</div>
 				</div>
@@ -78,7 +78,7 @@ include __DIR__ . '/../layout.php';
 					</div>
 					<div class="relative flex items-center">
 						<input
-							class="w-full h-14 rounded-xl border-border bg-muted/30 px-5 text-foreground font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300"
+							class="w-full h-14 rounded-xl border border-border bg-muted/30 px-5 text-foreground font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300"
 							placeholder="••••••••" type="password" />
 						<button
 							class="absolute right-4 text-muted-foreground hover:text-primary transition-colors duration-200"
