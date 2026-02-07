@@ -5,8 +5,8 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->safeLoad();
 
 $config = [
-    'sub_folder' => 'Mindtrack',
-    'root_path' => $_SERVER['DOCUMENT_ROOT'],
+    'sub_folder' => 'mindtrack',
+    'root_path' => dirname(__DIR__, 2),
     'uri_path' => $_SERVER['REQUEST_URI'],
     'app' => [
         'base_url' => $_ENV['APP_URL'],

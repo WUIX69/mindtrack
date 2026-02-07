@@ -1,7 +1,11 @@
 <?php
 
+use function PHPUnit\Framework\isEmpty;
+
 function baseURL($path = '')
 {
+    global $config;
+
     // Get the protocol and host only once per page load
     static $baseUrl = null;
 
@@ -9,7 +13,8 @@ function baseURL($path = '')
     if ($baseUrl === null) {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
-        $baseUrl = $protocol . '://' . $host . '/';
+        $subFolder = isset($config['sub_folder']) && !empty($config['sub_folder']) ? $config['sub_folder'] . '/' : '';
+        $baseUrl = $protocol . '://' . $host . '/' . $subFolder;
     }
 
     // Return base URL if no path provided
@@ -24,7 +29,7 @@ function baseURL($path = '')
 function includeFileHelper($dir, $file)
 {
     // Define the directory where your files are located
-    $dir_path = dirname(dirname(__DIR__)) . '/' . $dir . '/';
+    $dir_path = dirname(__DIR__) . '/' . $dir . '/';
 
     // error_log('dirname: ' . dirname(dirname(__DIR__)));
     // error_log('dir_path: ' . $_SERVER['DOCUMENT_ROOT'] . '/src/');
@@ -64,7 +69,7 @@ function asset($file)
     return urlFileHelper('public', $file, true);
 }
 
-function shared($folder = "components", $file, $is_url = false)
+function shared($folder = "", $file = null, $is_url = false)
 {
     // shared folder is in src folder (e.g, components, lib, utils, data, schemas, server, utils)
     if ($is_url)
@@ -90,7 +95,7 @@ function app($link = '')
 {
     // Handle empty link case
     if (empty($link)) {
-        return urlFileHelper('app', 'landing');
+        return urlFileHelper('app', 'index.php');
     }
 
     // Check if the link ends with a trailing slash (indicating a directory)

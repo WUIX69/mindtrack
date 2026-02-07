@@ -1,8 +1,8 @@
 <?php
 
-$appDirName = uriAppPath();
 $styles = [
-    'vendor/fomantic-ui/dist/semantic.min.css',
+    // 'vendor/fomantic-ui/dist/semantic.min.css',
+    'fonts/fonts.css',
     'css/tailwind.css',
     'css/loader/window.css',
 ];

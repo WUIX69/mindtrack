@@ -1,8 +1,26 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: ["./src/**/*.{php,html,js}", "./*.{php,html,js}"],
+    content: ["./**/*.php", "./includes/**/*.php"],
+    darkMode: "class",
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                primary: "#4752eb",
+                "background-light": "#f6f6f8",
+                "background-dark": "#111221",
+            },
+            fontFamily: {
+                display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+                DEFAULT: "0.25rem",
+                lg: "0.5rem",
+                xl: "0.75rem",
+                full: "9999px",
+            },
+        },
     },
-    plugins: [],
+    plugins: [
+        require("@tailwindcss/forms"),
+        require("@tailwindcss/container-queries"),
+    ],
 };
