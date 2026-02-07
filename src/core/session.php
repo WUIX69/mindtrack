@@ -1,14 +1,14 @@
 <?php
 
-use Mindtrack\Lib\SessionManager;
+// use Mindtrack\Lib\SessionManager;
 
-$sessionName = $_ENV['SESSION_NAME'] ?? 'Mindtrack_SESSION';
+// $sessionName = $_ENV['SESSION_NAME'] ?? 'Mindtrack_SESSION';
 
 // Start the session if not already started
-session_name($sessionName);
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// session_name($sessionName);
+// if (session_status() === PHP_SESSION_NONE) {
+//     session_start();
+// }
 
 // Instantiate the session manager
 // $session = new SessionManager();
