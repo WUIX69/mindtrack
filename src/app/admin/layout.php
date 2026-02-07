@@ -1,80 +1,46 @@
 <?php
 /**
  * Admin Layout - Specific layout for Administrative pages
+ * 
+ * Integrates with the universal Root Layout (src/app/layout.php)
  */
 
 include_once __DIR__ . '/../../core/app.php';
 
-// Page metadata
+// Configure Root Layout
 $pageTitle = $pageTitle ?? "Admin Dashboard - MindTrack";
-$bodyClass = $bodyClass ?? '';
-$headContent = $headContent ?? '';
+$showNavbar = false;
+$showFooter = false;
 
-/**
- * Start the admin layout
- */
-function admin_layout_start(): void
-{
-    global $pageTitle, $bodyClass, $headContent;
-    ?>
-    <!DOCTYPE html>
-    <html lang="en">
+// Register closure for admin wrapper tags (executes before root layout's shutdown)
+register_shutdown_function(function () {
+    echo '</div></section></div>';
+});
 
-    <head>
-        <?= shared('components', 'elements/meta'); ?>
-        <title>
-            <?= htmlspecialchars($pageTitle) ?>
-        </title>
-        <?= shared('components', 'elements/head'); ?>
+// Include Root Layout (starts the HTML output)
+include_once __DIR__ . '/../layout.php';
 
-        <!-- Google Fonts: Manrope -->
-        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
-            rel="stylesheet" />
-
-        <style>
-            body {
-                font-family: 'Manrope', sans-serif;
-            }
-
-            .sidebar-item-active {
-                background-color: rgba(71, 82, 235, 0.1);
-                color: #4752eb;
-                border-right: 3px solid #4752eb;
-            }
-        </style>
-        <?= $headContent ?>
-    </head>
-
-    <body class="bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200">
-        <div class="flex h-screen overflow-hidden">
-            <!-- Sidebar Navigation -->
-            <?= shared('components', 'layout/sidebar', ['isAdmin' => true]); ?>
-
-            <!-- Main Content Area -->
-            <main class="flex-1 flex flex-col ml-64 w-full overflow-hidden">
-                <!-- Dashboard Content Container (Headers now defined within pages) -->
-                <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth">
-                    <?php
+// Determine current page for sidebar active states
+if (!isset($currentPage)) {
+    $currentPage = 'dashboard';
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    foreach (['appointments', 'patients', 'doctors', 'logs', 'settings'] as $key) {
+        if (strpos($uri, $key) !== false) {
+            $currentPage = $key;
+            break;
+        }
+    }
 }
+?>
 
-/**
- * End the admin layout
- */
-function admin_layout_end(): void
-{
-    ?>
-                </div>
-            </main>
-        </div>
-        <?= shared('components', 'elements/scripts'); ?>
-    </body>
+<!-- Admin Layout Structure (Inside Root Layout\'s <main>) -->
+<div class="flex h-screen overflow-hidden">
+    <!-- Sidebar Navigation -->
+    <?= shared('components', 'layout/sidebar', [
+        'isAdmin' => true,
+        'currentPage' => $currentPage
+    ]); ?>
 
-    </html>
-    <?php
-}
-
-// Auto-start
-admin_layout_start();
-
-// Auto-close
-register_shutdown_function('admin_layout_end');
+    <!-- Scrollable content area -->
+    <section class="flex-1 flex flex-col ml-64 w-full overflow-hidden">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth">
