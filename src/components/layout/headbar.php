@@ -97,6 +97,18 @@ $userAvatar = $userIdentity['avatar'];
 
         <!-- User Identity Section -->
         <div class="flex items-center gap-4 border-l border-border pl-4">
+            <!-- Theme Toggle Switch (Tailwind) -->
+            <label
+                class="relative inline-flex items-center justify-center size-10 rounded-full hover:bg-muted/50 transition-colors cursor-pointer group">
+                <input type="checkbox" id="theme-toggle" class="absolute inset-0 opacity-0 cursor-pointer peer" />
+                <!-- Sun Icon (Show when Dark/Checked) -->
+                <span
+                    class="material-symbols-outlined text-orange-400 text-xl absolute transition-all duration-300 transform scale-0 opacity-0 rotate-90 peer-checked:scale-100 peer-checked:opacity-100 peer-checked:rotate-0">light_mode</span>
+                <!-- Moon Icon (Show when Light/Unchecked) -->
+                <span
+                    class="material-symbols-outlined text-blue-400 text-xl absolute transition-all duration-300 transform scale-100 opacity-100 rotate-0 peer-checked:scale-0 peer-checked:opacity-0 peer-checked:-rotate-90">dark_mode</span>
+            </label>
+
             <button class="relative p-2 text-muted-foreground hover:bg-muted rounded-full transition-all group">
                 <span
                     class="material-symbols-outlined text-2xl font-variation-settings-['FILL'_0,'wght'_400]">notifications</span>
