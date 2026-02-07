@@ -1,8 +1,8 @@
 <?php
 /**
- * Shared Sidebar Component (Support for Patient & Admin)
+ * Shared Sidebar Component (Support for Patient, Admin & Doctor)
  */
-$isAdmin = $isAdmin ?? false;
+$role = $role ?? 'patient';
 $currentPage = $currentPage ?? uriPagePath();
 
 // Define Navigation Items
@@ -14,6 +14,13 @@ $navItems = [
         ['id' => 'doctors', 'label' => 'Doctors Management', 'icon' => 'medical_services', 'url' => app('admin/doctors.php')],
         ['id' => 'services', 'label' => 'Clinical Services', 'icon' => 'list_alt', 'url' => app('admin/services.php')],
     ],
+    'doctor' => [
+        ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('doctor')],
+        ['id' => 'schedule', 'label' => 'My Schedule', 'icon' => 'calendar_today', 'url' => app('doctor/schedule.php')],
+        ['id' => 'patients', 'label' => 'Patients', 'icon' => 'group', 'url' => app('doctor/patients.php')],
+        ['id' => 'notes', 'label' => 'Clinical Notes', 'icon' => 'description', 'url' => app('doctor/notes.php')],
+        ['id' => 'insights', 'label' => 'Insights', 'icon' => 'analytics', 'url' => app('doctor/insights.php')],
+    ],
     'patient' => [
         ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('patient')],
         ['id' => 'appointments', 'label' => 'Appointments', 'icon' => 'calendar_month', 'url' => app('patient/appointments.php')],
@@ -22,7 +29,12 @@ $navItems = [
     ]
 ];
 
-$activeNav = $isAdmin ? $navItems['admin'] : $navItems['patient'];
+$activeNav = $navItems[$role] ?? $navItems['patient'];
+$subtitle = 'Wayside Psyche Center';
+if ($role === 'admin')
+    $subtitle = 'Clinic Management';
+if ($role === 'doctor')
+    $subtitle = 'Clinical Portal';
 ?>
 <aside class="w-64 bg-card dark:bg-sidebar border-r border-border flex flex-col fixed h-full z-20">
     <div class="p-6 flex items-center gap-3">
@@ -31,7 +43,7 @@ $activeNav = $isAdmin ? $navItems['admin'] : $navItems['patient'];
         </div>
         <div>
             <h1 class="text-xl font-bold tracking-tight">MindTrack</h1>
-            <p class="text-xs text-muted-foreground"><?= $isAdmin ? 'Clinic Management' : 'Wayside Psyche Center' ?></p>
+            <p class="text-xs text-muted-foreground"><?= $subtitle ?></p>
         </div>
     </div>
 
@@ -47,7 +59,7 @@ $activeNav = $isAdmin ? $navItems['admin'] : $navItems['patient'];
 
     <div class="px-4 py-6 border-t border-border space-y-1">
         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $currentPage === 'settings' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted dark:text-gray-400 dark:hover:bg-white/5 transition-colors' ?>"
-            href="<?= $isAdmin ? app('admin/settings.php') : app('patient/settings.php') ?>">
+            href="<?= app($role . '/settings.php') ?>">
             <span class="material-symbols-outlined">settings</span>
             <span class="text-sm">Settings</span>
         </a>

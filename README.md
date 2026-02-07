@@ -24,6 +24,7 @@ Wayside Psyche Resources Center is dedicated to promoting mental health and emot
 MindTrack addresses the limitations of manual scheduling by providing a centralized platform for:
 
 - **👤 Patient Portal**: Online booking for face-to-face consultations and status tracking.
+- **🩺 Doctor Portal**: Clinical dashboard for managing schedules, patients, and session notes.
 - **🛡 Admin Console**: Management of patient records, provider schedules, and appointment requests.
 - **⚡ Automation**: Email notifications for appointment approvals and reminders.
 
@@ -70,6 +71,13 @@ The project is built using a standard LAMP/WAMP stack environment.
 - **📁 Patient Records**: CRUD operations for patient profiles and medical history.
 - **👨‍⚕️ Doctor Management**: Manage provider profiles and specialties.
 - **⚙ System Settings**: Admin profile management and system logs.
+
+### 🩺 Doctor Module (Clinician)
+
+- **📊 Clinical Dashboard**: Overview of today's schedule, pending notes, and weekly hours.
+- **👥 Patient List**: Quick access to assigned patient profiles.
+- **📝 Clinical Notes**: Interface for documenting session notes and diagnoses.
+- **🔧 Clinical Tools**: Quick-access buttons for prescriptions, referrals, and lab portal.
 
 ---
 

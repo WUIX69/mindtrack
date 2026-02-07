@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Layout - Specific layout for Administrative pages
+ * Doctor Layout - Specific layout for Clinical/Doctor pages
  * 
  * Integrates with the universal Root Layout (src/app/layout.php)
  */
@@ -8,11 +8,11 @@
 include_once __DIR__ . '/../../core/app.php';
 
 // Configure Root Layout
-$pageTitle = $pageTitle ?? "Admin Dashboard - MindTrack";
+$pageTitle = $pageTitle ?? "Doctor Portal - MindTrack";
 $showNavbar = false;
 $showFooter = false;
 
-// Register closure for admin wrapper tags (executes before root layout's shutdown)
+// Register closure for doctor wrapper tags
 register_shutdown_function(function () {
     echo '</div></section></div>';
 });
@@ -24,7 +24,7 @@ include_once __DIR__ . '/../layout.php';
 if (!isset($currentPage)) {
     $currentPage = 'dashboard';
     $uri = $_SERVER['REQUEST_URI'] ?? '';
-    foreach (['appointments', 'patients', 'doctors', 'logs', 'settings'] as $key) {
+    foreach (['schedule', 'patients', 'notes', 'insights', 'settings'] as $key) {
         if (strpos($uri, $key) !== false) {
             $currentPage = $key;
             break;
@@ -33,11 +33,11 @@ if (!isset($currentPage)) {
 }
 ?>
 
-<!-- Admin Layout Structure (Inside Root Layout\'s <main>) -->
+<!-- Doctor Layout Structure -->
 <div class="flex h-screen overflow-hidden">
     <!-- Sidebar Navigation -->
     <?= shared('components', 'layout/sidebar', [
-        'role' => 'admin',
+        'role' => 'doctor',
         'currentPage' => $currentPage
     ]); ?>
 
@@ -45,5 +45,5 @@ if (!isset($currentPage)) {
     <section class="flex-1 flex flex-col ml-64 w-full overflow-hidden">
         <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth">
             <?php if (isset($headerData)): ?>
-                <?= shared('components', 'layout/headbar', array_merge($headerData, ['role' => 'admin'])); ?>
+                <?= shared('components', 'layout/headbar', array_merge($headerData, ['role' => 'doctor'])); ?>
             <?php endif; ?>

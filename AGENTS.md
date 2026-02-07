@@ -58,10 +58,11 @@ This project runs on XAMPP.
 ```text
 src/
 ├── app/                    # Application Entry Points / Pages
-│   ├── admin/              # Admin dashboard pages
-│   ├── auth/               # Authentication pages
+│   ├── admin/              # Admin dashboard pages (layout.php, index.php, etc.)
+│   ├── auth/               # Authentication pages (signin, signup)
+│   ├── doctor/             # Doctor/Clinician portal pages (layout.php, index.php)
 │   ├── landing/            # Public landing pages (homepage, about, etc.)
-│   ├── patient/            # Patient dashboard pages
+│   ├── patient/            # Patient dashboard pages (layout.php, index.php)
 │   ├── global.css          # Global Tailwind directives
 │   ├── layout.php          # Root layout (like Next.js RootLayout)
 │   └── index.php           # Redirects to landing/
@@ -146,11 +147,55 @@ src/features/[feature-name]/
 
 ---
 
-## 🔑 Authentication
+## 🔑 Authentication & Roles
 
 - **Session Management**: Handled via `src/lib/session-manager.php`.
-- **Roles**: `admin`, `patient` (likely stored in session and database).
-- **Protection**: Ensure all protected pages check for active session at the top of the file.
+- **Roles**: The system supports three distinct user roles:
+    - `admin`: Clinic staff with full management access.
+    - `doctor`: Healthcare providers with clinical portal access.
+    - `patient`: Registered patients with booking and records access.
+- **Role Parameter**: The shared `sidebar` and `headbar` components use a `role` parameter to dynamically render navigation and identity elements.
+- **Protection**: Ensure all protected pages check for an active session and validate the user's role at the top of the file.
+
+---
+
+## 🧱 Layout System
+
+The application uses a hierarchical, role-aware layout system inspired by Next.js.
+
+### Root Layout (`src/app/layout.php`)
+
+The universal HTML shell. All other layouts include this file.
+
+### Role-Specific Layouts
+
+| Layout                       | Role      | Description                                 |
+| :--------------------------- | :-------- | :------------------------------------------ |
+| `src/app/admin/layout.php`   | `admin`   | Sidebar + headbar for management dashboard. |
+| `src/app/doctor/layout.php`  | `doctor`  | Sidebar + headbar for clinical portal.      |
+| `src/app/patient/layout.php` | `patient` | Sidebar + headbar for patient portal.       |
+
+### Shared Components
+
+| Component                       | Description                                             |
+| :------------------------------ | :------------------------------------------------------ |
+| `components/layout/sidebar.php` | Renders role-specific navigation based on `role` param. |
+| `components/layout/headbar.php` | Renders page header and user identity based on `role`.  |
+
+**Usage in Pages:**
+
+```php
+<?php
+$pageTitle = "Dashboard";
+$headerData = [
+    'title' => 'Welcome Back!',
+    'description' => 'Your overview for today.',
+    'actionLabel' => 'New Appointment'
+];
+include_once __DIR__ . '/layout.php'; // Include the role-specific layout
+?>
+<!-- Page-specific content here -->
+```
 
 ---
 

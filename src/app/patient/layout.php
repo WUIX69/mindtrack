@@ -41,10 +41,13 @@ if (!isset($currentPage)) {
 <!-- Patient Layout Wrapper -->
 <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <?= shared('components', 'layout/sidebar', ['currentPage' => $currentPage]); ?>
+    <?= shared('components', 'layout/sidebar', [
+        'role' => 'patient',
+        'currentPage' => $currentPage
+    ]); ?>
 
     <!-- Main Content Area -->
     <section class="flex-1 ml-64 p-8 w-full">
         <?php if (isset($headerData)): ?>
-            <?= shared('components', 'layout/headbar', array_merge($headerData, ['isAdmin' => false])); ?>
+            <?= shared('components', 'layout/headbar', array_merge($headerData, ['role' => 'patient'])); ?>
         <?php endif; ?>
