@@ -45,5 +45,5 @@ if (!isset($currentPage)) {
     <section class="flex-1 flex flex-col ml-64 w-full overflow-hidden">
         <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth">
             <?php if (isset($headerData)): ?>
-                <?= shared('components', 'layout/headbar', $headerData); ?>
+                <?= shared('components', 'layout/headbar', array_merge($headerData, ['isAdmin' => true])); ?>
             <?php endif; ?>
