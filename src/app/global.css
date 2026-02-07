@@ -159,6 +159,9 @@
     --color-destructive: var(--destructive);
     --color-destructive-foreground: var(--destructive-foreground);
     --color-border: var(--border);
+    --color-base-content: var(--foreground);
+    --color-base-200: var(--muted);
+    --color-base-300: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
     --color-chart-1: var(--chart-1);
