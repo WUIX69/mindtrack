@@ -6,32 +6,17 @@
 $pageTitle = "My Medical Records";
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 // Set current page for sidebar highlighting
+$headerData = [
+    'title' => 'My Records',
+    'description' => 'Access and manage your clinical documents and test results.',
+    'searchPlaceholder' => 'Search by name or provider...',
+    'actionLabel' => 'Upload New',
+    'actionIcon' => 'upload'
+];
 $currentPage = 'records';
 
 include __DIR__ . '/layout.php';
 ?>
-
-<header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-    <div>
-        <h2 class="text-3xl font-black text-foreground tracking-tight">My Records</h2>
-        <p class="text-muted-foreground mt-1 font-medium">Access and manage your clinical documents and test results.
-        </p>
-    </div>
-    <div class="flex items-center gap-3">
-        <div class="relative hidden sm:block">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
-            <input
-                class="pl-10 pr-4 py-2 bg-card dark:bg-card border border-border rounded-lg text-sm focus:ring-primary focus:border-primary w-64 transition-all"
-                placeholder="Search by name or provider..." type="text" />
-        </div>
-        <button
-            class="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[20px]">upload</span>
-            Upload New
-        </button>
-    </div>
-</header>
 
 <div class="flex flex-wrap items-center gap-2 mb-8 border-b border-border pb-px">
     <button class="px-6 py-3 text-sm font-semibold border-b-2 border-primary text-primary transition-all">All

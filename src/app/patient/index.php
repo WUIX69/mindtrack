@@ -12,31 +12,15 @@ $showFooter = false;
 // border-border-light -> border-border
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 
+$headerData = [
+    'title' => 'Hello, Alex',
+    'description' => 'Welcome back to your health dashboard. Everything looks great today.',
+    'searchPlaceholder' => 'Search records...',
+    'actionLabel' => 'Book New Appointment'
+];
+
 include __DIR__ . '/layout.php';
 ?>
-
-<!-- Header -->
-<header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-    <div>
-        <h2 class="text-3xl font-black tracking-tight text-foreground">Hello, Alex</h2>
-        <p class="text-muted-foreground mt-1">Welcome back to your health dashboard. Everything looks
-            great today.</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <div class="relative hidden sm:block">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
-            <input
-                class="pl-10 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:ring-primary focus:border-primary w-64 transition-all placeholder:text-muted-foreground"
-                placeholder="Search records..." type="text" />
-        </div>
-        <button
-            class="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[20px]">add_circle</span>
-            Book New Appointment
-        </button>
-    </div>
-</header>
 
 <!-- Metrics Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

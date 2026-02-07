@@ -6,16 +6,14 @@
 $pageTitle = "Account Settings";
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 // Set current page for sidebar highlighting
+$headerData = [
+    'title' => 'Account Settings',
+    'description' => 'Manage your personal information, security, and notification preferences.'
+];
 $currentPage = 'settings';
 
 include __DIR__ . '/layout.php';
 ?>
-
-<header class="mb-8">
-    <h2 class="text-3xl font-bold text-foreground tracking-tight">Account Settings</h2>
-    <p class="text-muted-foreground mt-1 font-medium">Manage your personal information, security, and notification
-        preferences.</p>
-</header>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
     <div class="lg:col-span-2 space-y-8">

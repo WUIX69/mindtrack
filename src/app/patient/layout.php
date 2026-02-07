@@ -45,3 +45,6 @@ if (!isset($currentPage)) {
 
     <!-- Main Content Area -->
     <section class="flex-1 ml-64 p-8 w-full">
+        <?php if (isset($headerData)): ?>
+            <?= shared('components', 'layout/headbar', $headerData); ?>
+        <?php endif; ?>

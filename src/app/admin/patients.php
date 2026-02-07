@@ -3,33 +3,18 @@
  * Admin - Patients Management
  */
 $pageTitle = "Patients Management - MindTrack";
-$headerTitle = "Patients";
+$headerData = [
+    'title' => 'Patients',
+    'description' => 'Maintain comprehensive health records and track clinical progress.',
+    'searchPlaceholder' => 'Find patient by name or ID...',
+    'actionLabel' => 'Add New Patient',
+    'actionIcon' => 'person_add',
+    'mb' => 4
+];
 $currentPage = 'patients';
 
 include_once __DIR__ . '/layout.php';
 ?>
-
-<!-- Header -->
-<header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-    <div>
-        <h2 class="text-3xl font-black tracking-tight text-foreground">Patients</h2>
-        <p class="text-muted-foreground mt-1">Maintain comprehensive health records and track clinical progress.</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <div class="relative hidden sm:block">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
-            <input
-                class="pl-10 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:ring-primary focus:border-primary w-64 transition-all placeholder:text-muted-foreground"
-                placeholder="Find patient by name or ID..." type="text" />
-        </div>
-        <button
-            class="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">person_add</span>
-            Add New Patient
-        </button>
-    </div>
-</header>
 
 <!-- Filter Sub-header -->
 <div class="bg-card rounded-xl border border-border p-4 flex flex-wrap items-center gap-4 mb-8">

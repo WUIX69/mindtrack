@@ -3,31 +3,15 @@
  * Admin Dashboard Index
  */
 $pageTitle = "MindTrack Admin Dashboard";
-$headerTitle = "Morning Overview";
+$headerData = [
+    'title' => 'Morning Overview',
+    'description' => "Here's what's happening at Wayside Psyche Center today.",
+    'searchPlaceholder' => 'Search patient or record...',
+    'actionLabel' => 'Add New Record',
+    'mb' => 4
+];
 include_once __DIR__ . '/layout.php';
 ?>
-
-<!-- Header -->
-<header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-    <div>
-        <h2 class="text-3xl font-black tracking-tight text-foreground">Morning Overview</h2>
-        <p class="text-muted-foreground mt-1">Here's what's happening at Wayside Psyche Center today.</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <div class="relative hidden sm:block">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
-            <input
-                class="pl-10 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:ring-primary focus:border-primary w-64 transition-all placeholder:text-muted-foreground"
-                placeholder="Search patient or record..." type="text" />
-        </div>
-        <button
-            class="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[20px]">add_circle</span>
-            Add New Record
-        </button>
-    </div>
-</header>
 
 <!-- Quick Stats -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

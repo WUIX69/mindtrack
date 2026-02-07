@@ -6,25 +6,15 @@
 $pageTitle = "Wellness Resources";
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 // Set current page for sidebar highlighting
+$headerData = [
+    'title' => 'Wellness Resources',
+    'description' => 'Educational materials and self-help guides for your journey.',
+    'searchPlaceholder' => 'Search resources...'
+];
 $currentPage = 'resources';
 
 include __DIR__ . '/layout.php';
 ?>
-
-<header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-    <div>
-        <h2 class="text-3xl font-bold text-foreground tracking-tight">Wellness Resources</h2>
-        <p class="text-muted-foreground mt-1 font-medium">Educational materials and self-help guides for your journey.
-        </p>
-    </div>
-    <div class="relative w-full max-w-md">
-        <span
-            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
-        <input
-            class="w-full pl-10 pr-4 py-3 bg-card dark:bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm font-medium"
-            placeholder="Search resources..." type="text" />
-    </div>
-</header>
 
 <section class="mb-12">
     <div class="flex items-center justify-between mb-6">

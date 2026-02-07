@@ -5,22 +5,16 @@ $showNavbar = false;
 $showFooter = false;
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 // Set current page for sidebar highlighting
+$headerData = [
+    'title' => 'Appointments',
+    'description' => 'Manage and schedule your sessions with our specialists.',
+    'searchPlaceholder' => 'Search appointments...',
+    'actionLabel' => 'Book New Appointment',
+    'mb' => 10
+];
 $currentPage = 'appointments';
 include __DIR__ . '/layout.php';
 ?>
-
-<header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-    <div>
-        <h2 class="text-4xl font-extrabold tracking-tight text-foreground">Appointments</h2>
-        <p class="text-muted-foreground mt-2 font-medium">Manage and schedule your sessions with our
-            specialists.</p>
-    </div>
-    <button
-        class="bg-primary hover:scale-[1.02] active:scale-95 text-primary-foreground px-6 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-xl shadow-primary/20 flex items-center gap-2">
-        <span class="material-symbols-outlined text-[22px]">add_circle</span>
-        Book New Appointment
-    </button>
-</header>
 
 <div class="border-b border-border mb-8">
     <nav class="flex gap-10">

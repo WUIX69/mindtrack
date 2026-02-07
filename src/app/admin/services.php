@@ -3,26 +3,16 @@
  * Admin - Services Management
  */
 $pageTitle = "Clinical Services - MindTrack";
-$headerTitle = "Services";
+$headerData = [
+    'title' => 'Services',
+    'description' => 'Manage clinical programs, therapy types, and consultation sessions.',
+    'actionLabel' => 'Add New Service',
+    'actionIcon' => 'add'
+];
 $currentPage = 'services';
 
 include_once __DIR__ . '/layout.php';
 ?>
-
-<!-- Header -->
-<header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-    <div>
-        <h2 class="text-3xl font-black tracking-tight text-foreground">Services</h2>
-        <p class="text-muted-foreground mt-1">Manage clinical programs, therapy types, and consultation sessions.</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <button
-            class="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">add</span>
-            Add New Service
-        </button>
-    </div>
-</header>
 
 <!-- Stats Grid -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
