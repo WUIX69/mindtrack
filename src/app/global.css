@@ -1,9 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
 @import "tailwindcss";
+@plugin "daisyui";
 
 :root {
     --background: #ffffff;
     --foreground: #333333;
+
+    /* DaisyUI Light Theme Overrides */
+    --color-primary: #4752eb;
+    --color-secondary: #f3f4f6;
+    --color-accent: #e0f2fe;
+    --color-neutral: #333333;
+    --color-base-100: #ffffff;
+    --color-info: #3b82f6;
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
     --card: #ffffff;
     --card-foreground: #333333;
     --popover: #ffffff;
@@ -67,6 +79,17 @@
 .dark {
     --background: #171717;
     --foreground: #e5e5e5;
+
+    /* DaisyUI Dark Theme Overrides */
+    --color-primary: #4752eb;
+    --color-secondary: #262626;
+    --color-accent: #1e3a8a;
+    --color-neutral: #e5e5e5;
+    --color-base-100: #171717;
+    --color-info: #60a5fa;
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
     --card: #262626;
     --card-foreground: #e5e5e5;
     --popover: #262626;

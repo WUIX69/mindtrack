@@ -20,15 +20,17 @@
         </nav>
         <div class="flex items-center gap-4">
             <!-- Theme Toggle Switch -->
-            <button id="theme-toggle"
-                class="group relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer items-center rounded-full bg-muted px-1 transition-all duration-300 ease-in-out hover:ring-2 hover:ring-primary/20 focus:outline-none dark:bg-primary/20">
-                <span class="sr-only">Toggle theme</span>
-                <div
-                    class="pointer-events-none flex h-5 w-5 transform items-center justify-center rounded-full bg-background shadow-md transition duration-300 ease-in-out translate-x-0 dark:translate-x-5 group-active:scale-90">
-                    <span class="material-symbols-outlined text-[14px] text-orange-400 dark:hidden">light_mode</span>
-                    <span class="material-symbols-outlined text-[14px] text-blue-400 hidden dark:block">dark_mode</span>
-                </div>
-            </button>
+            <!-- Theme Toggle Switch (DaisyUI) -->
+            <label class="swap swap-rotate btn btn-ghost btn-circle hover:bg-muted/50">
+                <!-- this hidden checkbox controls the state -->
+                <input type="checkbox" id="theme-toggle" />
+
+                <!-- sun icon (shows when checked/dark mode - click to switch to light) -->
+                <span class="swap-on material-symbols-outlined text-orange-400 text-xl">light_mode</span>
+
+                <!-- moon icon (shows when unchecked/light mode - click to switch to dark) -->
+                <span class="swap-off material-symbols-outlined text-blue-400 text-xl">dark_mode</span>
+            </label>
 
             <a href="<?= app('auth'); ?>"
                 class="flex min-w-[100px] items-center justify-center rounded-lg h-9 px-6 border border-primary text-primary hover:bg-primary/5 text-sm font-bold transition-all">

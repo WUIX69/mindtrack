@@ -31,6 +31,6 @@ function utilScripts()
     ];
 
     foreach ($utilityScripts as $script) {
-        echo '<script src="' . shared('utils', $script, true) . '"></script>';
+        echo shared('utils', $script);
     }
 }

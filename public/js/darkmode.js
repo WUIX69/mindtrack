@@ -28,10 +28,20 @@
     document.addEventListener("DOMContentLoaded", () => {
         const themeToggle = document.getElementById("theme-toggle");
         if (themeToggle) {
-            themeToggle.addEventListener("click", () => {
-                const isDark =
-                    document.documentElement.classList.toggle("dark");
-                localStorage.setItem("theme", isDark ? "dark" : "light");
+            // Sync initial state
+            if (document.documentElement.classList.contains("dark")) {
+                themeToggle.checked = true;
+            }
+
+            themeToggle.addEventListener("change", (e) => {
+                const isDark = e.target.checked;
+                if (isDark) {
+                    document.documentElement.classList.add("dark");
+                    localStorage.setItem("theme", "dark");
+                } else {
+                    document.documentElement.classList.remove("dark");
+                    localStorage.setItem("theme", "light");
+                }
             });
         }
     });
