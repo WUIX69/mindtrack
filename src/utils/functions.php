@@ -26,13 +26,10 @@ function baseURL($path = '')
     return $baseUrl . ltrim($path, '/');
 }
 
-function includeFileHelper($dir, $file)
+function includeFileHelper($dir, $file, $data = [])
 {
     // Define the directory where your files are located
     $dir_path = dirname(__DIR__) . '/' . $dir . '/';
-
-    // error_log('dirname: ' . dirname(dirname(__DIR__)));
-    // error_log('dir_path: ' . $_SERVER['DOCUMENT_ROOT'] . '/src/');
 
     // Construct the full path to the file
     $file_path = $dir_path . $file . '.php';
@@ -41,6 +38,12 @@ function includeFileHelper($dir, $file)
         if (!file_exists($file_path)) {
             throw new Exception("File not found: $file_path");
         }
+
+        // Extract data to make it available in the included file
+        if (!empty($data) && is_array($data)) {
+            extract($data);
+        }
+
         include $file_path;
     } catch (Throwable $t) {
         error_log("$dir file Error, " . $t->getMessage());
@@ -69,26 +72,38 @@ function asset($file)
     return urlFileHelper('public', $file, true);
 }
 
-function shared($folder = "", $file = null, $is_url = false)
+function shared($folder = "", $file = null, $data = [], $is_url = false)
 {
+    // Backward compatibility for when $is_url was the 3rd argument
+    if (is_bool($data)) {
+        $is_url = $data;
+        $data = [];
+    }
+
     // shared folder is in src folder (e.g, components, lib, utils, data, schemas, server, utils)
     if ($is_url)
         return urlFileHelper($folder, $file);
-    includeFileHelper($folder, $file);
+    includeFileHelper($folder, $file, $data);
 }
 
-function featured($path, $is_url = false)
+function featured($path, $data = [], $is_url = false)
 {
+    // Backward compatibility for when $is_url was the 2nd argument
+    if (is_bool($data)) {
+        $is_url = $data;
+        $data = [];
+    }
+
     if ($is_url)
         return urlFileHelper('features', $path);
-    includeFileHelper('features', $path);
+    includeFileHelper('features', $path, $data);
 }
 
-function partial($file = null)
+function partial($file = null, $data = [])
 {
     $appName = uriAppPath();
     $path = "app/{$appName}/components";
-    includeFileHelper($path, $file);
+    includeFileHelper($path, $file, $data);
 }
 
 function app($link = '')
