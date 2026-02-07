@@ -1,31 +1,38 @@
-// Dark mode toggle variable only
-const urlParams = new URLSearchParams(window.location.search);
-const isDark = urlParams.get("dark") === "1" ?? false;
-const $darkMode = $(".dark-mode-toggle");
+/**
+ * Dark Mode Support for MindTrack
+ *
+ * Handles theme initialization and toggle functionality.
+ * This script is designed to be included in the <head> to prevent FOUC.
+ */
+(function () {
+    // 1. Theme Initialization
+    // Check localStorage or system preference and apply the theme immediately
+    const applyTheme = () => {
+        const theme = localStorage.getItem("theme");
+        if (
+            theme === "dark" ||
+            (!theme &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    };
 
-function darkModeToggle() {
-    $darkMode.on("click", function () {
-        $("body").toggleClass("dark");
-        $darkMode.find("span.light").toggleClass("active");
-        $darkMode.find("span.dark").toggleClass("active");
-        setTimeout(() => {
-            $(".ui.dropdown .menu, .ui.flyout").toggleClass("inverted");
-        }, 900); // Fix dropdown menu late affects
+    // Run initialization immediately
+    applyTheme();
 
-        // Dark mode save on each sidebar link URL
-        $(".sidebar .nav .nav-link").each(function () {
-            let href = $(this).attr("href");
-            if (href === "#") return;
-            if (href.includes("?dark")) {
-                $(this).attr("href", href.replace("?dark=1", ""));
-            } else {
-                $(this).attr("href", href + "?dark=1");
-            }
-        });
+    // 2. Theme Toggle Logic
+    // Attach event listener once the DOM is ready
+    document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        if (themeToggle) {
+            themeToggle.addEventListener("click", () => {
+                const isDark =
+                    document.documentElement.classList.toggle("dark");
+                localStorage.setItem("theme", isDark ? "dark" : "light");
+            });
+        }
     });
-}
-
-$(function () {
-    darkModeToggle();
-    if (isDark) $darkMode.find("span.dark").click();
-});
+})();

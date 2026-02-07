@@ -19,11 +19,15 @@
                 href="<?= app('landing/contact'); ?>">Contact</a>
         </nav>
         <div class="flex items-center gap-4">
-            <!-- Theme Toggle -->
+            <!-- Theme Toggle Switch -->
             <button id="theme-toggle"
-                class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:bg-accent transition-all">
-                <span class="material-symbols-outlined dark:hidden text-[20px]">light_mode</span>
-                <span class="material-symbols-outlined hidden dark:block text-[20px]">dark_mode</span>
+                class="group relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer items-center rounded-full bg-muted px-1 transition-all duration-300 ease-in-out hover:ring-2 hover:ring-primary/20 focus:outline-none dark:bg-primary/20">
+                <span class="sr-only">Toggle theme</span>
+                <div
+                    class="pointer-events-none flex h-5 w-5 transform items-center justify-center rounded-full bg-background shadow-md transition duration-300 ease-in-out translate-x-0 dark:translate-x-5 group-active:scale-90">
+                    <span class="material-symbols-outlined text-[14px] text-orange-400 dark:hidden">light_mode</span>
+                    <span class="material-symbols-outlined text-[14px] text-blue-400 hidden dark:block">dark_mode</span>
+                </div>
             </button>
 
             <a href="<?= app('auth'); ?>"
@@ -33,13 +37,3 @@
         </div>
     </div>
 </header>
-
-<script>
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        });
-    }
-</script>

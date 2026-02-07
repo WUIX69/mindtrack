@@ -3,11 +3,11 @@
  * Contact Us Page
  */
 $pageTitle = "Contact Us - MindTrack | Wayside Psyche Resources Center";
-$headContent = `
+$headContent = '
 <style>
 .contact-form-input { @apply w-full px-5 py-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none; }
 .contact-form-input:focus { box-shadow: 0 0 0 3px rgba(var(--primary),0.1); }
-</style>`;
+</style>';
 include __DIR__ . '/../layout.php';
 ?>
 

@@ -12,7 +12,6 @@ function rcsScripts()
         // Regular scripts
         'lib/lodash/lodash.min.js',
         'js/loader/window.js',
-        'js/darkmode.js',
         'js/scripts.js',
     ];
 
