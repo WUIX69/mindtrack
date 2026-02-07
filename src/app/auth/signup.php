@@ -1,9 +1,13 @@
 <?php
+/**
+ * MindTrack Sign-Up Page (Refactored)
+ */
+
 $pageTitle = "MindTrack - Start Your Journey";
 $showNavbar = false;
 $showFooter = false;
 
-// Custom head content for the specific background/texture
+// Custom head content for the aesthetic hero section
 $headContent = <<<'HTML'
 <style>
     .scroll-hide::-webkit-scrollbar {
@@ -19,220 +23,263 @@ HTML;
 include __DIR__ . '/../layout.php';
 ?>
 
-<div class="flex flex-col lg:flex-row min-h-screen w-full overflow-hidden">
+<div class="flex flex-col lg:flex-row min-h-screen w-full overflow-hidden bg-background">
     <!-- Left Side: Calming Aesthetic Hero -->
-    <div class="relative hidden lg:flex lg:w-[40%] flex-col justify-between p-12 bg-primary/10 overflow-hidden">
-        <!-- Decorative Background Element -->
-        <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-3xl text-primary"></div>
-        <div class="absolute bottom-0 right-0 w-80 h-80 bg-blue-300/20 rounded-full blur-3xl text-blue-500"></div>
+    <div
+        class="relative hidden lg:flex lg:w-[42%] flex-col justify-between p-12 bg-primary/5 dark:bg-primary/10 overflow-hidden">
+        <!-- Decorative Background Elements -->
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-[80px]"></div>
+        <div class="absolute bottom-0 right-0 w-80 h-80 bg-blue-400/10 dark:bg-blue-900/10 rounded-full blur-[80px]">
+        </div>
+
         <div class="relative z-10">
-            <div class="flex items-center gap-3 mb-12">
-                <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
-                    <span class="material-symbols-outlined text-2xl">psychology</span>
+            <div class="flex items-center gap-4 mb-14 drop-shadow-sm">
+                <div
+                    class="size-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-xl shadow-primary/20">
+                    <span class="material-symbols-outlined text-3xl">psychology</span>
                 </div>
-                <h2 class="text-2xl font-bold tracking-tight text-base-content">MindTrack</h2>
+                <h2 class="text-3xl font-black tracking-tighter uppercase text-foreground">MindTrack</h2>
             </div>
-            <div class="space-y-6">
-                <h1 class="text-5xl font-extrabold leading-[1.1] text-primary">
+
+            <div class="space-y-8">
+                <h1 class="text-6xl font-black leading-[1.05] text-primary tracking-tighter">
                     Begin your path <br />to clarity.
                 </h1>
-                <p class="text-lg text-base-content/70 max-w-sm leading-relaxed">
+                <p class="text-xl text-muted-foreground max-w-sm leading-relaxed font-bold">
                     MindTrack helps you monitor your mental well-being with professional tools and compassionate care.
                 </p>
             </div>
         </div>
-        <div class="relative z-10">
-            <div class="bg-base-100/80 backdrop-blur-md p-6 rounded-xl border border-base-content/10 shadow-sm">
-                <div class="flex gap-1 text-primary mb-3">
-                    <span class="material-symbols-outlined fill-1">star</span>
-                    <span class="material-symbols-outlined fill-1">star</span>
-                    <span class="material-symbols-outlined fill-1">star</span>
-                    <span class="material-symbols-outlined fill-1">star</span>
-                    <span class="material-symbols-outlined fill-1">star</span>
+
+        <div class="relative z-10 max-w-md">
+            <div class="bg-card/70 dark:bg-card/40 backdrop-blur-xl p-8 rounded-2xl border border-border/50 shadow-2xl">
+                <div class="flex gap-1.5 text-primary mb-4">
+                    <span class="material-symbols-outlined fill-1 text-2xl">star</span>
+                    <span class="material-symbols-outlined fill-1 text-2xl">star</span>
+                    <span class="material-symbols-outlined fill-1 text-2xl">star</span>
+                    <span class="material-symbols-outlined fill-1 text-2xl">star</span>
+                    <span class="material-symbols-outlined fill-1 text-2xl">star</span>
                 </div>
-                <p class="italic text-base-content mb-4">
+                <p class="italic text-lg font-bold text-foreground mb-6 leading-relaxed">
                     "This platform completely changed how I track my moods. The insights are incredibly helpful."
                 </p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-base-300 bg-cover bg-center"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDhL03HClg9KpUWNo_UXaSKlpkMUhYYHkltjsMkCOfbozi0hI3H-rltTDtZypH1Et0umfbCJfHa6EbfmhXYPAgPGLQ1rRGFtHYE37WKK0v-kXT76nLrf3utICi1rRAZe0wHfU99-AkuXX3dnrks51tZBUqTwp1UaFG1jR5fDoE8W_S99LkB7ksafruj3hkg2431L_Gn1GpIE0hYREHbVU7scE5rSer2dK8pmRwv69rI3-rO2HcadljKAonJvZp1DvfGayhlnRuos3E')">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full ring-4 ring-primary/5 bg-cover bg-center shadow-lg"
+                        style="background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop')">
                     </div>
                     <div>
-                        <p class="text-sm font-bold">Sarah Jenkins</p>
-                        <p class="text-xs text-base-content/60">Verified Patient</p>
+                        <p class="text-base font-black text-foreground">Sarah Jenkins</p>
+                        <p class="text-xs font-bold text-muted-foreground uppercase tracking-widest">Verified Patient
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Background Image Overlay for Texture -->
-        <div class="absolute inset-0 opacity-10 pointer-events-none"
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC24LLGZQ51yElONqbvn0FVIbW2ZlMhqAidKfZX4MQbcmmPMD9buZjynjUxTr9Pfog-Gskr8vhpPMVssor4ECbCemJiZV5MxuQpa2k8YY1EPahGJV8r4fWywEKKjetboMqXeFgFWs840qa2Lpjkj18aFKFa1d96PELB3LNiTlhqqe4LkCr7IAfDESNxW9XnkYaDDDQ6gutH14x6XLDMS6Cz8BxpixDxB02g5P-zu0mIDM6qr0YRhOmSMvRhNWNkDBjf9cXcHQjMBOA')">
+
+        <!-- Background texture overlay -->
+        <div class="absolute inset-0 opacity-10 mix-blend-multiply pointer-events-none"
+            style="background-image: url('https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=1200&auto=format&fit=crop')">
         </div>
     </div>
+
     <!-- Right Side: Registration Form -->
-    <div class="flex-1 flex flex-col justify-center items-center p-6 lg:p-20 bg-base-100 overflow-y-auto scroll-hide">
-        <div class="w-full max-w-[520px]">
-            <!-- Mobile Header Only -->
-            <div class="flex lg:hidden items-center gap-2 mb-8">
-                <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                    <span class="material-symbols-outlined text-lg">psychology</span>
+    <div class="flex-1 flex flex-col justify-center items-center p-6 lg:p-20 bg-background overflow-y-auto scroll-hide">
+        <div class="w-full max-w-[540px]">
+            <!-- Mobile Header -->
+            <div class="flex lg:hidden items-center gap-3 mb-12 text-primary">
+                <div
+                    class="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-2xl">psychology</span>
                 </div>
-                <h2 class="text-xl font-bold tracking-tight text-base-content">MindTrack</h2>
+                <h2 class="text-2xl font-black tracking-tighter uppercase">MindTrack</h2>
             </div>
-            <div class="mb-10">
-                <h2 class="text-3xl font-bold mb-2">Create Your Account</h2>
-                <p class="text-base-content/70">Join our community and start prioritizing your health today.</p>
+
+            <div class="mb-12">
+                <h2 class="text-4xl font-black mb-3 tracking-tight text-foreground">Create Your Account</h2>
+                <p class="text-lg text-muted-foreground font-bold">Join our community and start prioritizing your health
+                    today.</p>
             </div>
+
             <!-- Progress Stepper -->
-            <div class="mb-10">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-sm font-semibold text-primary">Registration Progress</span>
-                    <span class="text-sm font-medium">50% Complete</span>
+            <div class="mb-12 p-1">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-black uppercase tracking-[0.2em] text-primary">Registration
+                        Progress</span>
+                    <span class="text-xs font-black text-foreground">50% Complete</span>
                 </div>
-                <div class="w-full h-2 bg-base-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 50%;"></div>
+                <div class="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner p-0.5">
+                    <div class="h-full bg-primary rounded-full transition-all duration-700 shadow-sm"
+                        style="width: 50%;"></div>
                 </div>
             </div>
-            <!-- Multi-step Form Content -->
-            <form class="space-y-8" action="#" method="POST">
+
+            <form class="space-y-10" action="#" method="POST">
                 <!-- Section 1: Personal Details -->
-                <div class="space-y-6">
-                    <div class="flex items-center gap-2 border-b border-base-content/10 pb-2">
-                        <span class="material-symbols-outlined text-primary">person</span>
-                        <h3 class="text-lg font-bold">Personal Details</h3>
+                <div class="space-y-8">
+                    <div class="flex items-center gap-3 border-b border-border pb-3">
+                        <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-xl">person</span>
+                        </div>
+                        <h3 class="text-xl font-black tracking-tight text-foreground">Personal Details</h3>
                     </div>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div class="form-control w-full">
-                            <label class="label p-0 mb-2">
-                                <span class="label-text font-medium text-base-content/80">Full Name</span>
-                            </label>
-                            <div class="relative">
+
+                    <div class="grid grid-cols-1 gap-6 px-1">
+                        <div class="flex flex-col gap-2.5">
+                            <label class="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Full
+                                Name</label>
+                            <div class="relative group">
                                 <span
-                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-xl">badge</span>
-                                <input class="input input-bordered w-full pl-12 focus:input-primary h-12"
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors duration-300">badge</span>
+                                <input
+                                    class="w-full pl-12 pr-5 py-4 bg-muted/30 border-border border rounded-xl font-bold text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-300 outline-none"
                                     placeholder="Enter your full name" type="text" name="name" required />
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="form-control w-full">
-                                <label class="label p-0 mb-2">
-                                    <span class="label-text font-medium text-base-content/80">Email Address</span>
-                                </label>
-                                <div class="relative">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-2.5">
+                                <label
+                                    class="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Email
+                                    Address</label>
+                                <div class="relative group">
                                     <span
-                                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-xl">mail</span>
-                                    <input class="input input-bordered w-full pl-12 focus:input-primary h-12"
+                                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors duration-300">mail</span>
+                                    <input
+                                        class="w-full pl-12 pr-5 py-4 bg-muted/30 border-border border rounded-xl font-bold text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-300 outline-none"
                                         placeholder="name@example.com" type="email" name="email" required />
                                 </div>
                             </div>
-                            <div class="form-control w-full">
-                                <label class="label p-0 mb-2">
-                                    <span class="label-text font-medium text-base-content/80">Phone Number</span>
-                                </label>
-                                <div class="relative">
+                            <div class="flex flex-col gap-2.5">
+                                <label
+                                    class="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Phone
+                                    Number</label>
+                                <div class="relative group">
                                     <span
-                                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-xl">call</span>
-                                    <input class="input input-bordered w-full pl-12 focus:input-primary h-12"
+                                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors duration-300">call</span>
+                                    <input
+                                        class="w-full pl-12 pr-5 py-4 bg-muted/30 border-border border rounded-xl font-bold text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-300 outline-none"
                                         placeholder="+1 (555) 000-0000" type="tel" name="phone" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <!-- Section 2: Security -->
-                <div class="space-y-6 pt-4">
-                    <div class="flex items-center gap-2 border-b border-base-content/10 pb-2">
-                        <span class="material-symbols-outlined text-primary">security</span>
-                        <h3 class="text-lg font-bold">Security</h3>
+                <div class="space-y-8 pt-4">
+                    <div class="flex items-center gap-3 border-b border-border pb-3">
+                        <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-xl">security</span>
+                        </div>
+                        <h3 class="text-xl font-black tracking-tight text-foreground">Security</h3>
                     </div>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div class="form-control w-full">
-                            <label class="label p-0 mb-2">
-                                <span class="label-text font-medium text-base-content/80">Create Password</span>
-                            </label>
-                            <div class="relative flex items-center">
+
+                    <div class="grid grid-cols-1 gap-8 px-1">
+                        <div class="flex flex-col gap-2.5">
+                            <label
+                                class="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Create
+                                Password</label>
+                            <div class="relative group">
                                 <span
-                                    class="material-symbols-outlined absolute left-4 text-base-content/40 text-xl">lock</span>
-                                <input class="input input-bordered w-full pl-12 pr-12 focus:input-primary h-12"
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors duration-300">lock</span>
+                                <input
+                                    class="w-full pl-12 pr-12 py-4 bg-muted/30 border-border border rounded-xl font-bold text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-300 outline-none"
                                     placeholder="••••••••" type="password" name="password" required />
                                 <button
-                                    class="absolute right-4 text-base-content/40 hover:text-primary transition-colors"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors duration-200"
                                     type="button">
-                                    <span class="material-symbols-outlined text-xl">visibility</span>
+                                    <span class="material-symbols-outlined text-2xl">visibility</span>
                                 </button>
                             </div>
-                            <!-- Password Strength Indicator -->
-                            <div class="mt-2 space-y-2">
-                                <div class="flex gap-1 h-1.5 w-full">
-                                    <div class="flex-1 bg-success rounded-full"></div>
-                                    <div class="flex-1 bg-success rounded-full"></div>
-                                    <div class="flex-1 bg-success rounded-full"></div>
-                                    <div class="flex-1 bg-base-200 rounded-full"></div>
+
+                            <!-- Password Strength -->
+                            <div class="mt-4 bg-muted/20 p-4 rounded-xl border border-border/50">
+                                <div class="flex gap-2 h-2 w-full mb-4">
+                                    <div class="flex-1 bg-success rounded-full shadow-sm"></div>
+                                    <div class="flex-1 bg-success rounded-full shadow-sm"></div>
+                                    <div class="flex-1 bg-success rounded-full shadow-sm"></div>
+                                    <div class="flex-1 bg-muted dark:bg-muted/10 rounded-full"></div>
                                 </div>
-                                <ul class="text-xs space-y-1 text-base-content/60 grid grid-cols-2">
-                                    <li class="flex items-center gap-1.5 text-success">
-                                        <span class="material-symbols-outlined text-sm font-bold">check_circle</span> 8+
-                                        characters
+                                <ul
+                                    class="text-xs font-black uppercase tracking-wider grid grid-cols-2 gap-y-3 gap-x-6">
+                                    <li class="flex items-center gap-2 text-success">
+                                        <span
+                                            class="material-symbols-outlined text-sm font-black text-[18px]">check_circle</span>
+                                        8+ characters
                                     </li>
-                                    <li class="flex items-center gap-1.5 text-success">
-                                        <span class="material-symbols-outlined text-sm font-bold">check_circle</span>
+                                    <li class="flex items-center gap-2 text-success">
+                                        <span
+                                            class="material-symbols-outlined text-sm font-black text-[18px]">check_circle</span>
                                         Uppercase letter
                                     </li>
-                                    <li class="flex items-center gap-1.5">
-                                        <span class="material-symbols-outlined text-sm">circle</span> One number
+                                    <li class="flex items-center gap-2 text-muted-foreground">
+                                        <span class="material-symbols-outlined text-sm text-[18px]">circle</span> One
+                                        number
                                     </li>
-                                    <li class="flex items-center gap-1.5">
-                                        <span class="material-symbols-outlined text-sm">circle</span> Special symbol
+                                    <li class="flex items-center gap-2 text-muted-foreground">
+                                        <span class="material-symbols-outlined text-sm text-[18px]">circle</span>
+                                        Special symbol
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="form-control w-full">
-                            <label class="label p-0 mb-2">
-                                <span class="label-text font-medium text-base-content/80">Confirm Password</span>
-                            </label>
-                            <div class="relative">
+
+                        <div class="flex flex-col gap-2.5">
+                            <label
+                                class="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Confirm
+                                Password</label>
+                            <div class="relative group">
                                 <span
-                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 text-xl">lock_reset</span>
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors duration-300">lock_reset</span>
                                 <input
-                                    class="input input-bordered input-success w-full pl-12 pr-12 focus:input-primary h-12"
+                                    class="w-full pl-12 pr-12 py-4 bg-muted/30 border-success/50 border-2 rounded-xl font-bold text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-300 outline-none"
                                     placeholder="••••••••" type="password" name="confirm_password" required />
                                 <span
-                                    class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-success text-xl">check_circle</span>
+                                    class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-success text-2xl">check_circle</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Terms and Conditions -->
-                <div class="form-control p-0">
-                    <label class="flex items-start gap-3 py-2 cursor-pointer group">
-                        <input class="checkbox checkbox-primary checkbox-sm mt-1" id="terms" type="checkbox" required />
-                        <span class="text-sm text-base-content/70 group-hover:text-base-content transition-colors">
-                            I agree to the <a class="text-primary hover:underline font-semibold" href="#">Terms of
-                                Service</a> and <a class="text-primary hover:underline font-semibold" href="#">Privacy
-                                Policy</a>.
+
+                <!-- Terms -->
+                <div class="px-1">
+                    <label
+                        class="flex items-start gap-4 p-4 rounded-xl bg-muted/20 border border-border/50 cursor-pointer group hover:bg-muted/30 transition-all duration-300">
+                        <input class="checkbox checkbox-primary checkbox-sm mt-1 border-2 rounded" type="checkbox"
+                            required />
+                        <span
+                            class="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors leading-relaxed">
+                            I agree to the <a
+                                class="text-primary font-black hover:underline underline-offset-4 decoration-2"
+                                href="#">Terms of Service</a> and <a
+                                class="text-primary font-black hover:underline underline-offset-4 decoration-2"
+                                href="#">Privacy Policy</a>.
                         </span>
                     </label>
                 </div>
-                <!-- CTA Actions -->
-                <div class="flex flex-col gap-4 pt-4">
+
+                <!-- CTA -->
+                <div class="flex flex-col gap-6 pt-4 px-1">
                     <button
-                        class="btn btn-primary w-full h-14 text-white font-bold shadow-lg shadow-primary/20 rounded-xl"
+                        class="w-full bg-primary hover:scale-[1.02] active:scale-[0.98] text-white font-black py-5 text-xl rounded-2xl shadow-2xl shadow-primary/20 transition-all flex items-center justify-center gap-3 uppercase tracking-widest"
                         type="submit">
                         <span>Start Your Journey</span>
-                        <span class="material-symbols-outlined">arrow_forward</span>
+                        <span class="material-symbols-outlined text-2xl">arrow_forward</span>
                     </button>
-                    <p class="text-center text-sm text-base-content/70">
+                    <p class="text-center text-base font-black text-muted-foreground">
                         Already have an account?
-                        <a class="text-primary font-bold hover:underline" href="index.php">Sign In</a>
+                        <a class="text-primary hover:underline underline-offset-4 decoration-2 px-1"
+                            href="index.php">Sign In</a>
                     </p>
                 </div>
             </form>
-            <!-- Footer Links -->
-            <div class="mt-12 flex items-center justify-center gap-6 text-xs text-base-content/40">
-                <a class="hover:text-primary transition-colors" href="#">Support</a>
-                <a class="hover:text-primary transition-colors" href="#">Help Center</a>
-                <a class="hover:text-primary transition-colors" href="#">Data Security</a>
+
+            <!-- Legal Footer -->
+            <div
+                class="mt-20 flex items-center justify-center flex-wrap gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+                <a class="hover:text-primary transition-colors duration-300" href="#">Support</a>
+                <a class="hover:text-primary transition-colors duration-300" href="#">Help Center</a>
+                <a class="hover:text-primary transition-colors duration-300" href="#">Data Security</a>
             </div>
         </div>
     </div>
