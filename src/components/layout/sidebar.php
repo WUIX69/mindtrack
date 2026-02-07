@@ -9,10 +9,10 @@ $currentPage = $currentPage ?? uriPagePath();
 $navItems = [
     'admin' => [
         ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('admin')],
-        ['id' => 'appointments', 'label' => 'Appointments', 'icon' => 'pending_actions', 'url' => app('admin/appointments.php')],
-        ['id' => 'patients', 'label' => 'Patient Records', 'icon' => 'patient_list', 'url' => app('admin/patients.php')],
-        ['id' => 'doctors', 'label' => 'Doctor Management', 'icon' => 'medical_services', 'url' => app('admin/doctors.php')],
-        ['id' => 'logs', 'label' => 'System Logs', 'icon' => 'terminal', 'url' => app('admin/logs.php')],
+        ['id' => 'appointments', 'label' => 'Appointment Requests', 'icon' => 'pending_actions', 'url' => app('admin/appointments.php')],
+        ['id' => 'patients', 'label' => 'Patients Record', 'icon' => 'patient_list', 'url' => app('admin/patients.php')],
+        ['id' => 'doctors', 'label' => 'Doctors Management', 'icon' => 'medical_services', 'url' => app('admin/doctors.php')],
+        ['id' => 'services', 'label' => 'Clinical Services', 'icon' => 'list_alt', 'url' => app('admin/services.php')],
     ],
     'patient' => [
         ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('patient')],
