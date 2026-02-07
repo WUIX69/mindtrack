@@ -1,0 +1,158 @@
+# MindTrack Agent Guide
+
+This document provides essential instructions and guidelines for agentic coding agents operating in the `mindtrack` directory.
+
+## Project Overview
+
+MindTrack is a web-based **Patient Management and Online Appointment System** built on a custom LAMP/WAMP stack. It digitizes clinic operations for the **Wayside Psyche Resources Center**, handling appointments, patient records, and reporting.
+
+---
+
+## 🛠 Technology Stack
+
+| Category         | Technology                           |
+| :--------------- | :----------------------------------- |
+| **Framework**    | Custom PHP (LAMP/WAMP Stack)         |
+| **Core**         | PHP 8.1+, MySQL 8.0+                 |
+| **Frontend**     | HTML5, JavaScript, jQuery            |
+| **Styling**      | TailwindCSS 4, PostCSS, Autoprefixer |
+| **Backend Libs** | PHPMailer, Dompdf, Ramsey UUID       |
+| **Database**     | MySQL / MariaDB                      |
+| **Server**       | Apache (via XAMPP)                   |
+
+---
+
+## 🔧 Commands
+
+### PHP & Backend
+
+Dependencies are managed via Composer.
+
+| Action       | Command                  | Description              |
+| :----------- | :----------------------- | :----------------------- |
+| **Install**  | `composer install`       | Install PHP dependencies |
+| **Update**   | `composer update`        | Update PHP dependencies  |
+| **Autoload** | `composer dump-autoload` | Regenerate autoloader    |
+
+### Frontend & Assets
+
+Styles are built using TailwindCSS via npm/pnpm.
+
+| Action      | Command        | Description                 |
+| :---------- | :------------- | :-------------------------- |
+| **Install** | `pnpm install` | Install JS/CSS dependencies |
+| **Dev**     | `pnpm dev`     | Watch TailwindCSS changes   |
+| **Build**   | `pnpm build`   | Build production CSS        |
+
+### Server
+
+This project runs on XAMPP.
+
+- **Start**: Open XAMPP Control Panel and start **Apache** and **MySQL**.
+- **Access**: Visit `http://localhost/mindtrack`.
+
+---
+
+## 📂 Directory Structure
+
+```text
+src/
+├── app/                    # Application Entry Points / Pages
+│   ├── admin/              # Admin dashboard pages
+│   ├── auth/               # Authentication pages
+│   ├── landing/            # Public landing pages
+│   ├── patient/            # Patient dashboard pages
+│   ├── global.css          # Global Tailwind directives
+│   └── index.php           # Main entry point
+├── components/             # Shared UI Components (PHP Partials)
+│   ├── layout/             # Header, footer, sidebar
+│   ├── theme/              # Theme configurations
+│   └── ui/                 # Reusable UI elements
+├── core/                   # Core Logic & Configuration
+│   ├── db/                 # SQL dumps (e.g. mindtrack.sql)
+│   ├── migrations/         # SQL migrations
+│   └── ...                 # Core system logic
+├── data/                   # Static data, mock data
+├── features/               # Feature-Based Modules
+├── lib/                    # Shared PHP Libraries / Helpers
+│   ├── data-tables.php     # Data handling utilities
+│   ├── email.php           # Email sending logic
+│   └── session-manager.php # Session handling
+├── schemas/                # Validation Schemas (Respect Validation)
+├── server/                 # Backend API Endpoints / Logic
+│   ├── db/                 # Database SQL Interaction
+│   └── actions             # API Endpoints / Layer
+├── utils/                  # Utility Functions
+└── vendor/                 # Composer Dependencies
+```
+
+---
+
+## 🏗️ Feature Sliced Design (`src/features/`)
+
+Each feature is a **self-contained module**.
+
+### Feature Internal Structure
+
+```text
+src/features/[feature-name]/
+├── components/    # Feature-specific UI components (PHP) (Include the js inside <script>)
+├── schemas/       # Feature-specific schemas, validation (Respect Validation)
+├── js/            # Feature-specific JavaScript logic (if needed beyond components included <script>)
+└── server/        # Feature-specific backend logic
+└── utils/         # Feature-specific Utility Functions
+```
+
+### Supported Features
+
+- **Core**: `auth`, `dashboard`, `home`, `settings`, `users`
+- **Domain**: `appointments`, `services`, `products`
+- **Content**: `about`, `contact`
+
+---
+
+## 🎨 Code Style Guidelines
+
+### Backend (PHP)
+
+- Follow **PSR-4** for autoloading (`Mindtrack\` namespace maps to `src/`).
+- Use strict typing where possible in PHP 8.1+.
+- Use prepared statements (PDO/MySQLi) for all database interactions to prevent SQL injection.
+
+### Frontend (JS/CSS)
+
+- **Styling**: Always use **TailwindCSS** utility classes. Avoid inline styles.
+- **JavaScript**: Use modern ES6+ features where supported, or jQuery for DOM manipulation if legacy consistency is needed.
+
+### File Naming
+
+- **PHP Classes**: `PascalCase.php`
+- **Partial/Views**: `kebab-case.php`
+- **JS/CSS**: `kebab-case.js`, `kebab-case.css`
+
+---
+
+## 🔌 API & Database Communication
+
+- **Database**: Use the core database wrapper in `src/core/db`.
+- **AJAX**: Use jQuery `$.ajax` or Fetch API for client-server communication.
+- **Responses**: Return JSON for API endpoints (e.g., in `server/` directories).
+
+---
+
+## 🔑 Authentication
+
+- **Session Management**: Handled via `src/lib/session-manager.php`.
+- **Roles**: `admin`, `patient` (likely stored in session and database).
+- **Protection**: Ensure all protected pages check for active session at the top of the file.
+
+---
+
+## 📚 Resources
+
+- **Project README**: `README.md`
+- **Database Schema**: `src/core/db/mindtrack.sql` (Check PHPMyAdmin)
+
+---
+
+_Note: This file is intended for AI agents. Adhere strictly to these patterns to maintain codebase consistency._
