@@ -16,28 +16,28 @@
     <?php $currentPage = $currentPage ?? 'dashboard'; ?>
     <nav class="flex-1 px-4 mt-4 space-y-1">
         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $currentPage === 'dashboard' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted dark:text-gray-400 dark:hover:bg-white/5 transition-colors' ?>"
-            href="/mindtrack/src/app/patient/">
+            href="<?= app('patient') ?>">
             <span class="material-symbols-outlined">dashboard</span>
             <span class="text-sm">Dashboard</span>
         </a>
         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $currentPage === 'appointments' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted dark:text-gray-400 dark:hover:bg-white/5 transition-colors' ?>"
-            href="/mindtrack/src/app/patient/appointments.php">
+            href="<?= app('patient/appointments.php') ?>">
             <span class="material-symbols-outlined text-[24px]">calendar_month</span>
             <span class="text-sm">Appointments</span>
         </a>
         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $currentPage === 'records' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted dark:text-gray-400 dark:hover:bg-white/5 transition-colors' ?>"
-            href="#">
+            href="<?= app('patient/records.php') ?>">
             <span class="material-symbols-outlined">description</span>
             <span class="text-sm">My Records</span>
         </a>
         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $currentPage === 'resources' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted dark:text-gray-400 dark:hover:bg-white/5 transition-colors' ?>"
-            href="#">
+            href="<?= app('patient/resources.php') ?>">
             <span class="material-symbols-outlined">menu_book</span>
             <span class="text-sm">Resources</span>
         </a>
         <div class="pt-4 mt-4 border-t border-border">
             <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $currentPage === 'settings' ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted dark:text-gray-400 dark:hover:bg-white/5 transition-colors' ?>"
-                href="#">
+                href="<?= app('patient/settings.php') ?>">
                 <span class="material-symbols-outlined">settings</span>
                 <span class="text-sm">Settings</span>
             </a>
