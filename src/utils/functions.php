@@ -95,7 +95,7 @@ function app($link = '')
 {
     // Handle empty link case
     if (empty($link)) {
-        return urlFileHelper('app', 'index.php');
+        return urlFileHelper('app', 'landing');
     }
 
     // Check if the link ends with a trailing slash (indicating a directory)

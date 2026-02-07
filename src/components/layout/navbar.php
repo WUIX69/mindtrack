@@ -8,7 +8,7 @@
             <h2 class="text-xl font-bold leading-tight tracking-tight">MindTrack</h2>
         </div>
         <nav class="hidden md:flex items-center gap-10">
-            <a class="text-sm font-semibold hover:text-primary transition-colors" href="<?= app(); ?>">Home</a>
+            <a class="text-sm font-semibold hover:text-primary transition-colors" href="<?= app('landing'); ?>">Home</a>
             <a class="text-sm font-semibold hover:text-primary transition-colors"
                 href="<?= app('landing/about'); ?>">About</a>
             <a class="text-sm font-semibold hover:text-primary transition-colors"

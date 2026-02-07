@@ -60,10 +60,11 @@ src/
 ├── app/                    # Application Entry Points / Pages
 │   ├── admin/              # Admin dashboard pages
 │   ├── auth/               # Authentication pages
-│   ├── landing/            # Public landing pages
+│   ├── landing/            # Public landing pages (homepage, about, etc.)
 │   ├── patient/            # Patient dashboard pages
 │   ├── global.css          # Global Tailwind directives
-│   └── index.php           # Main entry point
+│   ├── layout.php          # Root layout (like Next.js RootLayout)
+│   └── index.php           # Redirects to landing/
 ├── components/             # Shared UI Components (PHP Partials)
 │   ├── layout/             # Header, footer, sidebar
 │   ├── theme/              # Theme configurations
