@@ -2,22 +2,12 @@
 
 namespace Mindtrack\Server\Db;
 
+use Mindtrack\Server\Db\Base;
 use PDO;
 use PDOException;
 
-class Categories
+class Categories extends Base
 {
-    private static $conn;
-
-    private static function conn()
-    {
-        if (!isset(self::$conn)) {
-            global $conn;
-            self::$conn = $conn;
-        }
-        return self::$conn;
-    }
-
     public static function all($reference_model = null)
     {
         try {
@@ -61,7 +51,7 @@ class Categories
     public static function store($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
 
             $stmt = self::conn()->prepare("
                 INSERT INTO categories (
@@ -83,14 +73,14 @@ class Categories
                 $data['status']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => $data['reference_model'] . ' category created successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => $data['reference_model'] . ' category creation failed: ' . $e->getMessage(),
@@ -101,7 +91,7 @@ class Categories
     public static function update($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
 
             $stmt = self::conn()->prepare("
                 UPDATE categories SET 
@@ -121,14 +111,14 @@ class Categories
                 $data['reference_model']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => $data['reference_model'] . ' category updated successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => $data['reference_model'] . ' category update failed: ' . $e->getMessage(),
@@ -139,19 +129,19 @@ class Categories
     public static function delete($id = null, $reference_model = null)
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
 
             $stmt = self::conn()->prepare('DELETE FROM categories WHERE id=? AND reference_model=?');
             $stmt->execute([$id, $reference_model]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => $reference_model . ' category deleted successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => $reference_model . ' category deletion failed: ' . $e->getMessage(),

@@ -2,22 +2,12 @@
 
 namespace Mindtrack\Server\Db;
 
+use Mindtrack\Server\Db\Base;
 use PDO;
 use PDOException;
 
-class Attachments
+class Attachments extends Base
 {
-    private static $conn;
-
-    private static function conn()
-    {
-        if (!isset(self::$conn)) {
-            global $conn;
-            self::$conn = $conn;
-        }
-        return self::$conn;
-    }
-
     public static function all($reference_uuid)
     {
         try {
@@ -63,7 +53,7 @@ class Attachments
     public static function store($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $sql = "INSERT INTO attachments (
                         reference_model, 
                         reference_uuid, 
@@ -84,14 +74,14 @@ class Attachments
                 ':filename' => $data['filename']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Attachment stored successfully',
             ];
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'Failed to store attachment: ' . $e->getMessage(),
@@ -102,7 +92,7 @@ class Attachments
     public static function update($reference_model, $reference_uuid, $data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $sql = "UPDATE attachments SET 
                         folder = :folder, 
                         filename = :filename
@@ -117,14 +107,14 @@ class Attachments
                 ':reference_uuid' => $reference_uuid
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Attachment updated successfully',
             ];
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'Failed to update attachment: ' . $e->getMessage(),
@@ -135,7 +125,7 @@ class Attachments
     public static function deleteWhereReference($reference_uuid, $reference_model)
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $sql = "DELETE FROM attachments 
                     WHERE reference_uuid = :reference_uuid 
                     AND reference_model = :reference_model";
@@ -146,14 +136,14 @@ class Attachments
                 ':reference_model' => $reference_model
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Attachment deleted successfully',
             ];
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'Failed to delete attachment: ' . $e->getMessage(),
@@ -164,20 +154,20 @@ class Attachments
     public static function deleteWhereFolder($folder = null)
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
 
             $sql = "DELETE FROM attachments WHERE folder = :folder";
             $stmt = self::conn()->prepare($sql);
             $stmt->execute([':folder' => $folder]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Successfully deleted attachment',
             ];
         } catch (PDOException $e) {
             error_log($e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'Failed to delete attachment: ' . $e->getMessage(),
