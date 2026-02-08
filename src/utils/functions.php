@@ -86,13 +86,15 @@ function shared($folder = "", $file = null, $data = [], $is_url = false)
     includeFileHelper($folder, $file, $data);
 }
 
-function featured($path, $data = [], $is_url = false)
+function featured($feat_name = "", $file = null, $data = [], $is_url = false)
 {
     // Backward compatibility for when $is_url was the 2nd argument
     if (is_bool($data)) {
         $is_url = $data;
         $data = [];
     }
+
+    $path = $feat_name . '/' . $file;
 
     if ($is_url)
         return urlFileHelper('features', $path);

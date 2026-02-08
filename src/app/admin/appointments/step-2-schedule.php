@@ -1,0 +1,27 @@
+<?php
+/**
+ * Appointment Booking - Step 2: Schedule & Provider (Admin)
+ */
+$pageTitle = "Book Appointment - Schedule & Provider";
+$currentPage = 'appointments';
+
+// Header configuration
+$headerData = [
+    'title' => 'Schedule & Provider',
+    'description' => 'Select a date and time that works for you, then choose your preferred specialist.',
+    'mb' => 4
+];
+
+include_once __DIR__ . '/../layout.php';
+?>
+
+<div class="w-full pb-12">
+    <?= featured('appointments', 'components/step-2-schedule', [
+        'role' => 'admin',
+        'header' => [
+            'title' => 'Schedule & Provider',
+            'description' => 'Select a date and time, and assign a specialist.'
+        ],
+        'continue_label' => 'Review Appointment Details'
+    ]) ?>
+</div>

@@ -10,10 +10,12 @@ $headerData = [
     'description' => 'Manage and schedule your sessions with our specialists.',
     'searchPlaceholder' => 'Search appointments...',
     'actionLabel' => 'Book New Appointment',
+    'actionIcon' => 'add',
+    'actionUrl' => 'step-1-service.php',
     'mb' => 10
 ];
 $currentPage = 'appointments';
-include __DIR__ . '/layout.php';
+include __DIR__ . '/../layout.php';
 ?>
 
 <div class="border-b border-border mb-8">

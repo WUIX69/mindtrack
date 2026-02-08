@@ -9,6 +9,7 @@ $headerData = [
     'searchPlaceholder' => 'Search appointments...',
     'actionLabel' => 'New Appointment',
     'actionIcon' => 'add',
+    'actionUrl' => 'step-1-service.php',
     'mb' => 4
 ];
 
