@@ -13,8 +13,8 @@ function baseURL($path = '')
     if ($baseUrl === null) {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
-        $subFolder = isset($config['sub_folder']) && !empty($config['sub_folder']) ? $config['sub_folder'] . '/' : '';
-        $baseUrl = $protocol . '://' . $host . '/' . $subFolder;
+        $subFolder = !empty($config['sub_folder']) ? '/' . trim($config['sub_folder'], '/') : '';
+        $baseUrl = $protocol . '://' . $host . $subFolder . '/';
     }
 
     // Return base URL if no path provided

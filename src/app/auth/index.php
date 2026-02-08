@@ -58,50 +58,7 @@ include __DIR__ . '/layout.php';
 			</div>
 
 			<!-- Form Section -->
-			<form class="flex flex-col gap-6" onsubmit="return false;">
-				<div class="flex flex-col gap-2">
-					<label class="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Email
-						Address</label>
-					<div class="relative group">
-						<input
-							class="w-full h-14 rounded-xl border border-border bg-muted/30 px-5 text-foreground font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300"
-							placeholder="name@example.com" type="email" />
-					</div>
-				</div>
-
-				<div class="flex flex-col gap-2">
-					<div class="flex justify-between items-center ml-1">
-						<label
-							class="text-xs font-black uppercase tracking-widest text-muted-foreground">Password</label>
-					</div>
-					<div class="relative flex items-center">
-						<input
-							class="w-full h-14 rounded-xl border border-border bg-muted/30 px-5 text-foreground font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300"
-							placeholder="••••••••" type="password" />
-						<button
-							class="absolute right-4 text-muted-foreground hover:text-primary transition-colors duration-200"
-							type="button">
-							<span class="material-symbols-outlined text-2xl">visibility</span>
-						</button>
-					</div>
-				</div>
-
-				<div class="flex items-center justify-between px-1">
-					<label class="flex items-center gap-2 cursor-pointer group">
-						<input class="checkbox checkbox-primary checkbox-sm border-2 rounded" type="checkbox" />
-						<span
-							class="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">Remember
-							Me</span>
-					</label>
-					<a class="text-sm font-black text-primary hover:underline underline-offset-4 decoration-2"
-						href="#">Forgot Password?</a>
-				</div>
-
-				<button
-					class="w-full h-14 bg-primary hover:scale-[1.02] active:scale-[0.98] text-white font-black text-lg rounded-xl transition-all shadow-xl shadow-primary/20 mt-2 uppercase tracking-wider">
-					Sign In
-				</button>
-			</form>
+			<?= featured('auth', 'components/signin-form') ?>
 
 			<!-- Divider -->
 			<div class="relative my-12">
