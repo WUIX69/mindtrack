@@ -3,7 +3,7 @@
  * Services Page
  */
 $pageTitle = "MindTrack Services Directory | Wayside Psyche Resources Center";
-include __DIR__ . '/../layout.php';
+include_once __DIR__ . '/layout.php';
 ?>
 
 <section class="bg-card pt-12 pb-8 border-b border-border">

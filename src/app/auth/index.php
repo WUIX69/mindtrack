@@ -4,8 +4,6 @@
  */
 
 $pageTitle = "MindTrack - Sign In";
-$showNavbar = false;
-$showFooter = false;
 
 // Custom head content for the hero background
 $headContent = <<<'HTML'
@@ -18,7 +16,7 @@ $headContent = <<<'HTML'
 </style>
 HTML;
 
-include __DIR__ . '/../layout.php';
+include __DIR__ . '/layout.php';
 ?>
 
 <div class="flex min-h-screen w-full flex-col @container lg:flex-row bg-background">

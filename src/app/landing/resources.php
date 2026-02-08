@@ -3,7 +3,7 @@
  * Resources Page
  */
 $pageTitle = "Wellness Resources - MindTrack";
-include __DIR__ . '/../layout.php';
+include_once __DIR__ . '/layout.php';
 ?>
 
 <div class="max-w-[1200px] mx-auto w-full px-6 py-12">

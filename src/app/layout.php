@@ -7,9 +7,9 @@
  * Usage in child pages (simple!):
  * 
  *   <?php
- *   $pageTitle = "About Us";
- *   include __DIR__ . '/../layout.php';
- *   ?>
+   $pageTitle = "About Us";
+   include __DIR__ . '/../layout.php';
+   ?>
  *   
  *   <!-- Your page content here (this becomes $slot) -->
  *   <section>...</section>
@@ -20,8 +20,6 @@ include_once __DIR__ . '/../core/app.php';
 // Page metadata (can be overridden by child pages before including this file)
 $pageTitle = $pageTitle ?? "MindTrack";
 
-$showNavbar = $showNavbar ?? true;
-$showFooter = $showFooter ?? true;
 $bodyClass = $bodyClass ?? '';
 
 $headContent = $headContent ?? ''; // Custom styles/scripts for <head>
@@ -31,7 +29,7 @@ $headContent = $headContent ?? ''; // Custom styles/scripts for <head>
  */
 function layout_start(): void
 {
-    global $pageTitle, $showNavbar, $bodyClass, $headContent;
+    global $pageTitle, $bodyClass, $headContent;
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -47,9 +45,6 @@ function layout_start(): void
         class="bg-background font-display text-foreground transition-colors duration-200 <?= htmlspecialchars($bodyClass) ?>">
         <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
 
-            <?php if ($showNavbar): ?>
-                <?= shared('components', 'layout/navbar'); ?>
-            <?php endif; ?>
 
             <main class="flex-1">
                 <?php
@@ -60,14 +55,10 @@ function layout_start(): void
  */
 function layout_end(): void
 {
-    global $showFooter;
     ?>
+
+
             </main>
-
-            <?php if ($showFooter): ?>
-                <?= shared('components', 'layout/footer'); ?>
-            <?php endif; ?>
-
         </div>
         <?= shared('components', 'elements/scripts'); ?>
     </body>

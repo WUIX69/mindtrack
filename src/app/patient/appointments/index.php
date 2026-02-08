@@ -1,7 +1,5 @@
 <?php
 $pageTitle = "MindTrack Patient Appointments List";
-$showNavbar = false;
-$showFooter = false;
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 // Set current page for sidebar highlighting
 $headerData = [

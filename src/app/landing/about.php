@@ -3,7 +3,7 @@
  * About Us Page
  */
 $pageTitle = "About Us - MindTrack | Wayside Psyche Resources Center";
-include __DIR__ . '/../layout.php';
+include_once __DIR__ . '/layout.php';
 ?>
 
 <!-- Hero Section -->

@@ -4,9 +4,6 @@
  */
 
 $pageTitle = "MindTrack - Start Your Journey";
-$showNavbar = false;
-$showFooter = false;
-
 // Custom head content for the aesthetic hero section
 $headContent = <<<'HTML'
 <style>
@@ -20,7 +17,7 @@ $headContent = <<<'HTML'
 </style>
 HTML;
 
-include __DIR__ . '/../layout.php';
+include __DIR__ . '/layout.php';
 ?>
 
 <div class="flex flex-col lg:flex-row min-h-screen w-full overflow-hidden bg-background">

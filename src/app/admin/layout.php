@@ -5,12 +5,10 @@
  * Integrates with the universal Root Layout (src/app/layout.php)
  */
 
-include_once __DIR__ . '/../../core/app.php';
+
 
 // Configure Root Layout
 $pageTitle = $pageTitle ?? "Admin Dashboard - MindTrack";
-$showNavbar = false;
-$showFooter = false;
 
 // Register closure for admin wrapper tags (executes before root layout's shutdown)
 register_shutdown_function(function () {
@@ -33,7 +31,7 @@ if (!isset($currentPage)) {
 }
 ?>
 
-<!-- Admin Layout Structure (Inside Root Layout\'s <main>) -->
+<!-- Admin Layout Structure (Inside Root Layout Wrapper) -->
 <div class="flex h-screen overflow-hidden">
     <!-- Sidebar Navigation -->
     <?= shared('components', 'layout/sidebar', [

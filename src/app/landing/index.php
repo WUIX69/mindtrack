@@ -3,7 +3,7 @@
  * Landing Home Page
  */
 $pageTitle = "MindTrack - Your Journey to Emotional Wellness";
-include __DIR__ . '/../layout.php';
+include_once __DIR__ . '/layout.php';
 ?>
 
 <!-- Hero Section -->

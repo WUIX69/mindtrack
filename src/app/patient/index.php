@@ -2,8 +2,7 @@
 include_once __DIR__ . '/../../core/app.php';
 
 $pageTitle = "MindTrack Patient Dashboard";
-$showNavbar = false;
-$showFooter = false;
+$currentPage = 'dashboard';
 
 // Using standard semantic classes from global.css theme:
 // bg-background-light -> bg-muted (or bg-gray-50 if muted is too dark/white)

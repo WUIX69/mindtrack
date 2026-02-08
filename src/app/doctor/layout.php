@@ -5,12 +5,10 @@
  * Integrates with the universal Root Layout (src/app/layout.php)
  */
 
-include_once __DIR__ . '/../../core/app.php';
+
 
 // Configure Root Layout
 $pageTitle = $pageTitle ?? "Doctor Portal - MindTrack";
-$showNavbar = false;
-$showFooter = false;
 
 // Register closure for doctor wrapper tags
 register_shutdown_function(function () {

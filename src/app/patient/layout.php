@@ -11,9 +11,6 @@ register_shutdown_function(function () {
     echo '</section></div>';
 });
 
-// Configure Root Layout
-$showNavbar = false;
-$showFooter = false;
 
 // Ensure page title is set
 $pageTitle = $pageTitle ?? "MindTrack Patient Portal";
