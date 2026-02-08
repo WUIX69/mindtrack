@@ -1,5 +1,4 @@
 <?php
-include_once __DIR__ . '/../../core/app.php';
 $pageTitle = "MindTrack Patient Appointments List";
 $showNavbar = false;
 $showFooter = false;

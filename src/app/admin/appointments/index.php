@@ -13,7 +13,7 @@ $headerData = [
     'mb' => 4
 ];
 
-include_once __DIR__ . '/layout.php';
+include_once __DIR__ . '/../layout.php';
 ?>
 
 <!-- Filter Sub-header -->
