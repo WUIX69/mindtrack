@@ -2,11 +2,11 @@
 
 namespace Mindtrack\Server\Db;
 
-use Mindtrack\Core\BaseModel;
+use Mindtrack\Server\Db\Base;
 use PDO;
 use PDOException;
 
-class Users extends BaseModel
+class Users extends Base
 {
     public static function all()
     {
