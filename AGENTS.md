@@ -74,7 +74,7 @@ src/
 │   ├── db/                 # SQL dumps (e.g. mindtrack.sql)
 │   ├── migrations/         # SQL migrations
 │   └── ...                 # Core system logic
-├── data/                   # Static data, mock data
+├── data/                   # Static data (navigation.php, identities.php)
 ├── features/               # Feature-Based Modules
 ├── lib/                    # Shared PHP Libraries / Helpers
 │   ├── data-tables.php     # Data handling utilities
@@ -82,7 +82,7 @@ src/
 │   └── session-manager.php # Session handling
 ├── schemas/                # Validation Schemas (Respect Validation)
 ├── server/                 # Backend API Endpoints / Logic
-│   ├── db/                 # Database SQL Interaction
+│   ├── db/                 # Database Models (Base.php, Users.php, Services.php)
 │   └── actions             # API Endpoints / Layer
 ├── utils/                  # Utility Functions
 └── vendor/                 # Composer Dependencies
@@ -141,7 +141,7 @@ src/features/[feature-name]/
 
 ## 🔌 API & Database Communication
 
-- **Database**: Use the core database wrapper in `src/core/db`.
+- **Database**: Use `Mindtrack\Server\Db\Base` for **Lazy Loaded** PDO connections. `conn.php` has been deprecated/removed.
 - **AJAX**: Use jQuery `$.ajax` or Fetch API for client-server communication.
 - **Responses**: Return JSON for API endpoints (e.g., in `server/` directories).
 

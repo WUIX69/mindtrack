@@ -61,6 +61,7 @@ The project is built using a standard LAMP/WAMP stack environment.
     - Occupational Therapy
     - Applied Behavioral Analysis (ABA)
     - Training & Development Programs
+    - Others
 - **🛤 Status Tracking**: View approval status of requested appointments.
 
 ### 🛡 Admin Module (Staff)
@@ -117,7 +118,7 @@ The system follows an **Input-Process-Output (IPO)** model.
     - Navigate to [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
     - Create a new database named `mindtrack`.
     - Import the SQL file located in the `core/db` folder of this repo (e.g., `mindtrack.sql`).
-    - _Note: Ensure `conn.php` (or equivalent config file) matches your local DB credentials._
+    - _Note: Expected environment variables (`DB_HOST`, etc.) are handled via `.env`._
 
 4. **Run Application**
     - Access the application via: [http://localhost/mindtrack](http://localhost/mindtrack)
