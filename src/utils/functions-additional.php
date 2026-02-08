@@ -43,18 +43,18 @@
     }
 
     /**
-     * Returns the API base URL for a given feature or for shared APIs.
+     * Returns the server actions for a given feature or for shared actions.
      *
-     * @param {string|null} feature - The feature name (e.g., "products"), or "shared" for shared APIs.
-     * @returns {string} The full API base URL for the specified feature.
+     * @param {string|null} feature - The feature name (e.g., "products"), or "shared" for shared actions.
+     * @returns {string} The full actions base URL for the specified feature.
      */
     function apiUrl(feature = null) {
         let url = "";
 
         if (feature === "shared" || feature === null) {
-            url = <?php baseURL() ?> + "src/shared/api/";
+            url = <?php baseURL() ?> + "src/server/actions/";
         } else {
-            url = <?php baseURL() ?> + "src/features/" + feature + "/api/";
+            url = <?php baseURL() ?> + "src/features/" + feature + "/server/actions/";
         }
 
         return url;
