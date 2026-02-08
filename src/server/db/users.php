@@ -97,19 +97,38 @@ class Users extends Base
     {
         try {
             self::beginTransaction();
+
+            // 1. Insert into users table
             $stmt = self::conn()->prepare("
                 INSERT INTO users (
-                    uuid, firstname, lastname, email, password
-                ) VALUES (?, ?, ?, ?, ?)
+                    uuid, firstname, lastname, email, password, phone, role, status, avatar
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
+
+            $role = $data['role'] ?? 'patient';
+            $status = 'active'; // Default status
+            $avatar = null; // Default avatar
 
             $stmt->execute([
                 $data['uuid'],
                 $data['firstname'],
                 $data['lastname'],
                 $data['email'],
-                $data['password']
+                $data['password'], // Password should already be hashed
+                $data['phone'],
+                $role,
+                $status,
+                $avatar
             ]);
+
+            // 2. Insert into role-specific table
+            if ($role === 'patient') {
+                $stmtPatient = self::conn()->prepare("
+                    INSERT INTO user_patient_info (user_uuid) VALUES (?)
+                ");
+                $stmtPatient->execute([$data['uuid']]);
+            }
+            // Add other roles here if needed (e.g., doctor)
 
             self::commit();
             return [

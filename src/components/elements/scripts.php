@@ -7,9 +7,7 @@ function rcsScripts()
     $scripts = [
         // Regular scripts
         // 'lib/jquery/jquery.min.js', // Loaded in styles.php
-        'vendor/fomantic-ui/dist/semantic.min.js',
-
-        // Regular scripts
+        'lib/jquery/jquery.validate.min.js',
         'lib/lodash/lodash.min.js',
         'js/loader/window.js',
         'js/scripts.js',
@@ -26,8 +24,8 @@ function utilScripts()
 {
     // Utility scripts
     $utilityScripts = [
-        'middleware.php',
-        'functions-additional.php',
+        'middleware',
+        'functions-additional',
     ];
 
     foreach ($utilityScripts as $script) {

@@ -7,7 +7,7 @@ $dotenv->safeLoad();
 $config = [
     'sub_folder' => 'mindtrack',
     'root_path' => dirname(__DIR__, 2),
-    'uri_path' => $_SERVER['REQUEST_URI'],
+    'uri_path' => $_SERVER['REQUEST_URI'] ?? null,
     'env' => $_ENV['APP_ENV'],
     'app' => [
         'base_url' => $_ENV['APP_URL'],
@@ -37,3 +37,7 @@ $response = [
     'message' => '',
     'data' => null
 ];
+
+$GLOBALS['config'] = $config;
+$GLOBALS['response'] = $response;
+
