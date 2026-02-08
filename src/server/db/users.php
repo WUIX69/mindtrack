@@ -2,22 +2,12 @@
 
 namespace Mindtrack\Server\Db;
 
+use Mindtrack\Core\BaseModel;
 use PDO;
 use PDOException;
 
-class Users
+class Users extends BaseModel
 {
-    private static $conn;
-
-    private static function conn()
-    {
-        if (!isset(self::$conn)) {
-            global $conn;
-            self::$conn = $conn;
-        }
-        return self::$conn;
-    }
-
     public static function all()
     {
         try {
@@ -106,7 +96,7 @@ class Users
     public static function store($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $stmt = self::conn()->prepare("
                 INSERT INTO users (
                     uuid, firstname, lastname, email, password
@@ -121,14 +111,14 @@ class Users
                 $data['password']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'User registered successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'User registration failed.',
@@ -139,7 +129,7 @@ class Users
     public static function storeWhereUserAdmin($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $stmt = self::conn()->prepare("
                 INSERT INTO users (
                     uuid, firstname, lastname, email, password, telephone, dob
@@ -156,14 +146,14 @@ class Users
                 $data['dob']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'User registered successfully on admin.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'User registration failed on admin.',
@@ -175,7 +165,7 @@ class Users
     {
         try {
 
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $stmt = self::conn()->prepare("
                 UPDATE users SET 
                     firstname=?, 
@@ -201,14 +191,14 @@ class Users
                 $data['user_uuid']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'User updated successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'User update failed.',
@@ -219,7 +209,7 @@ class Users
     public static function updateWherePassword($new_password = null, $user_uuid = null)
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $stmt = self::conn()->prepare("
                 UPDATE users SET 
                     password=?
@@ -231,14 +221,14 @@ class Users
                 $user_uuid
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Password updated successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'Password update failed.',
@@ -249,7 +239,7 @@ class Users
     public static function updateWhereUserAdmin($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $stmt = self::conn()->prepare("
                 UPDATE users SET 
                     firstname=?, 
@@ -269,14 +259,14 @@ class Users
                 $data['uuid']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'User updated successfully on admin.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'User update failed on admin.',
@@ -287,17 +277,17 @@ class Users
     public static function delete($user_uuid = null)
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
             $stmt = self::conn()->prepare("DELETE FROM users WHERE uuid=?");
             $stmt->execute([$user_uuid]);
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'User deleted successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'User deletion failed.',

@@ -2,22 +2,12 @@
 
 namespace Mindtrack\Server\Db;
 
+use Mindtrack\Core\BaseModel;
 use PDO;
 use PDOException;
 
-class Services
+class Services extends BaseModel
 {
-    private static $conn;
-
-    private static function conn()
-    {
-        if (!isset(self::$conn)) {
-            global $conn;
-            self::$conn = $conn;
-        }
-        return self::$conn;
-    }
-
     public static function all()
     {
         try {
@@ -61,7 +51,7 @@ class Services
     public static function store($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
 
             $stmt = self::conn()->prepare("
                 INSERT INTO services (
@@ -87,14 +77,14 @@ class Services
                 $data['duration']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Service created successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'Service creation failed: ' . $e->getMessage(),
@@ -105,7 +95,7 @@ class Services
     public static function update($data = [])
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
 
             $stmt = self::conn()->prepare("
                 UPDATE services SET 
@@ -129,14 +119,14 @@ class Services
                 $data['uuid']
             ]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Service updated successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return 0;
         }
     }
@@ -144,19 +134,19 @@ class Services
     public static function delete($uuid = null)
     {
         try {
-            self::conn()->beginTransaction();
+            self::beginTransaction();
 
             $stmt = self::conn()->prepare('DELETE FROM services WHERE uuid=?');
             $stmt->execute([$uuid]);
 
-            self::conn()->commit();
+            self::commit();
             return [
                 'success' => true,
                 'message' => 'Service deleted successfully.',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            self::conn()->rollBack();
+            self::rollBack();
             return [
                 'success' => false,
                 'message' => 'Service deletion failed: ' . $e->getMessage(),
