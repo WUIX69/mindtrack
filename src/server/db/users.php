@@ -81,13 +81,12 @@ class Users extends Base
             // 1. Insert into users table
             $stmt = self::conn()->prepare("
                 INSERT INTO users (
-                    uuid, firstname, lastname, email, password, phone, role, status, avatar
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    uuid, firstname, lastname, email, password, phone, role, status
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             $role = $data['role'] ?? 'patient';
             $status = 'active'; // Default status
-            $avatar = null; // Default avatar
 
             $stmt->execute([
                 $data['uuid'],
@@ -98,7 +97,6 @@ class Users extends Base
                 $data['phone'],
                 $role,
                 $status,
-                $avatar
             ]);
 
             // 2. Insert into role-specific table

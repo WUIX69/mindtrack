@@ -5,6 +5,8 @@ apiHeaders();
 
 use Mindtrack\Server\Db\Users;
 
+use Mindtrack\Schemas\Login;
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';
     echo json_encode($response);
@@ -12,18 +14,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
-    $password = $_POST['password'] ?? '';
-
-    if (empty($email) || empty($password)) {
-        $response['message'] = 'Please fill in all fields.';
+    // Validate Data
+    $validation = Login::validate($_POST);
+    if (!$validation['valid']) {
+        $response['message'] = 'Validation failed.';
+        $response['errors'] = $validation['errors'];
         echo json_encode($response);
         exit;
     }
 
-    $user = Users::singleWhereEmail($email);
+    $userData = $validation['data'];
+    $user = Users::singleWhereEmail($userData['email']);
 
-    if ($user && password_verify($password, $user['password'] ?? '')) {
+    if ($user && password_verify($userData['password'], $user['password'] ?? '')) {
         $role = $user['role'] ?? 'patient'; // Default to patient if role is missing
 
         $session->set($user);
