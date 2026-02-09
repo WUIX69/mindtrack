@@ -58,7 +58,7 @@ include __DIR__ . '/../layout.php';
     </button>
 </div>
 
-<div id="appointments-container" class="space-y-6 min-h-[300px]">
+<div id="appointments-container" class="space-y-6">
     <!-- Skeleton Loading -->
     <?php for ($i = 0; $i < 2; $i++): ?>
         <div class="h-32 bg-card rounded-[2rem] border border-border animate-pulse"></div>
@@ -156,7 +156,7 @@ include __DIR__ . '/../layout.php';
 
         <div class="flex flex-col gap-3">
             <button id="confirm-withdraw-btn"
-                class="w-full py-4 bg-error text-white font-black rounded-2xl hover:opacity-95 shadow-xl shadow-error/20 transition-all">
+                class="w-full py-4 bg-error font-black rounded-2xl hover:opacity-95 shadow-xl shadow-error/20 transition-all">
                 Yes, Withdraw Request
             </button>
             <button onclick="$('#withdraw-modal').addClass('hidden').removeClass('flex')"
