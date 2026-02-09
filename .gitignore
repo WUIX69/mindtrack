@@ -3,8 +3,7 @@ composer.lock
 node_modules
 package-lock.json
 pnpm-lock.yaml
-
-/public/css/tailwind.css
+tailwind.css
 
 /vendor
 vendor
