@@ -15,9 +15,9 @@ $description = ($role === 'admin')
     ? "The appointment for <strong>$date</strong> has been successfully booked with $doctor. The patient has been notified."
     : "Your appointment request for <strong>$date</strong> has been sent to $doctor's team. You can track its status in your dashboard.";
 
-$dashboardUrl = '../index.php';
+$dashboardUrl = ($role === 'admin') ? app('admin') : app('patient');
 $dashboardLabel = ($role === 'admin') ? 'Back to Dashboard' : 'Back to Dashboard';
-$listUrl = '../index.php';
+$listUrl = ($role === 'admin') ? app('admin/appointments/') : app('patient/appointments/');
 $listLabel = ($role === 'admin') ? 'View All Appointments' : 'View My Appointments';
 ?>
 
