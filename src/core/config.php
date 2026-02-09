@@ -8,11 +8,11 @@ $config = [
     'sub_folder' => 'mindtrack',
     'root_path' => dirname(__DIR__, 2),
     'uri_path' => $_SERVER['REQUEST_URI'] ?? null,
-    'env' => $_ENV['APP_ENV'],
+    'env' => $_ENV['APP_ENV'] ?? 'development',
     'app' => [
-        'base_url' => $_ENV['APP_URL'],
+        'base_url' => $_ENV['APP_URL'] ?? 'http://localhost/mindtrack',
         'assets_url' => '/public',
-        'name' => $_ENV['APP_NAME'],
+        'name' => $_ENV['APP_NAME'] ?? 'Mindtrack',
     ],
     'db' => [
         'development' => [

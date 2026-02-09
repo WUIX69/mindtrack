@@ -14,13 +14,13 @@ function userData($uuid = null)
 {
     global $session;
     if (!$uuid) {
-        $uuid = $session->get()['uuid'] ?? null;
+        $uuid = $session->get('uuid');
     }
 
     $user = Users::single($uuid)['data'] ?? [];
     $user_formatted_data = [
-        'type' => $session->get()['type'] ?? '',
-        'name' => $user['firstname'] . ' ' . $user['lastname'] ?? '',
+        'role' => $session->get('role') ?? $session->get('type') ?? '',
+        'name' => ($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''),
         'profile' => Media::get($uuid) ?? null,
     ];
 

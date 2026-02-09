@@ -1,11 +1,9 @@
 <?php
 
-include '../../../core/app.php';
+require_once dirname(__DIR__, 5) . '/src/core/app.php';
 apiHeaders();
 
 use Mindtrack\Server\Db\Users;
-// global $response;
-// global $session;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';
@@ -14,46 +12,36 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-
-    $email = $_POST['email'] ?? '';
+    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
 
-    $user = Users::singleWhereUserEmail($email);
-    $admin = Users::singleWhereAdminEmail($email);
+    if (empty($email) || empty($password)) {
+        $response['message'] = 'Please fill in all fields.';
+        echo json_encode($response);
+        exit;
+    }
 
-    if ($user && password_verify($password, $user['password'])) {
+    $user = Users::singleWhereEmail($email);
+
+    if ($user && password_verify($password, $user['password'] ?? '')) {
+        $role = $user['role'] ?? 'patient'; // Default to patient if role is missing
 
         $session->set($user);
-        $session->add(['type' => 'user']);
+        $session->update(['role' => $role]);
 
         $response = array_merge($response, [
             'success' => true,
-            'message' => 'Welcome user',
+            'message' => 'Welcome back!',
             'data' => [
-                'route' => app('user'),
+                'route' => app($role),
             ],
         ]);
-
-    } else if ($admin && password_verify($password, $admin['password'])) {
-
-        $session->set($admin);
-        $session->add(['type' => 'admin']);
-
-        $response = array_merge($response, [
-            'success' => true,
-            'message' => 'Welcome admin',
-            'data' => [
-                'route' => app('admin'),
-            ],
-        ]);
-
     } else {
         $response['message'] = 'Invalid email and/or password!';
     }
-
 } catch (Exception $e) {
-    error_log($e->getMessage());
-    $response['message'] = $e->getMessage();
+    error_log("Login Error: " . $e->getMessage());
+    $response['message'] = 'An internal error occurred.';
 }
 
 echo json_encode($response);

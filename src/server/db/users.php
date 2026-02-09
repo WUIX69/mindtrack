@@ -48,27 +48,7 @@ class Users extends Base
         }
     }
 
-    public static function singleWhereAdmin($id)
-    {
-        try {
-            $stmt = self::conn()->prepare("SELECT * FROM administrators WHERE id = ? LIMIT 1");
-            $stmt->execute([$id]);
-            $data = $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
-            return [
-                'success' => true,
-                'message' => 'Admin fetched successfully',
-                'data' => $data
-            ];
-        } catch (PDOException $e) {
-            error_log("SQL Error: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Failed to fetch admin: ' . $e->getMessage(),
-            ];
-        }
-    }
-
-    public static function singleWhereUserEmail($email = null)
+    public static function singleWhereEmail($email = null)
     {
         try {
             $stmt = self::conn()->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
@@ -80,18 +60,6 @@ class Users extends Base
         }
     }
 
-    public static function singleWhereAdminEmail($email = null)
-    {
-        // Implement your admin query here, for now just return empty array
-        $admin = [
-            'id' => 1,
-            'name' => 'admin',
-            'email' => 'admin@mail.com',
-            'password' => '$2y$10$xKIlO8qhCbD5hxi466mlHupG5f8LkDakJia8T90kbwsBpS/RjNhg2' // admin
-        ];
-
-        return ($email === $admin['email']) ? $admin : [];
-    }
 
     public static function store($data = [])
     {
@@ -141,41 +109,6 @@ class Users extends Base
             return [
                 'success' => false,
                 'message' => 'User registration failed.',
-            ];
-        }
-    }
-
-    public static function storeWhereUserAdmin($data = [])
-    {
-        try {
-            self::beginTransaction();
-            $stmt = self::conn()->prepare("
-                INSERT INTO users (
-                    uuid, firstname, lastname, email, password, telephone, dob
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-
-            $stmt->execute([
-                $data['uuid'],
-                $data['firstname'],
-                $data['lastname'],
-                $data['email'],
-                $data['password'],
-                $data['telephone'],
-                $data['dob']
-            ]);
-
-            self::commit();
-            return [
-                'success' => true,
-                'message' => 'User registered successfully on admin.',
-            ];
-        } catch (PDOException $e) {
-            error_log("SQL Error: " . $e->getMessage());
-            self::rollBack();
-            return [
-                'success' => false,
-                'message' => 'User registration failed on admin.',
             ];
         }
     }
@@ -251,44 +184,6 @@ class Users extends Base
             return [
                 'success' => false,
                 'message' => 'Password update failed.',
-            ];
-        }
-    }
-
-    public static function updateWhereUserAdmin($data = [])
-    {
-        try {
-            self::beginTransaction();
-            $stmt = self::conn()->prepare("
-                UPDATE users SET 
-                    firstname=?, 
-                    lastname=?, 
-                    email=?, 
-                    telephone=?, 
-                    dob=?
-                WHERE uuid=?
-            ");
-
-            $stmt->execute([
-                $data['firstname'],
-                $data['lastname'],
-                $data['email'],
-                $data['telephone'],
-                $data['dob'],
-                $data['uuid']
-            ]);
-
-            self::commit();
-            return [
-                'success' => true,
-                'message' => 'User updated successfully on admin.',
-            ];
-        } catch (PDOException $e) {
-            error_log("SQL Error: " . $e->getMessage());
-            self::rollBack();
-            return [
-                'success' => false,
-                'message' => 'User update failed on admin.',
             ];
         }
     }

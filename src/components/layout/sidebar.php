@@ -44,9 +44,26 @@ if ($role === 'doctor')
             <span class="text-sm">Settings</span>
         </a>
         <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-error/80 hover:bg-error/10 transition-all font-semibold"
-            href="<?= app('logout') ?>">
+            href="javascript:void(0)" id="logout">
             <span class="material-symbols-outlined">logout</span>
             <span class="text-sm">Logout</span>
         </a>
     </div>
 </aside>
+<script>
+    $(function () {
+        $("#logout").click(function () {
+            $.ajax({
+                url: apiUrl() + "logout.php",
+                type: "POST",
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        window.location.replace(response.data.route);
+                    }
+                },
+                error: ajaxErrorHandler
+            });
+        });
+    })
+</script>

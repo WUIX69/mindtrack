@@ -1,49 +1,40 @@
 <?php
 
-// use Mindtrack\Lib\SessionManager;
+use Mindtrack\Lib\SessionManager;
 
-// $sessionName = $_ENV['SESSION_NAME'] ?? 'Mindtrack_SESSION';
+$sessionName = $_ENV['SESSION_NAME'] ?? 'MINDTRACK_SESSION';
+$session = new SessionManager($sessionName);
 
-// Start the session if not already started
-// session_name($sessionName);
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
+// Define app roles
+$roles = ['patient', 'doctor', 'admin'];
 
-// Instantiate the session manager
-// $session = new SessionManager();
+// Detect current path territory
+$territory = null;
+foreach (array_merge($roles, ['auth']) as $role) {
+    if (uriAppPath($role)) {
+        $territory = $role;
+        break;
+    }
+}
 
-// Check path type once to avoid multiple function calls
-// $sessionPathType = null;
-// if (uriAppPath('user')) {
-//     $sessionPathType = 'user';
-// } elseif (uriAppPath('admin')) {
-//     $sessionPathType = 'admin';
-// } elseif (uriAppPath('auth')) {
-//     $sessionPathType = 'auth';
-// }
+// Redirect logic
+if (in_array($territory, $roles)) {
+    // Restricted areas
+    if (!$session->has()) {
+        header("Location: " . app('auth'));
+        exit;
+    }
 
-// Handle authentication and access control
-// if (($sessionPathType === 'user' || $sessionPathType === 'admin') && !$session->has()) {
-//     // Redirect to landing page if accessing restricted area without session
-//     header("Location: " . app('landing'));
-//     exit;
-
-// } elseif ($sessionPathType === 'auth' && $session->has()) {
-//     // Destroy existing session when accessing auth pages
-//     $session->destroy();
-
-// } elseif ($session->has()) {
-//     // Handle incorrect area access based on account type
-//     $sessionType = $session->get()['type'] ?? null;
-//     if (
-//         ($sessionType === 'user' && $sessionPathType === 'admin') ||
-//         ($sessionType === 'admin' && $sessionPathType === 'user')
-//     ) {
-//         header("Location: " . app($sessionType));
-//         exit;
-//     }
-// }
-
-// Debug session data
-// error_log(print_r($session->get(), true));
+    $userRole = $session->get('role') ?? $session->get('type');
+    if ($userRole !== $territory) {
+        header("Location: " . app($userRole));
+        exit;
+    }
+} elseif ($territory === 'auth') {
+    // Auth area (sign-in/sign-up)
+    if ($session->has()) {
+        $userRole = $session->get('role') ?? $session->get('type');
+        header("Location: " . app($userRole));
+        exit;
+    }
+}

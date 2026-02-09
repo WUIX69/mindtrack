@@ -19,7 +19,7 @@ $phone = !empty($_POST['phone']) ? htmlspecialchars(strip_tags($_POST['phone']))
 $password = $_POST['password'] ?? '';
 
 // Check if user exists (Business Logic - Keeping it)
-if (!empty(Users::singleWhereUserEmail($email))) {
+if (!empty(Users::singleWhereEmail($email))) {
     $response['message'] = 'Email already registered.';
     echo json_encode($response);
     exit;
