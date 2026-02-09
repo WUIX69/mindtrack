@@ -127,3 +127,6 @@ include __DIR__ . '/layout.php';
         </div>
     </div>
 </div>
+
+<!-- Modals -->
+<?= featured('appointments', 'components/summary-modal') ?>

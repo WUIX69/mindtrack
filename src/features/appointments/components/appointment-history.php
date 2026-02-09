@@ -42,7 +42,10 @@
 
 <script>
     $(function () {
-        function fetchRecentHistory() {
+        // Initialize global array if not already present
+        window.allAppointments = window.allAppointments || [];
+
+        function fetchRecentAppointmentHistory() {
             $.ajax({
                 url: apiUrl("appointments") + "list-appointments.php",
                 method: "GET",
@@ -54,6 +57,14 @@
                     }
 
                     const appointments = response.data;
+
+                    // Update global appointments store for modal usage
+                    // Merge new data or replace if empty/stale
+                    // Create a map by uuid for faster lookup or merging
+                    const currentMap = new Map(window.allAppointments.map(a => [a.uuid, a]));
+                    appointments.forEach(a => currentMap.set(a.uuid, a));
+                    window.allAppointments = Array.from(currentMap.values());
+
                     if (appointments.length === 0) {
                         $('#appointment-history-body').html('<tr><td colspan="4" class="px-6 py-10 text-center text-muted-foreground">No appointments found.</td></tr>');
                         return;
@@ -82,8 +93,9 @@
                             statusClass = 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400';
                         }
 
+                        // Add view-summary-btn class and data-uuid attribute
                         html += `
-                            <tr class="hover:bg-muted/30 transition-colors">
+                            <tr class="hover:bg-muted/30 transition-colors cursor-pointer view-summary-btn" data-uuid="${a.uuid}">
                                 <td class="px-6 py-4">
                                     <p class="text-sm font-bold">${dateStr}</p>
                                     <p class="text-xs text-muted-foreground">${timeStr}</p>
@@ -111,6 +123,12 @@
             });
         }
 
-        fetchRecentHistory();
+        fetchRecentAppointmentHistory();
+
+        // Expose fetchRecentAppointmentHistory globally if needed for refresh after modal actions
+        // (Note: Modal actions might call window.fetchAppointments(), but here we use fetchRecentAppointmentHistory locally)
+        // If we want the dashboard to refresh, we should probably check if window.fetchAppointments is defined, 
+        // or just rely on this component's own refresh logic if called separately.
+        window.fetchAppointments = fetchRecentAppointmentHistory;
     });
 </script>

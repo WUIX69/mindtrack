@@ -37,6 +37,14 @@ include __DIR__ . '/../layout.php';
     <div class="flex flex-wrap items-center gap-4 flex-1">
         <div class="relative flex-1 min-w-[200px]">
             <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground">medical_services</span>
+            <select id="service-filter"
+                class="w-full pl-10 pr-4 py-2.5 bg-muted border-none rounded-xl text-xs font-bold text-foreground focus:ring-2 focus:ring-primary/20 cursor-pointer appearance-none transition-all">
+                <option value="all">All Services</option>
+            </select>
+        </div>
+        <div class="relative flex-1 min-w-[200px]">
+            <span
                 class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground">person</span>
             <select id="doctor-filter"
                 class="w-full pl-10 pr-4 py-2.5 bg-muted border-none rounded-xl text-xs font-bold text-foreground focus:ring-2 focus:ring-primary/20 cursor-pointer appearance-none transition-all">
@@ -91,6 +99,7 @@ include __DIR__ . '/../layout.php';
         window.allAppointments = [];
         let filters = {
             status: 'all',
+            service: 'all',
             doctor: 'all',
             date: ''
         };
@@ -106,6 +115,22 @@ include __DIR__ . '/../layout.php';
                     const $select = $('#doctor-filter');
                     response.data.forEach(d => {
                         $select.append(`<option value="${d.uuid}">Dr. ${d.firstname} ${d.lastname}</option>`);
+                    });
+                }
+            });
+        }
+
+        function fetchServices() {
+            $.ajax({
+                url: apiUrl("shared") + "list-services.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) return;
+
+                    const $select = $('#service-filter');
+                    response.data.forEach(s => {
+                        $select.append(`<option value="${s.uuid}">${s.name}</option>`);
                     });
                 }
             });
@@ -155,6 +180,11 @@ include __DIR__ . '/../layout.php';
             // Filter by Doctor
             if (filters.doctor !== 'all') {
                 filtered = filtered.filter(a => a.doctor_uuid === filters.doctor);
+            }
+
+            // Filter by Service
+            if (filters.service !== 'all') {
+                filtered = filtered.filter(a => a.service_uuid === filters.service);
             }
 
             // Filter by Date
@@ -285,23 +315,30 @@ include __DIR__ . '/../layout.php';
             applyFilters();
         });
 
+        $('#service-filter').on('change', function () {
+            filters.service = $(this).val();
+            applyFilters();
+        });
+
         $('#date-filter').on('change', function () {
             filters.date = $(this).val();
             applyFilters();
         });
 
         $('#reset-filters').on('click', function () {
-            filters = { status: 'all', doctor: 'all', date: '' };
+            filters = { status: 'all', service: 'all', doctor: 'all', date: '' };
 
             // Reset UI
             $('.filter-btn[data-status="all"]').click();
             $('#doctor-filter').val('all');
+            $('#service-filter').val('all');
             $('#date-filter').val('');
 
             applyFilters();
         });
 
         fetchDoctors();
+        fetchServices();
         // Initial fetch
         window.fetchAppointments();
     });
