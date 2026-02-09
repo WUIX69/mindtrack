@@ -95,54 +95,50 @@ $patients = [
     </form>
 </div>
 
+<script src="../../../data/icons.js"></script>
 <script>
     $(document).ready(function () {
         const $grid = $('#services-grid');
         const $form = $('#booking-form-step-1');
         const $continueBtn = $('#continue-btn');
 
-        // Page Configurations from PHP
+        // Page Configurations from URL Params (CSR)
+        const params = new URLSearchParams(window.location.search);
         const config = {
-            preselectedService: <?= json_encode($_GET['service'] ?? '') ?>,
-            editUuid: <?= json_encode($_GET['edit_uuid'] ?? '') ?>,
-            doctorUuid: <?= json_encode($_GET['doctor_uuid'] ?? '') ?>,
-            notes: <?= json_encode($_GET['notes'] ?? '') ?>
+            preselectedService: params.get('service') || '',
+            editUuid: params.get('edit_uuid') || '',
+            doctorUuid: params.get('doctor_uuid') || '',
+            notes: params.get('notes') || ''
         };
 
         // Disable continue button initially
         $continueBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
 
-        // Load Services
-        $.ajax({
-            url: apiUrl("appointments") + "list-services.php",
-            method: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
+        // Initial Load
+        getServices();
+
+        function getServices() {
+            $.ajax({
+                url: apiUrl("appointments") + "list-services.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) {
+                        $grid.html('<p class="col-span-3 text-center text-muted-foreground">Error loading services.</p>');
+                        return;
+                    }
                     renderServices(response.data);
-                } else {
-                    $grid.html('<p class="col-span-3 text-center text-muted-foreground">Error loading services.</p>');
+                },
+                error: function () {
+                    $grid.html('<p class="col-span-3 text-center text-muted-foreground">Failed to connect to server.</p>');
                 }
-            },
-            error: function () {
-                $grid.html('<p class="col-span-3 text-center text-muted-foreground">Failed to connect to server.</p>');
-            }
-        });
+            });
+        }
 
         function renderServices(services) {
-            const iconMap = {
-                'Therapy': 'diversity_1',
-                'Assessment': 'fact_check',
-                'Consultation': 'medical_services',
-                'Programs': 'groups',
-                'Psychotherapy': 'diversity_1',
-                'CBT': 'auto_graph',
-                'Psychological Testing': 'fact_check'
-            };
-
             let html = '';
             services.forEach((s, index) => {
-                const icon = iconMap[s.name] || 'health_and_safety';
+                const icon = getServiceIcon(s.name);
                 const isSelected = config.preselectedService ? (s.uuid === config.preselectedService) : (index === 0);
                 const checked = isSelected ? 'checked' : '';
                 html += `
@@ -179,6 +175,7 @@ $patients = [
                 $grid.find('input[name="service"]').first().prop('checked', true);
             }
         }
+
 
         $form.on('submit', function (e) {
             e.preventDefault();

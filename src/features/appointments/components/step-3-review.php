@@ -30,25 +30,7 @@ $alert_title = $alert['title'] ?? 'Information';
 $alert_text = $alert['text'] ?? 'Please review carefully.';
 ?>
 
-<?php
-// Get data from GET params - strictly for fetching details in JS
-$service_uuid = $_GET['service'] ?? null;
-$doctor_uuid = $_GET['doctor_uuid'] ?? null;
-$sched_date = $_GET['date'] ?? date('Y-m-d');
-$sched_time = $_GET['time_slot'] ?? null;
-$reschedule_uuid = $_GET['reschedule_uuid'] ?? '';
-$edit_uuid = $_GET['edit_uuid'] ?? '';
-$initial_notes = $_GET['notes'] ?? '';
-$appointment_uuid = $reschedule_uuid ?: $edit_uuid;
 
-$display_date = date('l, F jS, Y', strtotime($sched_date));
-
-if ($appointment_uuid) {
-    $header_title = "Update Request";
-    $header_desc = "Review your changes before confirming the update.";
-    $confirm_label = "Update Appointment";
-}
-?>
 
 <div class="w-full">
     <!-- Progress Stepper -->
@@ -102,8 +84,8 @@ if ($appointment_uuid) {
                         <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
                             <?= $date_label ?>
                         </p>
-                        <p class="text-3xl font-black text-foreground tracking-tight"><?= $display_date ?></p>
-                        <p class="text-2xl font-black text-primary mt-2"><?= $sched_time ?? 'Time not set' ?></p>
+                        <p class="text-3xl font-black text-foreground tracking-tight" id="review-date">Loading...</p>
+                        <p class="text-2xl font-black text-primary mt-2" id="review-time"></p>
                     </div>
                 </div>
 
@@ -147,8 +129,7 @@ if ($appointment_uuid) {
                 </label>
                 <textarea
                     class="w-full rounded-[1.5rem] border border-border bg-card text-base font-medium focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-muted-foreground/40 transition-all p-6 min-h-[160px]"
-                    id="notes"
-                    placeholder="<?= $notes_placeholder ?>"><?= htmlspecialchars($initial_notes) ?></textarea>
+                    id="notes" placeholder="<?= $notes_placeholder ?>"></textarea>
             </div>
         </div>
 
@@ -168,22 +149,7 @@ if ($appointment_uuid) {
 
         <!-- Action Buttons -->
         <div class="flex flex-col-reverse sm:flex-row items-center gap-6 pt-6">
-            <?php
-            $back_params = [
-                'service' => $service_uuid,
-                'date' => $sched_date,
-                'doctor_uuid' => $doctor_uuid,
-                'time_slot' => $sched_time,
-                'notes' => $initial_notes
-            ];
-            if ($reschedule_uuid)
-                $back_params['reschedule_uuid'] = $reschedule_uuid;
-            if ($edit_uuid)
-                $back_params['edit_uuid'] = $edit_uuid;
-            if (isset($_GET['patient_id']))
-                $back_params['patient_id'] = $_GET['patient_id'];
-            ?>
-            <a href="step-2-schedule.php?<?= http_build_query($back_params) ?>"
+            <a href="#" id="back-btn"
                 class="flex items-center justify-center gap-2 py-4 px-8 border-2 border-border text-foreground font-bold rounded-2xl hover:bg-muted transition-all">
                 <span class="material-symbols-outlined">arrow_back</span>
                 <?= $back_label ?>
@@ -200,24 +166,80 @@ if ($appointment_uuid) {
 
 <script>
     $(document).ready(function () {
-        // Page Configurations from PHP
+        // Page Configurations from URL Params (CSR)
+        const params = new URLSearchParams(window.location.search);
         const config = {
-            serviceUuid: <?= json_encode($service_uuid) ?>,
-            doctorUuid: <?= json_encode($doctor_uuid) ?>,
-            patientId: <?= json_encode($_GET['patient_id'] ?? '') ?>,
-            appointmentUuid: <?= json_encode($appointment_uuid) ?>,
-            schedDate: <?= json_encode($sched_date) ?>,
-            schedTime: <?= json_encode($sched_time) ?>,
-            displayDate: <?= json_encode($display_date) ?>
+            serviceUuid: params.get('service') || '',
+            doctorUuid: params.get('doctor_uuid') || '',
+            patientId: params.get('patient_id') || '',
+            rescheduleUuid: params.get('reschedule_uuid') || '',
+            editUuid: params.get('edit_uuid') || '',
+            schedDate: params.get('date') || new Date().toISOString().split('T')[0],
+            schedTime: params.get('time_slot') || '', // Match Step 2 param
+            notes: params.get('notes') || ''
         };
 
-        // Load Service Details
-        $.ajax({
-            url: apiUrl("appointments") + "list-services.php",
-            method: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
+        config.appointmentUuid = config.rescheduleUuid || config.editUuid;
+
+        // Initialize UI
+        $('#notes').val(config.notes);
+        $('#review-time').text(config.schedTime || 'Time not set');
+
+        const dateObj = new Date(config.schedDate);
+        const displayDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        $('#review-date').text(displayDate);
+        config.displayDate = displayDate; // For modal
+
+        // Dynamic Header & Labels
+        if (config.appointmentUuid) {
+            $('#page-title').text('Update Request');
+            $('#page-desc').text('Review your changes before confirming the update.');
+            $('#confirm-booking-btn').contents().first()[0].textContent = 'Update Appointment '; // Safer text replacement
+        } else {
+            $('#page-title').text('<?= $header_title ?>');
+            $('#page-desc').text('<?= $header_desc ?>');
+        }
+
+        setupNavigation();
+        getServiceDetails();
+        getDoctorDetails();
+
+        function setupNavigation() {
+            const backParams = new URLSearchParams();
+            if (config.serviceUuid) backParams.append('service', config.serviceUuid);
+            if (config.doctorUuid) backParams.append('doctor_uuid', config.doctorUuid);
+            if (config.schedDate) backParams.append('date', config.schedDate);
+            if (config.schedTime) backParams.append('time', config.schedTime); // Use 'time' to match Step 2 input expectations if it reads 'time' or 'time_slot'
+            // Wait, Step 2 reads 'time' from URL: `time: params.get('time')` logic in Step 2.
+            // But Step 2 *submits* `time_slot`.
+            // My Step 2 refactor: `nextParams.append('time_slot', timeSlot);`
+            // So Step 3 receives `time_slot`.
+            // But Step 2 *initializes* from `config.time` which reads `params.get('time')`.
+            // AND Step 2 submit puts `time_slot` in the URL.
+            // So if I go Back from Step 3 -> Step 2, I should use `time` or `time_slot`?
+            // Helper: Step 2: `time: params.get('time') || ''`.
+            // So Step 2 expects `time` in URL to pre-select.
+            // BUT `step-2-schedule.php` form submits `time_slot` to `step-3`.
+            // So Step 3 URL has `time_slot`.
+            // When going back to Step 2, I should append `time` so Step 2 can read it.
+            if (config.schedTime) backParams.append('time', config.schedTime);
+
+            if (config.rescheduleUuid) backParams.append('reschedule_uuid', config.rescheduleUuid);
+            if (config.editUuid) backParams.append('edit_uuid', config.editUuid);
+            if (config.patientId) backParams.append('patient_id', config.patientId);
+            if (config.notes) backParams.append('notes', config.notes);
+
+            $('#back-btn').attr('href', `step-2-schedule.php?${backParams.toString()}`);
+        }
+
+        function getServiceDetails() {
+            $.ajax({
+                url: apiUrl("appointments") + "list-services.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) return;
+
                     const s = response.data.find(x => x.uuid === config.serviceUuid);
                     if (s) {
                         $('#service-name').text(s.name);
@@ -226,16 +248,17 @@ if ($appointment_uuid) {
                         $('#service-review-data').removeClass('hidden');
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // Load Doctor Details
-        $.ajax({
-            url: apiUrl("appointments") + "list-doctors.php",
-            method: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
+        function getDoctorDetails() {
+            $.ajax({
+                url: apiUrl("appointments") + "list-doctors.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) return;
+
                     const d = response.data.find(x => x.uuid === config.doctorUuid);
                     if (d) {
                         $('#doctor-name').text(`Dr. ${d.firstname} ${d.lastname}`);
@@ -245,8 +268,8 @@ if ($appointment_uuid) {
                         $('#doctor-review-data').removeClass('hidden');
                     }
                 }
-            }
-        });
+            });
+        }
 
         // Confirm Booking
         $('#confirm-booking-btn').on('click', function () {
@@ -275,27 +298,27 @@ if ($appointment_uuid) {
                 contentType: 'application/json',
                 data: JSON.stringify(bookingData),
                 success: function (response) {
-                    if (response.success) {
-                        // Update modal with real info
-                        const isUpdate = !!config.appointmentUuid;
-                        const title = isUpdate ? 'Appointment Updated!' : 'Appointment Requested!';
-                        const modalDesc = isUpdate
-                            ? `Your changes for <strong>${config.displayDate}</strong> have been saved successfully.`
-                            : `Your request for <strong>${config.displayDate}</strong> has been sent to the clinical team.`;
-
-                        $('#success-title').text(title);
-                        $('#success-description').html(modalDesc);
-
-                        // Show Modal
-                        $('#success-modal').removeClass('hidden').addClass('flex');
-                    } else {
+                    if (!response.success) {
                         alert('Error: ' + response.message);
+                        btn.prop('disabled', false).html('Confirm Appointment <span class="material-symbols-outlined text-xl">check_circle</span>');
+                        return;
                     }
+
+                    // Update modal with real info
+                    const isUpdate = !!config.appointmentUuid;
+                    const title = isUpdate ? 'Appointment Updated!' : 'Appointment Requested!';
+                    const modalDesc = isUpdate
+                        ? `Your changes for <strong>${config.displayDate}</strong> have been saved successfully.`
+                        : `Your request for <strong>${config.displayDate}</strong> has been sent to the clinical team.`;
+
+                    $('#success-title').text(title);
+                    $('#success-description').html(modalDesc);
+
+                    // Show Modal
+                    $('#success-modal').removeClass('hidden').addClass('flex');
                 },
                 error: function () {
                     alert('An unexpected error occurred. Please try again.');
-                },
-                complete: function () {
                     btn.prop('disabled', false).html('Confirm Appointment <span class="material-symbols-outlined text-xl">check_circle</span>');
                 }
             });

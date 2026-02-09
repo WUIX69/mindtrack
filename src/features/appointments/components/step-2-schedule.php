@@ -48,12 +48,8 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
     ]) ?>
 
     <form id="booking-form-step-2" action="step-3-review.php" method="GET" class="space-y-10">
-        <?php
-        $initial_service = $_GET['service'] ?? '';
-        $initial_date = $_GET['date'] ?? date('Y-m-d');
-        ?>
-        <input type="hidden" name="service" value="<?= htmlspecialchars($initial_service) ?>">
-        <input type="hidden" name="date" id="selected-date" value="<?= htmlspecialchars($initial_date) ?>">
+        <input type="hidden" name="service" value="">
+        <input type="hidden" name="date" id="selected-date" value="">
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Left Column: Calendar Widget -->
@@ -128,13 +124,12 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
                         <?= $slots_title ?>
                     </h3>
                     <p class="text-sm font-medium text-muted-foreground mb-6 italic"><?= $slots_prefix ?> <span
-                            id="display-selected-date"
-                            class="text-foreground font-black not-italic"><?= date('F j, Y', strtotime($initial_date)) ?></span>
+                            id="display-selected-date" class="text-foreground font-black not-italic">Loading...</span>
                     </p>
 
                     <div class="grid grid-cols-2 gap-4">
                         <?php
-                        $selected_time = $_GET['time_slot'] ?? $timeSlots[0];
+                        $selected_time = '';
                         foreach ($timeSlots as $index => $time):
                             $checked = ($time === $selected_time) ? 'checked' : '';
                             ?>
@@ -175,32 +170,15 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
             </div>
         </div>
 
-        <!-- Sticky Bottom Navigation -->
         <div class="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
-            <?php
-            $reschedule_uuid = $_GET['reschedule_uuid'] ?? '';
-            $edit_uuid = $_GET['edit_uuid'] ?? '';
 
-            $back_params = [
-                'service' => $initial_service,
-                'doctor_uuid' => $_GET['doctor_uuid'] ?? '',
-                'notes' => $_GET['notes'] ?? ''
-            ];
-            if ($edit_uuid)
-                $back_params['edit_uuid'] = $edit_uuid;
-            if (isset($_GET['patient_id']))
-                $back_params['patient_id'] = $_GET['patient_id'];
-            ?>
+            <a href="#" id="back-btn"
+                class="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-sm bg-muted text-foreground hover:bg-muted/80 transition-colors w-full sm:w-auto justify-center shadow-sm">
+                <span class="material-symbols-outlined text-xl">arrow_back</span>
+                <?= $back_label ?>
+            </a>
 
-            <?php if (!$reschedule_uuid): ?>
-                <a href="step-1-service.php?<?= http_build_query($back_params) ?>"
-                    class="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-sm bg-muted text-foreground hover:bg-muted/80 transition-colors w-full sm:w-auto justify-center shadow-sm">
-                    <span class="material-symbols-outlined text-xl">arrow_back</span>
-                    <?= $back_label ?>
-                </a>
-            <?php else: ?>
-                <div class="hidden sm:block"></div>
-            <?php endif; ?>
+            <div id="reschedule-spacer" class="hidden sm:block hidden"></div>
 
             <button type="submit"
                 class="inline-flex items-center justify-center gap-3 px-12 py-4 rounded-2xl font-black text-sm bg-primary text-white shadow-xl shadow-primary/25 hover:opacity-95 transform transition-all active:scale-[0.98] w-full sm:w-auto group">
@@ -217,15 +195,36 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
         const $selectedDateInput = $('#selected-date');
         const $displaySelectedDate = $('#display-selected-date');
         const $form = $('#booking-form-step-2');
+        const $backBtn = $('#back-btn');
+        const $rescheduleSpacer = $('#reschedule-spacer');
 
-        // Page Configurations from PHP
+        // Page Configurations from URL Params (CSR)
+        const params = new URLSearchParams(window.location.search);
         const config = {
-            doctorUuid: <?= json_encode($_GET['doctor_uuid'] ?? '') ?>,
-            rescheduleUuid: <?= json_encode($_GET['reschedule_uuid'] ?? '') ?>,
-            editUuid: <?= json_encode($_GET['edit_uuid'] ?? '') ?>,
-            patientId: <?= json_encode($_GET['patient_id'] ?? '') ?>,
-            notes: <?= json_encode($_GET['notes'] ?? '') ?>
+            service: params.get('service') || '',
+            doctorUuid: params.get('doctor_uuid') || '',
+            rescheduleUuid: params.get('reschedule_uuid') || '',
+            editUuid: params.get('edit_uuid') || '',
+            patientId: params.get('patient_id') || '',
+            notes: params.get('notes') || '',
+            date: params.get('date') || new Date().toISOString().split('T')[0],
+            time: params.get('time') || ''
         };
+
+        // Initialize State
+        $('input[name="service"]').val(config.service);
+        $selectedDateInput.val(config.date);
+
+        // Update Time Selection if exists in URL or default to first
+        if (config.time) {
+            $(`input[name="time_slot"][value="${config.time}"]`).prop('checked', true);
+        } else {
+            $('input[name="time_slot"]').first().prop('checked', true);
+        }
+
+        updateDateDisplay(config.date);
+        setupNavigation();
+        getDoctors();
 
         // Handle Calendar Clicks
         $('.calendar-day').on('click', function () {
@@ -238,37 +237,66 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
 
             // Update Hidden Inputs
             $selectedDateInput.val(date);
+            updateDateDisplay(date);
+        });
 
-            // Format for display
-            const formattedDate = new Date(date).toLocaleDateString('en-US', {
+        function updateDateDisplay(dateStr) {
+            const formattedDate = new Date(dateStr).toLocaleDateString('en-US', {
                 month: 'long',
                 day: 'numeric',
                 year: 'numeric'
             });
             $displaySelectedDate.text(formattedDate);
-        });
 
-        // Load Doctors
-        $.ajax({
-            url: apiUrl("appointments") + "list-doctors.php",
-            method: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
+            // Sync calendar active state if strictly matching (basic implementation)
+            $('.calendar-day').each(function () {
+                if ($(this).data('date') === dateStr) {
+                    $(this).trigger('click'); // Trigger UI update
+                }
+            });
+        }
+
+        function getDoctors() {
+            $.ajax({
+                url: apiUrl("appointments") + "list-doctors.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) {
+                        $doctorSelect.html('<option value="">Error loading doctors</option>');
+                        return;
+                    }
+
                     let html = '<option value="" disabled' + (!config.doctorUuid ? ' selected' : '') + '>Select a Provider</option>';
                     response.data.forEach(d => {
                         const selected = (d.uuid === config.doctorUuid) ? 'selected' : '';
                         html += `<option value="${d.uuid}" ${selected}>Dr. ${d.firstname} ${d.lastname}</option>`;
                     });
                     $doctorSelect.html(html);
-                } else {
-                    $doctorSelect.html('<option value="">Error loading doctors</option>');
+                },
+                error: function () {
+                    $doctorSelect.html('<option value="">Failed to load providers</option>');
                 }
-            },
-            error: function () {
-                $doctorSelect.html('<option value="">Failed to load providers</option>');
+            });
+        }
+
+        function setupNavigation() {
+            // Back Button Logic
+            if (config.rescheduleUuid) {
+                // If rescheduling, hide back button and show spacer
+                $backBtn.addClass('hidden');
+                $rescheduleSpacer.removeClass('hidden');
+            } else {
+                const backParams = new URLSearchParams();
+                if (config.service) backParams.append('service', config.service);
+                if (config.doctorUuid) backParams.append('doctor_uuid', config.doctorUuid); // Maybe they selected a doctor in step 1?
+                if (config.notes) backParams.append('notes', config.notes);
+                if (config.editUuid) backParams.append('edit_uuid', config.editUuid);
+                if (config.patientId) backParams.append('patient_id', config.patientId);
+
+                $backBtn.attr('href', `step-1-service.php?${backParams.toString()}`);
             }
-        });
+        }
 
         // Manual Navigation Handler
         $form.on('submit', function (e) {
@@ -289,18 +317,18 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
                 return false;
             }
 
-            const params = new URLSearchParams();
-            params.append('service', service);
-            params.append('doctor_uuid', doctorUuid);
-            params.append('date', date);
-            params.append('time', timeSlot);
+            const nextParams = new URLSearchParams();
+            nextParams.append('service', service);
+            nextParams.append('doctor_uuid', doctorUuid);
+            nextParams.append('date', date);
+            nextParams.append('time_slot', timeSlot); // Changed from 'time' to 'time_slot' to match input name for consistency
 
-            if (config.rescheduleUuid) params.append('reschedule_uuid', config.rescheduleUuid);
-            if (config.editUuid) params.append('edit_uuid', config.editUuid);
-            if (config.patientId) params.append('patient_id', config.patientId);
-            if (config.notes) params.append('notes', config.notes);
+            if (config.rescheduleUuid) nextParams.append('reschedule_uuid', config.rescheduleUuid);
+            if (config.editUuid) nextParams.append('edit_uuid', config.editUuid);
+            if (config.patientId) nextParams.append('patient_id', config.patientId);
+            if (config.notes) nextParams.append('notes', config.notes);
 
-            window.location.href = `step-3-review.php?${params.toString()}`;
+            window.location.href = `step-3-review.php?${nextParams.toString()}`;
             return false;
         });
     });
