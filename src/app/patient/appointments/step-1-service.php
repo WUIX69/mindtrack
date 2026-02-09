@@ -17,11 +17,6 @@ include_once __DIR__ . '/../layout.php';
 
 <div class="w-full">
     <?= featured('appointments', 'components/step-1-service', [
-        'role' => 'patient',
-        'header' => [
-            'title' => 'Book an Appointment',
-            'description' => 'Please choose the clinical service you require to continue with your booking.'
-        ],
-        'continue_label' => 'Continue to Schedule'
+        'role' => 'patient'
     ]) ?>
 </div>

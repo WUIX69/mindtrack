@@ -17,16 +17,6 @@ include_once __DIR__ . '/../layout.php';
 
 <div class="w-full pb-12">
     <?= featured('appointments', 'components/step-1-service', [
-        'role' => 'admin',
-        'header' => [
-            'title' => 'Select Service',
-            'description' => 'Select the clinical service for this appointment.'
-        ],
-        'patient_selector' => [
-            'title' => 'Select Patient',
-            'description' => 'Choose a patient from the directory.',
-            'placeholder' => 'Search patients...'
-        ],
-        'continue_label' => 'Continue to Schedule'
+        'role' => 'admin'
     ]) ?>
 </div>

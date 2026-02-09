@@ -14,6 +14,7 @@ $headerData = [
 $currentPage = 'appointments';
 include __DIR__ . '/../layout.php';
 ?>
+<script src="<?= shared('data', 'icons.js', true) ?>"></script>
 
 <!-- Filter Sub-header -->
 <div class="bg-card rounded-2xl border border-border p-5 flex flex-wrap items-center gap-6 mb-10 shadow-sm">
@@ -201,7 +202,7 @@ include __DIR__ . '/../layout.php';
                             class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">calendar_today</span>
                         <input type="date" id="reschedule-date"
                             class="w-full pl-12 pr-6 py-4 bg-muted/30 border border-border rounded-2xl text-sm font-bold focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all"
-                            min="<?= date('Y-m-d') ?>" value="<?= date('Y-m-d') ?>">
+                            min="" value="">
                     </div>
                 </div>
 
@@ -209,19 +210,7 @@ include __DIR__ . '/../layout.php';
                     <label class="text-xs font-black text-muted-foreground uppercase tracking-wider ml-1">Available
                         Times</label>
                     <div class="grid grid-cols-3 gap-3" id="reschedule-time-slots">
-                        <?php
-                        $modalSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'];
-                        foreach ($modalSlots as $index => $time):
-                            ?>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="reschedule_time" value="<?= $time ?>"
-                                    class="peer absolute opacity-0" <?= $index === 0 ? 'checked' : '' ?> />
-                                <div
-                                    class="py-3 px-2 text-xs font-black rounded-xl border-2 border-transparent bg-muted/30 text-muted-foreground transition-all text-center peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:border-primary/30">
-                                    <?= $time ?>
-                                </div>
-                            </label>
-                        <?php endforeach; ?>
+                        <!-- Rendered via JS -->
                     </div>
                 </div>
             </div>
@@ -248,18 +237,25 @@ include __DIR__ . '/../layout.php';
         let activeRescheduleService = null;
         let activeRescheduleDoctor = null;
 
+        const MODAL_TIME_SLOTS = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'];
+
+        function initDates() {
+            const today = new Date().toISOString().split('T')[0];
+            $('#reschedule-date').attr('min', today).val(today);
+        }
+
         function fetchDoctors() {
             $.ajax({
                 url: apiUrl("appointments") + "list-doctors.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
-                    if (response.success) {
-                        const $select = $('#doctor-filter');
-                        response.data.forEach(d => {
-                            $select.append(`<option value="${d.uuid}">Dr. ${d.firstname} ${d.lastname}</option>`);
-                        });
-                    }
+                    if (!response.success) return;
+
+                    const $select = $('#doctor-filter');
+                    response.data.forEach(d => {
+                        $select.append(`<option value="${d.uuid}">Dr. ${d.firstname} ${d.lastname}</option>`);
+                    });
                 }
             });
         }
@@ -270,13 +266,13 @@ include __DIR__ . '/../layout.php';
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
-                    if (response.success) {
-                        allAppointments = response.data;
-                        updateCounts();
-                        applyFilters();
-                    } else {
+                    if (!response.success) {
                         $('#appointments-container').html('<div class="py-20 text-center text-red-500 font-bold">' + response.message + '</div>');
+                        return;
                     }
+                    allAppointments = response.data;
+                    updateCounts();
+                    applyFilters();
                 },
                 error: function () {
                     $('#appointments-container').html('<div class="py-20 text-center text-red-500 font-bold">Failed to load appointments.</div>');
@@ -363,7 +359,7 @@ include __DIR__ . '/../layout.php';
                         <div class="lg:w-1/4">
                             <div class="flex items-center gap-3 mb-2">
                                 <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                    <span class="material-symbols-outlined">psychology</span>
+                                    <span class="material-symbols-outlined">${getServiceIcon(a.service_name)}</span>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-lg">${a.service_name}</h3>
@@ -411,7 +407,7 @@ include __DIR__ . '/../layout.php';
         }
 
         // Action Handlers
-        $(document).on('click', '.view-summary-btn', function () {
+        $('body').on('click', '.view-summary-btn', function () {
             const uuid = $(this).data('uuid');
             const a = allAppointments.find(x => x.uuid === uuid);
             if (!a) return;
@@ -453,7 +449,7 @@ include __DIR__ . '/../layout.php';
 
         let activeRescheduleNotes = null;
 
-        $(document).on('click', '.reschedule-btn', function () {
+        $('body').on('click', '.reschedule-btn', function () {
             const uuid = $(this).data('uuid');
             const service = $(this).data('service');
             const doctor = $(this).data('doctor');
@@ -468,8 +464,25 @@ include __DIR__ . '/../layout.php';
             activeRescheduleNotes = notes;
 
             $('#reschedule-summary-doctor').text(`Dr. ${a.doctor_firstname} ${a.doctor_lastname}`);
+            renderRescheduleSlots();
             $('#reschedule-modal').removeClass('hidden').addClass('flex');
         });
+
+        function renderRescheduleSlots() {
+            let html = '';
+            MODAL_TIME_SLOTS.forEach((time, index) => {
+                html += `
+                    <label class="cursor-pointer">
+                        <input type="radio" name="reschedule_time" value="${time}"
+                            class="peer absolute opacity-0" ${index === 0 ? 'checked' : ''} />
+                        <div class="py-3 px-2 text-xs font-black rounded-xl border-2 border-transparent bg-muted/30 text-muted-foreground transition-all text-center peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:border-primary/30">
+                            ${time}
+                        </div>
+                    </label>
+                `;
+            });
+            $('#reschedule-time-slots').html(html);
+        }
 
         $('#confirm-reschedule-btn').on('click', function () {
             if (!activeRescheduleUuid) return;
@@ -500,12 +513,12 @@ include __DIR__ . '/../layout.php';
                 contentType: 'application/json',
                 data: JSON.stringify(bookingData),
                 success: function (response) {
-                    if (response.success) {
-                        $('#reschedule-modal').addClass('hidden').removeClass('flex');
-                        fetchAppointments(); // Refresh list
-                    } else {
+                    if (!response.success) {
                         alert('Error: ' + response.message);
+                        return;
                     }
+                    $('#reschedule-modal').addClass('hidden').removeClass('flex');
+                    fetchAppointments(); // Refresh list
                 },
                 error: function () {
                     alert('An unexpected error occurred. Please try again.');
@@ -517,7 +530,7 @@ include __DIR__ . '/../layout.php';
             });
         });
 
-        $(document).on('click', '.edit-request-btn', function () {
+        $('body').on('click', '.edit-request-btn', function () {
             const uuid = $(this).data('uuid');
             const service = $(this).data('service');
             const doctor = $(this).data('doctor');
@@ -526,7 +539,7 @@ include __DIR__ . '/../layout.php';
             window.location.href = `step-1-service.php?edit_uuid=${encodeURIComponent(uuid)}&service=${encodeURIComponent(service)}&doctor_uuid=${encodeURIComponent(doctor)}&notes=${encodeURIComponent(notes)}`;
         });
 
-        $(document).on('click', '.withdraw-btn', function () {
+        $('body').on('click', '.withdraw-btn', function () {
             activeWithdrawUuid = $(this).data('uuid');
             $('#withdraw-modal h3').text('Withdraw Request?');
             $('#withdraw-modal p').text('Are you sure you want to retract your pending appointment request?');
@@ -544,12 +557,12 @@ include __DIR__ . '/../layout.php';
                 contentType: "application/json",
                 data: JSON.stringify({ appointment_uuid: activeWithdrawUuid }),
                 success: function (response) {
-                    if (response.success) {
-                        $('#withdraw-modal').addClass('hidden').removeClass('flex');
-                        fetchAppointments(); // Refresh list
-                    } else {
+                    if (!response.success) {
                         alert(response.message);
+                        return;
                     }
+                    $('#withdraw-modal').addClass('hidden').removeClass('flex');
+                    fetchAppointments(); // Refresh list
                 },
                 complete: function () {
                     btn.prop('disabled', false).text('Yes, Withdraw Request');
@@ -559,7 +572,7 @@ include __DIR__ . '/../layout.php';
         });
 
         // Event Listeners for Filters
-        $(document).on('click', '.filter-btn', function () {
+        $('body').on('click', '.filter-btn', function () {
             filters.status = $(this).data('status');
 
             $('.filter-btn').removeClass('bg-card shadow-sm text-primary').addClass('text-muted-foreground hover:text-foreground');
@@ -591,5 +604,6 @@ include __DIR__ . '/../layout.php';
 
         fetchDoctors();
         fetchAppointments();
+        initDates();
     });
 </script>

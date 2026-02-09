@@ -1,43 +1,20 @@
 <?php
 /**
  * Appointment Booking - Step 3: Review & Confirm (Feature Component)
- * 
+ *
  * @param string $role (patient|admin)
- * @param array $header (title, description)
- * @param array $summary (service_label, date_label, provider_label)
  * @param array $notes (label, placeholder)
  * @param array $alert (title, text)
- * @param string $confirm_label
- * @param string $back_label
  */
 $role = $role ?? 'patient';
-
-// UI Strings
-$header_title = $header['title'] ?? 'Review Selection';
-$header_desc = $header['description'] ?? 'Please double-check the appointment details before confirming the request.';
-
-$service_label = $summary['service_label'] ?? 'Service Type';
-$date_label = $summary['date_label'] ?? 'Scheduled For';
-$provider_label = $summary['provider_label'] ?? 'Healthcare Provider';
-
-$notes_label = $notes['label'] ?? 'Notes';
-$notes_placeholder = $notes['placeholder'] ?? 'Add instructions...';
-
-$confirm_label = $confirm_label ?? 'Confirm';
-$back_label = $back_label ?? 'Edit Selection';
-
-$alert_title = $alert['title'] ?? 'Information';
-$alert_text = $alert['text'] ?? 'Please review carefully.';
 ?>
 
-
-
 <div class="w-full">
+
     <!-- Progress Stepper -->
     <?= featured('appointments', 'components/progress-stepper', [
         'currentStep' => 3,
-        'title' => $header_title,
-        'description' => $header_desc
+        'title' => 'Review & Confirm',
     ]) ?>
 
     <div class="space-y-8">
@@ -62,7 +39,7 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
                         </div>
                         <div class="flex flex-col">
                             <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
-                                <?= $service_label ?>
+                                Service Type
                             </p>
                             <p class="text-3xl font-black text-foreground tracking-tight" id="service-name">Loading...
                             </p>
@@ -82,7 +59,7 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
                     </div>
                     <div class="flex flex-col">
                         <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
-                            <?= $date_label ?>
+                            Scheduled For
                         </p>
                         <p class="text-3xl font-black text-foreground tracking-tight" id="review-date">Loading...</p>
                         <p class="text-2xl font-black text-primary mt-2" id="review-time"></p>
@@ -113,7 +90,7 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
                         </div>
                         <div class="flex flex-col">
                             <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
-                                <?= $provider_label ?>
+                                Healthcare Provider
                             </p>
                             <p class="text-3xl font-black text-foreground tracking-tight" id="doctor-name">Dr.</p>
                             <p class="text-base text-muted-foreground mt-2 font-medium" id="doctor-specialization"></p>
@@ -125,11 +102,11 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
             <!-- Notes Section -->
             <div class="bg-muted/10 p-10 border-t border-border">
                 <label class="block text-sm font-black text-foreground mb-4 uppercase tracking-wider" for="notes">
-                    <?= $notes_label ?>
+                    <?= $notes['label'] ?? 'Notes' ?>
                 </label>
                 <textarea
                     class="w-full rounded-[1.5rem] border border-border bg-card text-base font-medium focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-muted-foreground/40 transition-all p-6 min-h-[160px]"
-                    id="notes" placeholder="<?= $notes_placeholder ?>"></textarea>
+                    id="notes" placeholder="<?= $notes['placeholder'] ?? 'Add instructions...' ?>"></textarea>
             </div>
         </div>
 
@@ -139,10 +116,10 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
             <span class="material-symbols-outlined text-amber-600 dark:text-amber-500 text-3xl shrink-0">info</span>
             <div class="flex flex-col gap-2">
                 <p class="text-sm font-black text-amber-900 dark:text-amber-200 uppercase tracking-[0.2em] italic">
-                    <?= $alert_title ?>
+                    <?= $alert['title'] ?? 'Information' ?>
                 </p>
                 <p class="text-base text-amber-800/80 dark:text-amber-300/80 leading-relaxed font-medium">
-                    <?= $alert_text ?>
+                    <?= $alert['text'] ?? 'Please review carefully.' ?>
                 </p>
             </div>
         </div>
@@ -152,11 +129,11 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
             <a href="#" id="back-btn"
                 class="flex items-center justify-center gap-2 py-4 px-8 border-2 border-border text-foreground font-bold rounded-2xl hover:bg-muted transition-all">
                 <span class="material-symbols-outlined">arrow_back</span>
-                <?= $back_label ?>
+                Edit Selection
             </a>
             <button id="confirm-booking-btn"
                 class="w-full flex-1 px-12 py-5 bg-primary text-white text-xl font-black rounded-[1.5rem] shadow-2xl shadow-primary/30 hover:opacity-95 transform transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
-                <?= $confirm_label ?>
+                Create Appointment
                 <span
                     class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">check_circle</span>
             </button>
@@ -196,8 +173,8 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
             $('#page-desc').text('Review your changes before confirming the update.');
             $('#confirm-booking-btn').contents().first()[0].textContent = 'Update Appointment '; // Safer text replacement
         } else {
-            $('#page-title').text('<?= $header_title ?>');
-            $('#page-desc').text('<?= $header_desc ?>');
+            $('#page-title').text('Review Selection');
+            $('#page-desc').text('Review your changes before confirming the update.');
         }
 
         setupNavigation();

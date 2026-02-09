@@ -1,50 +1,17 @@
 <?php
 /**
  * Appointment Booking - Step 2: Schedule & Provider (Feature Component)
- * 
+ *
  * @param string $role (patient|admin)
- * @param array $header (title, description)
- * @param array $calendar (title)
- * @param array $slots (title, prefix)
- * @param array $provider_selector (title, default, note)
- * @param string $back_label
- * @param string $continue_label
  */
 $role = $role ?? 'patient';
-
-// UI Strings
-$header_title = $header['title'] ?? 'Schedule & Provider';
-$header_desc = $header['description'] ?? 'Select a date and time that works for you, then choose your preferred specialist.';
-
-$date_title = $calendar['title'] ?? 'Select Date';
-$slots_title = $slots['title'] ?? 'Available Slots';
-$slots_prefix = $slots['prefix'] ?? 'Times for';
-
-$provider_title = $provider_selector['title'] ?? 'Preferred Specialist';
-$provider_default = $provider_selector['default'] ?? 'Any available provider';
-$provider_note = $provider_selector['note'] ?? 'Selecting a specific specialist may limit the available time slots above.';
-
-$back_label = $back_label ?? 'Back to Service';
-$continue_label = $continue_label ?? 'Review Appointment Details';
-
-// Mock data for providers
-$providers = [
-    ['id' => 1, 'name' => 'Dr. Sarah Mitchell', 'role' => 'Clinical Psychologist'],
-    ['id' => 2, 'name' => 'Dr. James Wilson', 'role' => 'Psychiatrist'],
-    ['id' => 3, 'name' => 'Elena Rodriguez', 'role' => 'Mental Health Counselor'],
-    ['id' => 4, 'name' => 'Dr. Kevin Park', 'role' => 'Child & Adolescent Specialist']
-];
-
-// Mock data for time slots
-$timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'];
 ?>
 
 <div class="w-full">
     <!-- Progress Stepper -->
     <?= featured('appointments', 'components/progress-stepper', [
         'currentStep' => 2,
-        'title' => $header_title,
-        'description' => $header_desc
+        'title' => 'Schedule Appointment',
     ]) ?>
 
     <form id="booking-form-step-2" action="step-3-review.php" method="GET" class="space-y-10">
@@ -55,7 +22,7 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
             <!-- Left Column: Calendar Widget -->
             <div class="lg:col-span-7 bg-card p-8 rounded-[2rem] border border-border shadow-sm">
                 <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-xl font-black text-foreground tracking-tight"><?= $date_title ?></h3>
+                    <h3 class="text-xl font-black text-foreground tracking-tight">Select Date</h3>
                     <div class="flex items-center gap-3">
                         <button type="button"
                             class="size-10 flex items-center justify-center hover:bg-muted rounded-xl transition-all border border-border">
@@ -121,15 +88,16 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
                 <div class="bg-card p-8 rounded-[2rem] border border-border shadow-sm">
                     <h3 class="text-xl font-black mb-6 flex items-center gap-3 text-foreground tracking-tight">
                         <span class="material-symbols-outlined text-primary text-3xl">schedule</span>
-                        <?= $slots_title ?>
+                        Available Slots
                     </h3>
-                    <p class="text-sm font-medium text-muted-foreground mb-6 italic"><?= $slots_prefix ?> <span
+                    <p class="text-sm font-medium text-muted-foreground mb-6 italic">Times for <span
                             id="display-selected-date" class="text-foreground font-black not-italic">Loading...</span>
                     </p>
 
                     <div class="grid grid-cols-2 gap-4">
                         <?php
                         $selected_time = '';
+                        $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'];
                         foreach ($timeSlots as $index => $time):
                             $checked = ($time === $selected_time) ? 'checked' : '';
                             ?>
@@ -149,7 +117,7 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
                 <div class="bg-card p-8 rounded-[2rem] border border-border shadow-sm">
                     <h3 class="text-xl font-black mb-6 flex items-center gap-3 text-foreground tracking-tight">
                         <span class="material-symbols-outlined text-primary text-3xl">person</span>
-                        <?= $provider_title ?>
+                        Assign Specialist
                     </h3>
                     <div class="relative">
                         <select
@@ -164,7 +132,7 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
                     </div>
                     <p
                         class="mt-4 text-[11px] font-bold text-muted-foreground leading-relaxed uppercase tracking-wider opacity-70">
-                        <?= $provider_note ?>
+                        Selecting a specific specialist may limit the available time slots above.
                     </p>
                 </div>
             </div>
@@ -175,14 +143,14 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
             <a href="#" id="back-btn"
                 class="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-sm bg-muted text-foreground hover:bg-muted/80 transition-colors w-full sm:w-auto justify-center shadow-sm">
                 <span class="material-symbols-outlined text-xl">arrow_back</span>
-                <?= $back_label ?>
+                Back to Service
             </a>
 
             <div id="reschedule-spacer" class="hidden sm:block hidden"></div>
 
             <button type="submit"
                 class="inline-flex items-center justify-center gap-3 px-12 py-4 rounded-2xl font-black text-sm bg-primary text-white shadow-xl shadow-primary/25 hover:opacity-95 transform transition-all active:scale-[0.98] w-full sm:w-auto group">
-                <?= $continue_label ?>
+                Review Appointment Details
                 <span
                     class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </button>

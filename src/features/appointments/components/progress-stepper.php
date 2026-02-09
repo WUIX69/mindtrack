@@ -4,11 +4,9 @@
  * 
  * @param int $currentStep (1, 2, or 3)
  * @param string $title
- * @param string $description
  */
 $currentStep = $currentStep ?? 1;
 $title = $title ?? 'Select Service';
-$description = $description ?? 'Please choose the clinical service you require.';
 $steps = [
     1 => 'Service',
     2 => 'Schedule',
@@ -17,7 +15,7 @@ $steps = [
 $percentage = ($currentStep / 3) * 100;
 ?>
 
-<div class="flex flex-col gap-4 mb-10 w-full">
+<div class="flex flex-col gap-4 mt-8 mb-10 w-full">
     <div class="flex justify-between items-center mb-2">
         <div class="flex items-center gap-3">
             <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold text-sm">
@@ -52,10 +50,4 @@ $percentage = ($currentStep / 3) * 100;
             </span>
         <?php endforeach; ?>
     </div>
-
-    <?php if ($description): ?>
-        <p class="text-muted-foreground text-sm mt-2">
-            <?= $description ?>
-        </p>
-    <?php endif; ?>
 </div>

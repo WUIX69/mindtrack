@@ -17,11 +17,6 @@ include_once __DIR__ . '/../layout.php';
 
 <div class="w-full pb-12">
     <?= featured('appointments', 'components/step-2-schedule', [
-        'role' => 'admin',
-        'header' => [
-            'title' => 'Schedule & Provider',
-            'description' => 'Select a date and time, and assign a specialist.'
-        ],
-        'continue_label' => 'Review Appointment Details'
+        'role' => 'admin'
     ]) ?>
 </div>

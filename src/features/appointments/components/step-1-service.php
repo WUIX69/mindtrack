@@ -1,41 +1,19 @@
 <?php
 /**
  * Appointment Booking - Step 1: Select Service (Feature Component)
- * 
+ *
  * @param string $role (patient|admin)
- * @param array $header (title, description)
- * @param array $patient_selector (title, description, placeholder)
- * @param string $cancel_label
- * @param string $continue_label
  */
 $role = $role ?? 'patient';
+$patient_placeholder = 'Search patients...';
 
-// UI Strings
-$header_title = $header['title'] ?? 'Select Service';
-$header_desc = $header['description'] ?? 'Please choose the clinical service you require to continue with your booking.';
-
-$patient_title = $patient_selector['title'] ?? 'Select Patient';
-$patient_desc = $patient_selector['description'] ?? 'Search or select a patient for this appointment.';
-$patient_placeholder = $patient_selector['placeholder'] ?? 'Search for a patient email or name...';
-
-$cancel_label = $cancel_label ?? 'Cancel';
-$continue_label = $continue_label ?? 'Continue to Schedule';
-
-// Mock data for patients (only for admin)
-$patients = [
-    ['id' => 1, 'name' => 'Alice Thompson', 'email' => 'alice.t@example.com'],
-    ['id' => 2, 'name' => 'Bob Richards', 'email' => 'bob.r@example.com'],
-    ['id' => 3, 'name' => 'Charlie Davis', 'email' => 'charlie.d@example.com'],
-    ['id' => 4, 'name' => 'Diana Prince', 'email' => 'diana.p@example.com'],
-];
 ?>
 
 <div class="w-full">
     <!-- Progress Stepper -->
     <?= featured('appointments', 'components/progress-stepper', [
         'currentStep' => 1,
-        'title' => $header_title,
-        'description' => $header_desc
+        'title' => 'Select Service',
     ]) ?>
 
     <!-- Service Selection Grid -->
@@ -49,21 +27,15 @@ $patients = [
                         <span class="material-symbols-outlined text-2xl">person_search</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black text-foreground tracking-tight"><?= $patient_title ?></h3>
-                        <p class="text-sm text-muted-foreground font-medium"><?= $patient_desc ?></p>
+                        <h3 class="text-xl font-black text-foreground tracking-tight">Select Patient</h3>
+                        <p class="text-sm text-muted-foreground font-medium">Choose a patient from the directory.</p>
                     </div>
                 </div>
 
                 <div class="relative">
-                    <select name="patient_id" required
+                    <select name="patient_id" id="patient_id" required
                         class="w-full bg-muted/30 border-border rounded-2xl py-4 px-6 text-sm font-bold appearance-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
                         <option value="" disabled selected><?= $patient_placeholder ?></option>
-                        <?php foreach ($patients as $p): ?>
-                            <option value="<?= $p['id'] ?>">
-                                <?= $p['name'] ?> (
-                                <?= $p['email'] ?>)
-                            </option>
-                        <?php endforeach; ?>
                     </select>
                     <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
                         <span class="material-symbols-outlined">expand_more</span>
@@ -83,11 +55,11 @@ $patients = [
         <div class="flex items-center justify-between pt-8 border-t border-border">
             <a href="index.php"
                 class="inline-flex items-center justify-center rounded-2xl h-14 px-10 bg-muted text-foreground font-black hover:bg-muted/80 transition-colors shadow-sm">
-                <?= $cancel_label ?>
+                Cancel
             </a>
             <button type="submit" id="continue-btn"
                 class="inline-flex items-center justify-center rounded-2xl h-14 px-12 bg-primary text-white font-black shadow-xl shadow-primary/20 hover:opacity-95 transform transition-all active:scale-[0.98] group">
-                <?= $continue_label ?>
+                Continue to Schedule
                 <span
                     class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </button>
@@ -95,7 +67,7 @@ $patients = [
     </form>
 </div>
 
-<script src="../../../data/icons.js"></script>
+<script src="<?= shared('data', 'icons.js', true) ?>"></script>
 <script>
     $(document).ready(function () {
         const $grid = $('#services-grid');
@@ -116,6 +88,31 @@ $patients = [
 
         // Initial Load
         getServices();
+        if ("<?= $role ?>" === "admin") {
+            getPatients();
+        }
+
+        function getPatients() {
+            $.ajax({
+                url: apiUrl("patients") + "list.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) {
+                        $('#patient_id').html('<option value="">Error loading patients</option>');
+                        return;
+                    }
+                    let html = '<option value="" disabled selected><?= $patient_placeholder ?></option>';
+                    response.data.forEach(p => {
+                        html += `<option value="${p.id}">${p.name} (${p.email})</option>`;
+                    });
+                    $('#patient_id').html(html);
+                },
+                error: function () {
+                    $('#patient_id').html('<option value="">Failed to connect to server</option>');
+                }
+            });
+        }
 
         function getServices() {
             $.ajax({
