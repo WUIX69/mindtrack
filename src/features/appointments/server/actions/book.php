@@ -52,7 +52,7 @@ try {
         'sched_date' => $validData['sched_date'],
         'sched_time' => $validData['sched_time'],
         'status' => 'pending',
-        'notes' => $validData['notes'] ?? null
+        'notes' => $validData['notes'] ?: null
     ];
 
     if ($existing_uuid) {
