@@ -105,8 +105,17 @@ class Users extends Base
                     INSERT INTO user_patient_info (user_uuid) VALUES (?)
                 ");
                 $stmtPatient->execute([$data['uuid']]);
+            } elseif ($role === 'doctor') {
+                $stmtDoctor = self::conn()->prepare("
+                    INSERT INTO user_doctor_info (user_uuid, specialization, license_number, consultation_fee) VALUES (?, ?, ?, ?)
+                ");
+                $stmtDoctor->execute([
+                    $data['uuid'],
+                    $data['specialization'] ?? 'General Psychologist',
+                    $data['license_number'] ?? 'LIC-' . strtoupper(bin2hex(random_bytes(4))),
+                    $data['consultation_fee'] ?? 1000.00
+                ]);
             }
-            // Add other roles here if needed (e.g., doctor)
 
             self::commit();
             return [

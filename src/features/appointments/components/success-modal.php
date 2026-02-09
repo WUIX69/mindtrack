@@ -32,7 +32,7 @@ $listLabel = ($role === 'admin') ? 'View All Appointments' : 'View My Appointmen
         <h3 class="text-3xl font-black text-foreground mb-3 tracking-tight">
             <?= $title ?>
         </h3>
-        <p class="text-muted-foreground mb-10 leading-relaxed font-medium">
+        <p id="success-modal-description" class="text-muted-foreground mb-10 leading-relaxed font-medium">
             <?= $description ?>
         </p>
         <div class="grid grid-cols-1 gap-4">

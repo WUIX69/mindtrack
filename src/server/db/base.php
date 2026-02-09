@@ -13,7 +13,7 @@ abstract class Base
     /**
      * Get the database connection (Lazy Loading)
      */
-    protected static function conn()
+    public static function conn()
     {
         global $config;
 

@@ -30,6 +30,16 @@ $alert_title = $alert['title'] ?? 'Information';
 $alert_text = $alert['text'] ?? 'Please review carefully.';
 ?>
 
+<?php
+// Get data from GET params - strictly for fetching details in JS
+$service_uuid = $_GET['service'] ?? null;
+$doctor_uuid = $_GET['doctor_uuid'] ?? null;
+$sched_date = $_GET['date'] ?? date('Y-m-d');
+$sched_time = $_GET['time_slot'] ?? null;
+
+$display_date = date('l, F jS, Y', strtotime($sched_date));
+?>
+
 <div class="w-full">
     <!-- Progress Stepper -->
     <?= featured('appointments', 'components/progress-stepper', [
@@ -41,21 +51,32 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
     <div class="space-y-8">
         <!-- Main Summary Card -->
         <div class="bg-card rounded-[2.5rem] shadow-sm border border-border overflow-hidden">
-            <div class="p-10 space-y-10">
+            <div class="p-10 space-y-10" id="review-content">
                 <!-- Summary Section 1: Service -->
-                <div class="flex items-start gap-6">
-                    <div
-                        class="flex items-center justify-center rounded-[1.5rem] bg-primary/10 text-primary p-5 shrink-0 shadow-inner">
-                        <span class="material-symbols-outlined text-5xl">psychology</span>
+                <div class="flex items-start gap-6" id="service-review-loading">
+                    <div class="size-24 bg-muted animate-pulse rounded-[1.5rem]"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-24 bg-muted animate-pulse rounded"></div>
+                        <div class="h-8 w-64 bg-muted animate-pulse rounded"></div>
+                        <div class="h-20 w-full bg-muted animate-pulse rounded"></div>
                     </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
-                            <?= $service_label ?>
-                        </p>
-                        <p class="text-3xl font-black text-foreground tracking-tight">Psychotherapy (60 min)</p>
-                        <p class="text-base text-muted-foreground mt-2 max-w-lg font-medium leading-relaxed">Individual
-                            therapeutic sessions focused
-                            on long-term emotional well-being and personal growth.</p>
+                </div>
+
+                <div class="hidden" id="service-review-data">
+                    <div class="flex items-start gap-6">
+                        <div
+                            class="flex items-center justify-center rounded-[1.5rem] bg-primary/10 text-primary p-5 shrink-0 shadow-inner">
+                            <span class="material-symbols-outlined text-5xl">psychology</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
+                                <?= $service_label ?>
+                            </p>
+                            <p class="text-3xl font-black text-foreground tracking-tight" id="service-name">Loading...
+                            </p>
+                            <p class="text-base text-muted-foreground mt-2 max-w-lg font-medium leading-relaxed"
+                                id="service-desc"></p>
+                        </div>
                     </div>
                 </div>
 
@@ -71,31 +92,40 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
                         <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
                             <?= $date_label ?>
                         </p>
-                        <p class="text-3xl font-black text-foreground tracking-tight">Wednesday, October 25th, 2023</p>
-                        <p class="text-2xl font-black text-primary mt-2">02:30 PM - 03:30 PM (EST)</p>
+                        <p class="text-3xl font-black text-foreground tracking-tight"><?= $display_date ?></p>
+                        <p class="text-2xl font-black text-primary mt-2"><?= $sched_time ?? 'Time not set' ?></p>
                     </div>
                 </div>
 
                 <hr class="border-border/50" />
 
                 <!-- Summary Section 3: Doctor -->
-                <div class="flex items-start gap-6">
-                    <div class="relative shrink-0">
-                        <div class="size-24 bg-muted rounded-[2rem] overflow-hidden border-4 border-border shadow-xl">
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuApRbNdsRqxjXxX7W-pu-yGNEC_r-7ZJwrF56sAMzMocDnKY4XWg4wPAjwT6_XnIv3NL_TAWWRRxMZ-1jEAD4z0Vtp-aKrom6vAfqGiprHvB28eAnaq1u1mzTWuaTmijZ3nYgbd4w8xZ6DZbZJWx7TXBrxe5KMmUk3qwUwcLl2uH3-_vqlS0qWvAHT8APhAfbuoVc0kQWndH0gvQVwLqaRq2DjTkgz0u5O6c0xUjNUfsJaZYfJqsPwfzPpUPWrLjpv9BGHim0gdaQM"
-                                class="size-full object-cover" />
-                        </div>
-                        <div
-                            class="absolute -bottom-1 -right-1 bg-green-500 border-4 border-card size-8 rounded-full shadow-lg">
-                        </div>
+                <div class="flex items-start gap-6" id="doctor-review-loading">
+                    <div class="size-24 bg-muted animate-pulse rounded-[2rem]"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-24 bg-muted animate-pulse rounded"></div>
+                        <div class="h-8 w-48 bg-muted animate-pulse rounded"></div>
                     </div>
-                    <div class="flex flex-col">
-                        <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
-                            <?= $provider_label ?></p>
-                        <p class="text-3xl font-black text-foreground tracking-tight">Dr. Sarah Mitchell, MD</p>
-                        <p class="text-base text-muted-foreground mt-2 font-medium">Clinical Psychologist • Cognitive
-                            Behavioral
-                            Therapy Specialist</p>
+                </div>
+
+                <div class="hidden" id="doctor-review-data">
+                    <div class="flex items-start gap-6">
+                        <div class="relative shrink-0">
+                            <div
+                                class="size-24 bg-muted rounded-[2rem] overflow-hidden border-4 border-border shadow-xl">
+                                <img id="doctor-img" src="" class="size-full object-cover" />
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 bg-green-500 border-4 border-card size-8 rounded-full shadow-lg">
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
+                                <?= $provider_label ?>
+                            </p>
+                            <p class="text-3xl font-black text-foreground tracking-tight" id="doctor-name">Dr.</p>
+                            <p class="text-base text-muted-foreground mt-2 font-medium" id="doctor-specialization"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,13 +157,22 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
 
         <!-- Action Buttons -->
         <div class="flex flex-col-reverse sm:flex-row items-center gap-6 pt-6">
-            <a href="step-2-schedule.php"
-                class="w-full sm:w-auto px-12 py-5 text-sm font-black text-muted-foreground hover:bg-muted rounded-[1.5rem] transition-all flex items-center justify-center gap-3 border border-border shadow-sm">
-                <span class="material-symbols-outlined text-xl">arrow_back</span>
+            <?php
+            $back_params = [
+                'service' => $service_uuid,
+                'date' => $sched_date,
+                'doctor_uuid' => $doctor_uuid,
+                'time_slot' => $sched_time
+            ];
+            if (isset($_GET['patient_id']))
+                $back_params['patient_id'] = $_GET['patient_id'];
+            ?>
+            <a href="step-2-schedule.php?<?= http_build_query($back_params) ?>"
+                class="flex items-center justify-center gap-2 py-4 px-8 border-2 border-border text-foreground font-bold rounded-2xl hover:bg-muted transition-all">
+                <span class="material-symbols-outlined">arrow_back</span>
                 <?= $back_label ?>
             </a>
-            <button
-                onclick="document.getElementById('success-modal').classList.remove('hidden'); document.getElementById('success-modal').classList.add('flex');"
+            <button id="confirm-booking-btn"
                 class="w-full flex-1 px-12 py-5 bg-primary text-white text-xl font-black rounded-[1.5rem] shadow-2xl shadow-primary/30 hover:opacity-95 transform transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
                 <?= $confirm_label ?>
                 <span
@@ -142,6 +181,95 @@ $alert_text = $alert['text'] ?? 'Please review carefully.';
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        const serviceUuid = '<?= $service_uuid ?>';
+        const doctorUuid = '<?= $doctor_uuid ?>';
+        const patientId = '<?= $_GET['patient_id'] ?? '' ?>';
+
+        // Load Service Details
+        $.ajax({
+            url: apiUrl("appointments") + "list-services.php",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    const s = response.data.find(x => x.uuid === serviceUuid);
+                    if (s) {
+                        $('#service-name').text(`${s.name} (${s.duration} min)`);
+                        $('#service-desc').text(s.description);
+                        $('#service-review-loading').addClass('hidden');
+                        $('#service-review-data').removeClass('hidden');
+                    }
+                }
+            }
+        });
+
+        // Load Doctor Details
+        $.ajax({
+            url: apiUrl("appointments") + "list-doctors.php",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    const d = response.data.find(x => x.uuid === doctorUuid);
+                    if (d) {
+                        $('#doctor-name').text(`Dr. ${d.firstname} ${d.lastname}`);
+                        $('#doctor-specialization').text(d.specialization);
+                        $('#doctor-img').attr('src', `https://ui-avatars.com/api/?name=${encodeURIComponent(d.firstname + ' ' + d.lastname)}&background=random`);
+                        $('#doctor-review-loading').addClass('hidden');
+                        $('#doctor-review-data').removeClass('hidden');
+                    }
+                }
+            }
+        });
+
+        $('#confirm-booking-btn').on('click', function () {
+            const btn = $(this);
+            const originalContent = btn.html();
+
+            btn.prop('disabled', true).html('<span class="loading loading-spinner"></span> Processing...');
+
+            const bookingData = {
+                service_uuid: serviceUuid,
+                doctor_uuid: doctorUuid,
+                sched_date: '<?= $sched_date ?>',
+                sched_time: '<?= $sched_time ?>',
+                notes: $('#notes').val()
+            };
+
+            if (patientId) {
+                bookingData.patient_id = patientId;
+            }
+
+            $.ajax({
+                url: apiUrl("appointments") + "book.php",
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(bookingData),
+                success: function (response) {
+                    if (response.success) {
+                        // Update modal with real info
+                        const doctorName = $('#doctor-name').text();
+                        const displayDate = '<?= $display_date ?>';
+                        const modalDesc = `Your appointment request for <strong>${displayDate}</strong> has been sent to ${doctorName}'s team. You can track its status in your dashboard.`;
+                        $('#success-modal-description').html(modalDesc);
+
+                        $('#success-modal').removeClass('hidden').addClass('flex');
+                    } else {
+                        alert('Error: ' + response.message);
+                        btn.prop('disabled', false).html(originalContent);
+                    }
+                },
+                error: function () {
+                    alert('An unexpected error occurred. Please try again.');
+                    btn.prop('disabled', false).html(originalContent);
+                }
+            });
+        });
+    });
+</script>
 
 <!-- Success Modal -->
 <?= featured('appointments', 'components/success-modal', [

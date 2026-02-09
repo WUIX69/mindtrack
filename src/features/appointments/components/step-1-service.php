@@ -39,7 +39,7 @@ $patients = [
     ]) ?>
 
     <!-- Service Selection Grid -->
-    <form action="step-2-schedule.php" method="GET" class="space-y-10">
+    <form id="booking-form-step-1" action="step-2-schedule.php" method="GET" class="space-y-10">
 
         <?php if ($role === 'admin'): ?>
             <!-- Patient Selection (Admin Only) -->
@@ -72,87 +72,11 @@ $patients = [
             </div>
         <?php endif; ?>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Psychotherapy Card -->
-            <label class="relative group cursor-pointer h-full">
-                <input type="radio" name="service" value="psychotherapy" class="peer absolute opacity-0" checked />
-                <div
-                    class="h-full flex flex-col p-8 bg-card rounded-[2rem] border-2 border-transparent shadow-sm peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:shadow-md ring-primary/20 peer-checked:ring-4">
-                    <div
-                        class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-4xl">diversity_1</span>
-                    </div>
-                    <h3 class="text-foreground text-2xl font-black mb-3 tracking-tight">Psychotherapy</h3>
-                    <p class="text-muted-foreground text-sm font-medium leading-relaxed mb-8">
-                        Individual therapeutic sessions focused on long-term emotional well-being and personal growth.
-                    </p>
-                    <div class="mt-auto flex items-center justify-between">
-                        <div class="flex items-center gap-2 text-muted-foreground text-sm font-bold">
-                            <span class="material-symbols-outlined text-xl">schedule</span>
-                            60 mins
-                        </div>
-                        <div
-                            class="w-8 h-8 rounded-full border-2 border-border peer-checked:bg-primary flex items-center justify-center transition-all shadow-sm">
-                            <span
-                                class="material-symbols-outlined text-white text-xl hidden peer-checked:block">check</span>
-                        </div>
-                    </div>
-                </div>
-            </label>
-
-            <!-- CBT Card -->
-            <label class="relative group cursor-pointer h-full">
-                <input type="radio" name="service" value="cbt" class="peer absolute opacity-0" />
-                <div
-                    class="h-full flex flex-col p-8 bg-card rounded-[2rem] border-2 border-transparent shadow-sm peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:shadow-md ring-primary/20 peer-checked:ring-4">
-                    <div
-                        class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-4xl">auto_graph</span>
-                    </div>
-                    <h3 class="text-foreground text-2xl font-black mb-3 tracking-tight">CBT</h3>
-                    <p class="text-muted-foreground text-sm font-medium leading-relaxed mb-8">
-                        Structured, evidence-based sessions targeting specific negative thought patterns and behaviors.
-                    </p>
-                    <div class="mt-auto flex items-center justify-between">
-                        <div class="flex items-center gap-2 text-muted-foreground text-sm font-bold">
-                            <span class="material-symbols-outlined text-xl">schedule</span>
-                            45 mins
-                        </div>
-                        <div
-                            class="w-8 h-8 rounded-full border-2 border-border peer-checked:bg-primary flex items-center justify-center transition-all shadow-sm">
-                            <span
-                                class="material-symbols-outlined text-white text-xl hidden peer-checked:block">check</span>
-                        </div>
-                    </div>
-                </div>
-            </label>
-
-            <!-- Psychological Testing Card -->
-            <label class="relative group cursor-pointer h-full">
-                <input type="radio" name="service" value="testing" class="peer absolute opacity-0" />
-                <div
-                    class="h-full flex flex-col p-8 bg-card rounded-[2rem] border-2 border-transparent shadow-sm peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:shadow-md ring-primary/20 peer-checked:ring-4">
-                    <div
-                        class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-4xl">fact_check</span>
-                    </div>
-                    <h3 class="text-foreground text-2xl font-black mb-3 tracking-tight">Diagnostic Testing</h3>
-                    <p class="text-muted-foreground text-sm font-medium leading-relaxed mb-8">
-                        Comprehensive clinical assessments, neuro-psych evaluations, and formal diagnostic screenings.
-                    </p>
-                    <div class="mt-auto flex items-center justify-between">
-                        <div class="flex items-center gap-2 text-muted-foreground text-sm font-bold">
-                            <span class="material-symbols-outlined text-xl">schedule</span>
-                            120 mins
-                        </div>
-                        <div
-                            class="w-8 h-8 rounded-full border-2 border-border peer-checked:bg-primary flex items-center justify-center transition-all shadow-sm">
-                            <span
-                                class="material-symbols-outlined text-white text-xl hidden peer-checked:block">check</span>
-                        </div>
-                    </div>
-                </div>
-            </label>
+        <div id="services-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[400px]">
+            <!-- Skeleton items while loading -->
+            <?php for ($i = 0; $i < 3; $i++): ?>
+                <div class="h-[300px] bg-card/50 rounded-[2rem] border border-border/50 animate-pulse"></div>
+            <?php endfor; ?>
         </div>
 
         <!-- Actions -->
@@ -161,7 +85,7 @@ $patients = [
                 class="inline-flex items-center justify-center rounded-2xl h-14 px-10 bg-muted text-foreground font-black hover:bg-muted/80 transition-colors shadow-sm">
                 <?= $cancel_label ?>
             </a>
-            <button type="submit"
+            <button type="submit" id="continue-btn"
                 class="inline-flex items-center justify-center rounded-2xl h-14 px-12 bg-primary text-white font-black shadow-xl shadow-primary/20 hover:opacity-95 transform transition-all active:scale-[0.98] group">
                 <?= $continue_label ?>
                 <span
@@ -170,3 +94,107 @@ $patients = [
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function () {
+        const $grid = $('#services-grid');
+        const $form = $('#booking-form-step-1');
+        const $continueBtn = $('#continue-btn');
+
+        // Disable continue button initially
+        $continueBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+        // Load Services
+        $.ajax({
+            url: apiUrl("appointments") + "list-services.php",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    renderServices(response.data);
+                } else {
+                    $grid.html('<p class="col-span-3 text-center text-muted-foreground">Error loading services.</p>');
+                }
+            },
+            error: function () {
+                $grid.html('<p class="col-span-3 text-center text-muted-foreground">Failed to connect to server.</p>');
+            }
+        });
+
+        function renderServices(services) {
+            const preselectedService = '<?= $_GET['service'] ?? '' ?>';
+            const iconMap = {
+                'Therapy': 'diversity_1',
+                'Assessment': 'fact_check',
+                'Consultation': 'medical_services',
+                'Programs': 'groups',
+                'Psychotherapy': 'diversity_1',
+                'CBT': 'auto_graph',
+                'Psychological Testing': 'fact_check'
+            };
+
+            let html = '';
+            services.forEach((s, index) => {
+                const icon = iconMap[s.name] || 'health_and_safety';
+                const isSelected = preselectedService ? (s.uuid === preselectedService) : (index === 0);
+                const checked = isSelected ? 'checked' : '';
+                html += `
+                        <label class="relative group cursor-pointer h-full block">
+                            <input type="radio" name="service" value="${s.uuid}" class="peer absolute opacity-0" ${checked} required />
+                            <div class="h-full flex flex-col p-8 bg-card rounded-[2rem] border-2 border-transparent shadow-sm peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:shadow-md ring-primary/20 peer-checked:ring-4 relative">
+                                <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6">
+                                    <span class="material-symbols-outlined text-4xl">${icon}</span>
+                                </div>
+                                <h3 class="text-foreground text-2xl font-black mb-3 tracking-tight">${s.name}</h3>
+                                <p class="text-muted-foreground text-sm font-medium leading-relaxed mb-8">
+                                    ${s.description}
+                                </p>
+                                <div class="mt-auto flex items-center justify-between">
+                                    <div class="flex items-center gap-2 text-muted-foreground text-sm font-bold">
+                                        <span class="material-symbols-outlined text-xl">schedule</span>
+                                        ${s.duration} mins
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full border-2 border-border flex items-center justify-center transition-all shadow-sm peer-checked:bg-primary">
+                                        <span class="material-symbols-outlined text-white text-xl opacity-0 peer-checked:opacity-100 transition-opacity">check</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    `;
+            });
+            $grid.html(html);
+
+            // Enable continue button
+            $continueBtn.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+
+            // Force selection if none
+            if ($grid.find('input[name="service"]:checked').length === 0) {
+                $grid.find('input[name="service"]').first().prop('checked', true);
+            }
+        }
+
+        $form.on('submit', function (e) {
+            e.preventDefault(); // Stop standard submission to be safe
+
+            const service = $('input[name="service"]:checked').val();
+            const patientId = $('select[name="patient_id"]').val();
+            console.log('Step 1 Manual Navigation Triggered:', { service, patientId });
+
+            if (!service) {
+                alert('Please select a service before continuing.');
+                return false;
+            }
+
+            // Manually build the URL and navigate
+            let targetUrl = `step-2-schedule.php?service=${encodeURIComponent(service)}`;
+            if (patientId) {
+                targetUrl += `&patient_id=${encodeURIComponent(patientId)}`;
+            }
+
+            console.log('Navigating to:', targetUrl);
+            window.location.href = targetUrl;
+
+            return false;
+        });
+    });
+</script>
