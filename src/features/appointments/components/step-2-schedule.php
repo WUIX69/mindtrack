@@ -183,7 +183,8 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
 
             $back_params = [
                 'service' => $initial_service,
-                'doctor_uuid' => $_GET['doctor_uuid'] ?? ''
+                'doctor_uuid' => $_GET['doctor_uuid'] ?? '',
+                'notes' => $_GET['notes'] ?? ''
             ];
             if ($edit_uuid)
                 $back_params['edit_uuid'] = $edit_uuid;
@@ -215,6 +216,16 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
         const $doctorSelect = $('#doctor_uuid');
         const $selectedDateInput = $('#selected-date');
         const $displaySelectedDate = $('#display-selected-date');
+        const $form = $('#booking-form-step-2');
+
+        // Page Configurations from PHP
+        const config = {
+            doctorUuid: <?= json_encode($_GET['doctor_uuid'] ?? '') ?>,
+            rescheduleUuid: <?= json_encode($_GET['reschedule_uuid'] ?? '') ?>,
+            editUuid: <?= json_encode($_GET['edit_uuid'] ?? '') ?>,
+            patientId: <?= json_encode($_GET['patient_id'] ?? '') ?>,
+            notes: <?= json_encode($_GET['notes'] ?? '') ?>
+        };
 
         // Handle Calendar Clicks
         $('.calendar-day').on('click', function () {
@@ -229,7 +240,6 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
             $selectedDateInput.val(date);
 
             // Format for display
-            const options = { month: 'long', day: 'numeric', year: 'numeric' };
             const formattedDate = new Date(date).toLocaleDateString('en-US', {
                 month: 'long',
                 day: 'numeric',
@@ -245,11 +255,10 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
             dataType: "json",
             success: function (response) {
                 if (response.success) {
-                    const preselectedDoctor = '<?= $_GET['doctor_uuid'] ?? '' ?>';
-                    let html = '<option value="" disabled' + (!preselectedDoctor ? ' selected' : '') + '>Select a Provider</option>';
+                    let html = '<option value="" disabled' + (!config.doctorUuid ? ' selected' : '') + '>Select a Provider</option>';
                     response.data.forEach(d => {
-                        const selected = (d.uuid === preselectedDoctor) ? 'selected' : '';
-                        html += `<option value="${d.uuid}" ${selected}>Dr. ${d.firstname} ${d.lastname} - ${d.specialization}</option>`;
+                        const selected = (d.uuid === config.doctorUuid) ? 'selected' : '';
+                        html += `<option value="${d.uuid}" ${selected}>Dr. ${d.firstname} ${d.lastname}</option>`;
                     });
                     $doctorSelect.html(html);
                 } else {
@@ -262,38 +271,36 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
         });
 
         // Manual Navigation Handler
-        $('#booking-form-step-2').on('submit', function (e) {
+        $form.on('submit', function (e) {
             e.preventDefault();
 
             const doctorUuid = $doctorSelect.val();
             const service = $('input[name="service"]').val();
-            const date = $('#selected-date').val();
+            const date = $selectedDateInput.val();
             const timeSlot = $('input[name="time_slot"]:checked').val();
-            const rescheduleUuid = '<?= $_GET['reschedule_uuid'] ?? '' ?>';
-            const editUuid = '<?= $_GET['edit_uuid'] ?? '' ?>';
-            const patientId = '<?= $_GET['patient_id'] ?? '' ?>';
 
             if (!doctorUuid) {
                 alert('Please select a provider before continuing.');
                 return false;
             }
 
-            const params = new URLSearchParams({
-                service: service,
-                date: date,
-                time_slot: timeSlot,
-                doctor_uuid: doctorUuid
-            });
-
-            if (rescheduleUuid) params.append('reschedule_uuid', rescheduleUuid);
-            if (editUuid) params.append('edit_uuid', editUuid);
-            if (patientId) {
-                params.append('patient_id', patientId);
+            if (!date || !timeSlot) {
+                alert('Please select a date and time.');
+                return false;
             }
 
-            console.log('Step 2 Manual Navigation Triggered:', Object.fromEntries(params));
-            window.location.href = `step-3-review.php?${params.toString()}`;
+            const params = new URLSearchParams();
+            params.append('service', service);
+            params.append('doctor_uuid', doctorUuid);
+            params.append('date', date);
+            params.append('time', timeSlot);
 
+            if (config.rescheduleUuid) params.append('reschedule_uuid', config.rescheduleUuid);
+            if (config.editUuid) params.append('edit_uuid', config.editUuid);
+            if (config.patientId) params.append('patient_id', config.patientId);
+            if (config.notes) params.append('notes', config.notes);
+
+            window.location.href = `step-3-review.php?${params.toString()}`;
             return false;
         });
     });

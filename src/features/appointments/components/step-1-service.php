@@ -101,6 +101,14 @@ $patients = [
         const $form = $('#booking-form-step-1');
         const $continueBtn = $('#continue-btn');
 
+        // Page Configurations from PHP
+        const config = {
+            preselectedService: <?= json_encode($_GET['service'] ?? '') ?>,
+            editUuid: <?= json_encode($_GET['edit_uuid'] ?? '') ?>,
+            doctorUuid: <?= json_encode($_GET['doctor_uuid'] ?? '') ?>,
+            notes: <?= json_encode($_GET['notes'] ?? '') ?>
+        };
+
         // Disable continue button initially
         $continueBtn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
 
@@ -122,7 +130,6 @@ $patients = [
         });
 
         function renderServices(services) {
-            const preselectedService = '<?= $_GET['service'] ?? '' ?>';
             const iconMap = {
                 'Therapy': 'diversity_1',
                 'Assessment': 'fact_check',
@@ -136,7 +143,7 @@ $patients = [
             let html = '';
             services.forEach((s, index) => {
                 const icon = iconMap[s.name] || 'health_and_safety';
-                const isSelected = preselectedService ? (s.uuid === preselectedService) : (index === 0);
+                const isSelected = config.preselectedService ? (s.uuid === config.preselectedService) : (index === 0);
                 const checked = isSelected ? 'checked' : '';
                 html += `
                         <label class="relative group cursor-pointer h-full block">
@@ -174,34 +181,23 @@ $patients = [
         }
 
         $form.on('submit', function (e) {
-            e.preventDefault(); // Stop standard submission to be safe
+            e.preventDefault();
 
             const service = $('input[name="service"]:checked').val();
             const patientId = $('select[name="patient_id"]').val();
-            console.log('Step 1 Manual Navigation Triggered:', { service, patientId });
 
             if (!service) {
                 alert('Please select a service before continuing.');
                 return false;
             }
 
-            // Manually build the URL and navigate
-            const editUuid = '<?= $_GET['edit_uuid'] ?? '' ?>';
-            const doctorUuid = '<?= $_GET['doctor_uuid'] ?? '' ?>';
             let targetUrl = `step-2-schedule.php?service=${encodeURIComponent(service)}`;
-            if (patientId) {
-                targetUrl += `&patient_id=${encodeURIComponent(patientId)}`;
-            }
-            if (editUuid) {
-                targetUrl += `&edit_uuid=${encodeURIComponent(editUuid)}`;
-            }
-            if (doctorUuid) {
-                targetUrl += `&doctor_uuid=${encodeURIComponent(doctorUuid)}`;
-            }
+            if (patientId) targetUrl += `&patient_id=${encodeURIComponent(patientId)}`;
+            if (config.editUuid) targetUrl += `&edit_uuid=${encodeURIComponent(config.editUuid)}`;
+            if (config.doctorUuid) targetUrl += `&doctor_uuid=${encodeURIComponent(config.doctorUuid)}`;
+            if (config.notes) targetUrl += `&notes=${encodeURIComponent(config.notes)}`;
 
-            console.log('Navigating to:', targetUrl);
             window.location.href = targetUrl;
-
             return false;
         });
     });

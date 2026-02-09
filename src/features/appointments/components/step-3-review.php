@@ -38,6 +38,7 @@ $sched_date = $_GET['date'] ?? date('Y-m-d');
 $sched_time = $_GET['time_slot'] ?? null;
 $reschedule_uuid = $_GET['reschedule_uuid'] ?? '';
 $edit_uuid = $_GET['edit_uuid'] ?? '';
+$initial_notes = $_GET['notes'] ?? '';
 $appointment_uuid = $reschedule_uuid ?: $edit_uuid;
 
 $display_date = date('l, F jS, Y', strtotime($sched_date));
@@ -145,8 +146,9 @@ if ($appointment_uuid) {
                     <?= $notes_label ?>
                 </label>
                 <textarea
-                    class="w-full rounded-[1.5rem] border-border bg-card text-base font-medium focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-muted-foreground/40 transition-all p-6 min-h-[160px]"
-                    id="notes" placeholder="<?= $notes_placeholder ?>"></textarea>
+                    class="w-full rounded-[1.5rem] border border-border bg-card text-base font-medium focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-muted-foreground/40 transition-all p-6 min-h-[160px]"
+                    id="notes"
+                    placeholder="<?= $notes_placeholder ?>"><?= htmlspecialchars($initial_notes) ?></textarea>
             </div>
         </div>
 
@@ -171,7 +173,8 @@ if ($appointment_uuid) {
                 'service' => $service_uuid,
                 'date' => $sched_date,
                 'doctor_uuid' => $doctor_uuid,
-                'time_slot' => $sched_time
+                'time_slot' => $sched_time,
+                'notes' => $initial_notes
             ];
             if ($reschedule_uuid)
                 $back_params['reschedule_uuid'] = $reschedule_uuid;
@@ -197,9 +200,16 @@ if ($appointment_uuid) {
 
 <script>
     $(document).ready(function () {
-        const serviceUuid = '<?= $service_uuid ?>';
-        const doctorUuid = '<?= $doctor_uuid ?>';
-        const patientId = '<?= $_GET['patient_id'] ?? '' ?>';
+        // Page Configurations from PHP
+        const config = {
+            serviceUuid: <?= json_encode($service_uuid) ?>,
+            doctorUuid: <?= json_encode($doctor_uuid) ?>,
+            patientId: <?= json_encode($_GET['patient_id'] ?? '') ?>,
+            appointmentUuid: <?= json_encode($appointment_uuid) ?>,
+            schedDate: <?= json_encode($sched_date) ?>,
+            schedTime: <?= json_encode($sched_time) ?>,
+            displayDate: <?= json_encode($display_date) ?>
+        };
 
         // Load Service Details
         $.ajax({
@@ -208,9 +218,9 @@ if ($appointment_uuid) {
             dataType: "json",
             success: function (response) {
                 if (response.success) {
-                    const s = response.data.find(x => x.uuid === serviceUuid);
+                    const s = response.data.find(x => x.uuid === config.serviceUuid);
                     if (s) {
-                        $('#service-name').text(`${s.name} (${s.duration} min)`);
+                        $('#service-name').text(s.name);
                         $('#service-desc').text(s.description);
                         $('#service-review-loading').addClass('hidden');
                         $('#service-review-data').removeClass('hidden');
@@ -226,7 +236,7 @@ if ($appointment_uuid) {
             dataType: "json",
             success: function (response) {
                 if (response.success) {
-                    const d = response.data.find(x => x.uuid === doctorUuid);
+                    const d = response.data.find(x => x.uuid === config.doctorUuid);
                     if (d) {
                         $('#doctor-name').text(`Dr. ${d.firstname} ${d.lastname}`);
                         $('#doctor-specialization').text(d.specialization);
@@ -238,57 +248,55 @@ if ($appointment_uuid) {
             }
         });
 
+        // Confirm Booking
         $('#confirm-booking-btn').on('click', function () {
             const btn = $(this);
-            const originalContent = btn.html();
-
             btn.prop('disabled', true).html('<span class="loading loading-spinner"></span> Processing...');
 
             const bookingData = {
-                service_uuid: serviceUuid,
-                doctor_uuid: doctorUuid,
-                sched_date: '<?= $sched_date ?>',
-                sched_time: '<?= $sched_time ?>',
+                service_uuid: config.serviceUuid,
+                doctor_uuid: config.doctorUuid,
+                sched_date: config.schedDate,
+                sched_time: config.schedTime,
                 notes: $('#notes').val()
             };
 
-            const appointmentUuid = '<?= $appointment_uuid ?>';
-            if (appointmentUuid) {
-                bookingData.appointment_uuid = appointmentUuid;
+            if (config.appointmentUuid) {
+                bookingData.appointment_uuid = config.appointmentUuid;
             }
 
-            if (patientId) {
-                bookingData.patient_id = patientId;
+            if (config.patientId) {
+                bookingData.patient_id = config.patientId;
             }
 
             $.ajax({
                 url: apiUrl("appointments") + "book.php",
-                method: 'POST',
+                method: "POST",
                 contentType: 'application/json',
                 data: JSON.stringify(bookingData),
                 success: function (response) {
                     if (response.success) {
                         // Update modal with real info
-                        const isUpdate = !!appointmentUuid;
-                        const doctorName = $('#doctor-name').text();
-                        const displayDate = '<?= $display_date ?>';
+                        const isUpdate = !!config.appointmentUuid;
                         const title = isUpdate ? 'Appointment Updated!' : 'Appointment Requested!';
                         const modalDesc = isUpdate
-                            ? `Your changes for <strong>${displayDate}</strong> have been saved successfully.`
-                            : `Your appointment request for <strong>${displayDate}</strong> has been sent to ${doctorName}'s team. You can track its status in your dashboard.`;
+                            ? `Your changes for <strong>${config.displayDate}</strong> have been saved successfully.`
+                            : `Your request for <strong>${config.displayDate}</strong> has been sent to the clinical team.`;
 
-                        $('#success-modal h3').text(title);
-                        $('#success-modal-description').html(modalDesc);
+                        $('#success-title').text(title);
+                        $('#success-description').html(modalDesc);
 
+                        // Show Modal
                         $('#success-modal').removeClass('hidden').addClass('flex');
                     } else {
                         alert('Error: ' + response.message);
-                        btn.prop('disabled', false).html(originalContent);
                     }
                 },
                 error: function () {
                     alert('An unexpected error occurred. Please try again.');
-                    btn.prop('disabled', false).html(originalContent);
+                },
+                complete: function () {
+                    btn.prop('disabled', false).html('Confirm Appointment <span class="material-symbols-outlined text-xl">check_circle</span>');
                 }
             });
         });

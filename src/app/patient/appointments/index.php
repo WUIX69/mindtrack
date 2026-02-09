@@ -395,7 +395,7 @@ include __DIR__ . '/../layout.php';
                         </div>
                         <div class="lg:w-1/4 flex flex-col sm:flex-row gap-3 lg:justify-end">
                             ${isConfirmed ? `
-                                <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>
+                                <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>
                             ` : isPending ? `
                                 <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="edit-request-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors">Edit Request</button>
                                 <button data-uuid="${a.uuid}" class="withdraw-btn px-5 py-2.5 rounded-xl border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors">Withdraw</button>
@@ -451,10 +451,13 @@ include __DIR__ . '/../layout.php';
             $('#summary-modal').removeClass('hidden').addClass('flex');
         });
 
+        let activeRescheduleNotes = null;
+
         $(document).on('click', '.reschedule-btn', function () {
             const uuid = $(this).data('uuid');
             const service = $(this).data('service');
             const doctor = $(this).data('doctor');
+            const notes = $(this).data('notes');
             const a = allAppointments.find(x => x.uuid === uuid);
 
             if (!a) return;
@@ -462,6 +465,7 @@ include __DIR__ . '/../layout.php';
             activeRescheduleUuid = uuid;
             activeRescheduleService = service;
             activeRescheduleDoctor = doctor;
+            activeRescheduleNotes = notes;
 
             $('#reschedule-summary-doctor').text(`Dr. ${a.doctor_firstname} ${a.doctor_lastname}`);
             $('#reschedule-modal').removeClass('hidden').addClass('flex');
@@ -487,7 +491,7 @@ include __DIR__ . '/../layout.php';
                 doctor_uuid: activeRescheduleDoctor,
                 sched_date: date,
                 sched_time: timeSlot,
-                notes: '' // Keeping notes unchanged or optional
+                notes: activeRescheduleNotes
             };
 
             $.ajax({
