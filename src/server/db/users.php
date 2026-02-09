@@ -60,6 +60,18 @@ class Users extends Base
         }
     }
 
+    public static function singleWhereOtherData($uuid, $model)
+    {
+        try {
+            $stmt = self::conn()->prepare("SELECT * FROM user_{$model}_info WHERE user_uuid = ?");
+            $stmt->execute([$uuid]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [];
+        }
+    }
+
 
     public static function store($data = [])
     {

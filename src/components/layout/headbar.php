@@ -23,14 +23,17 @@ $actionClass = $actionClass ?? 'bg-primary hover:bg-primary/90 text-primary-fore
 $role = $role ?? 'patient';
 $mb = $mb ?? 8;
 
-// Load Identity Data
-require_once __DIR__ . '/../../data/identities.php';
-$identities = getMockIdentities();
+// Load Real User Data
+$user = userData();
+$userName = $user['name'] ?? 'Guest User';
+$userRole = $user['role'] ?? $role;
+$userAvatar = $user['profile']; // already handled on media
+$userSub = match ($userRole) {
+    'doctor' => $user['specialization'] ?? 'Specialist',
+    'patient' => "PID: " . $user['uuid'] ?? 'Patient',
+    default => 'WAYSIDE PSYCHE CENTER',
+};
 
-$userIdentity = $identities[$role] ?? $identities['patient'];
-$userName = $userIdentity['name'];
-$userRole = $userIdentity['sub'];
-$userAvatar = $userIdentity['avatar'];
 ?>
 
 <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-<?= $mb ?>">
@@ -103,9 +106,10 @@ $userAvatar = $userIdentity['avatar'];
 
             <div class="flex items-center gap-3">
                 <div class="text-right hidden sm:block">
-                    <p class="text-sm font-black text-foreground leading-none"><?= $userName ?></p>
-                    <p class="text-[10px] font-bold text-primary uppercase tracking-widest mt-1 opacity-80">
-                        <?= $userRole ?>
+                    <p class="text-sm font-black text-foreground capitalize leading-none"><?= $userName ?></p>
+                    <p
+                        class="text-[10px] font-bold text-primary uppercase tracking-widest mt-1 opacity-80 truncate w-25">
+                        <?= $userSub ?>
                     </p>
                 </div>
                 <div
