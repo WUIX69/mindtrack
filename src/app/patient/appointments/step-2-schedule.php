@@ -15,7 +15,7 @@ $headerData = [
 include_once __DIR__ . '/../layout.php';
 ?>
 
-<div class="w-full pb-12">
+<div class="w-full">
     <?= featured('appointments', 'components/step-2-schedule', [
         'role' => 'patient',
         'header' => [
