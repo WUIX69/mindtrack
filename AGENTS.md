@@ -98,11 +98,12 @@ Each feature is a **self-contained module**.
 
 ```text
 src/features/[feature-name]/
-├── components/    # Feature-specific UI components (PHP) (Include the js inside <script>)
-├── schemas/       # Feature-specific schemas, validation (Respect Validation)
-├── js/            # Feature-specific JavaScript logic (if needed beyond components included <script>)
-└── server/        # Feature-specific backend logic
-└── utils/         # Feature-specific Utility Functions
+├── components/    # Feature UI components (Include jQuery logic here)
+├── schemas/       # Feature-specific validation schema (Respect Validation)
+├── server/
+│   ├── actions/   # API endpoints (e.g., list-items.php, book.php) returning JSON
+│   └── ...        # Other server-side logic
+└── ...
 ```
 
 ### Supported Features
@@ -142,8 +143,13 @@ src/features/[feature-name]/
 ## 🔌 API & Database Communication
 
 - **Database**: Use `Mindtrack\Server\Db\Base` for **Lazy Loaded** PDO connections. `conn.php` has been deprecated/removed.
-- **AJAX**: Use jQuery `$.ajax` or Fetch API for client-server communication.
-- **Responses**: Return JSON for API endpoints (e.g., in `server/` directories).
+- **Client-Side Rendering (CSR)**: Prefer CSR for dynamic features. UI components should fetch data via AJAX actions.
+- **Fail-Safe Manual Navigation**: For multi-step flows, use manual `window.location.href` transitions triggered by JS `submit` handlers instead of default form behavior. This ensures:
+    - Reliability across different browsers/environments.
+    - Explicit control over parameter serialization.
+    - Simplified integration of front-end validation before redirection.
+- **Bidirectional State Persistence**: Always carry and preserve user selections (e.g., `service`, `doctor_uuid`, `date`) via URL GET parameters during both forward ("Continue") and backward ("Back") navigation.
+- **Responses**: Return JSON for API endpoints (e.g., in `server/actions/` directories).
 
 ---
 
