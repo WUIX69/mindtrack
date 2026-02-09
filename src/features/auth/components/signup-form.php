@@ -214,7 +214,7 @@
                 const formData = $form.serialize();
 
                 $.ajax({
-                    url: apiUrl("auth") + "register.php",
+                    url: apiUrl("shared") + "register.php",
                     method: "POST",
                     data: formData,
                     dataType: "json",

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__, 5) . '/src/core/app.php';
+require_once dirname(__DIR__, 3) . '/src/core/app.php';
 apiHeaders();
 
 use Mindtrack\Server\Db\Users;

@@ -90,7 +90,7 @@ The system follows an **Input-Process-Output (IPO)** model.
 
 1. **User Interaction**: Patients navigate a seamless 3-step booking flow (Service Selection → Schedule & Provider → Review & Confirm).
 2. **State Management**: Choices are preserved bidirectionally using URL parameter persistence, allowing users to move back and forth without losing data.
-3. **Processing**: AJAX-driven interface fetches real-time provider availability and service details from backend API actions.
+3. **Processing**: AJAX-driven interface fetches real-time provider availability and service details from backend API actions. Shared actions (e.g., registration) are centralized in `src/server/actions`, while feature-specific actions remain modular. Database logic is abstracted into models (`src/server/db`) to keep actions lightweight.
 4. **Storage**: Data is normalized and stored in a relational MySQL database upon final confirmation.
 
 ---

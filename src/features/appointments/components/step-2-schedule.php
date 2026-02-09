@@ -226,7 +226,7 @@ $role = $role ?? 'patient';
 
         function getDoctors() {
             $.ajax({
-                url: apiUrl("appointments") + "list-doctors.php",
+                url: apiUrl("shared") + "list-doctors.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {

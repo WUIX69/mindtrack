@@ -150,6 +150,8 @@ src/features/[feature-name]/
     - Simplified integration of front-end validation before redirection.
 - **Bidirectional State Persistence**: Always carry and preserve user selections (e.g., `service`, `doctor_uuid`, `date`) via URL GET parameters during both forward ("Continue") and backward ("Back") navigation.
 - **Responses**: Return JSON for API endpoints (e.g., in `server/actions/` directories).
+- **Shared Actions**: Actions used across features (e.g., `list-doctors.php`, `register.php`) MUST go in `src/server/actions/`, not in feature specific folders.
+- **Database Logic**: Do NOT write raw SQL in actions. Encapsulate all DB logic in `src/server/db/` models (e.g., `Users::allWhereDoctors()`). Actions should be "thin" and only handle validation/response.
 
 ---
 

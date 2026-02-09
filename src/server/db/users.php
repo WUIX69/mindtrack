@@ -28,6 +28,31 @@ class Users extends Base
         }
     }
 
+    public static function allWhereDoctors()
+    {
+        try {
+            $stmt = self::conn()->prepare("
+            SELECT u.uuid, u.firstname, u.lastname, di.specialization 
+            FROM users u 
+            JOIN user_doctor_info di ON u.uuid = di.user_uuid 
+            WHERE u.role = 'doctor' AND u.status = 'active'
+        ");
+            $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+            return [
+                'success' => true,
+                'message' => 'Doctors fetched successfully',
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch doctors',
+            ];
+        }
+    }
+
     public static function single($uuid = null)
     {
         try {
@@ -227,5 +252,4 @@ class Users extends Base
             ];
         }
     }
-
 }
