@@ -36,8 +36,17 @@ $service_uuid = $_GET['service'] ?? null;
 $doctor_uuid = $_GET['doctor_uuid'] ?? null;
 $sched_date = $_GET['date'] ?? date('Y-m-d');
 $sched_time = $_GET['time_slot'] ?? null;
+$reschedule_uuid = $_GET['reschedule_uuid'] ?? '';
+$edit_uuid = $_GET['edit_uuid'] ?? '';
+$appointment_uuid = $reschedule_uuid ?: $edit_uuid;
 
 $display_date = date('l, F jS, Y', strtotime($sched_date));
+
+if ($appointment_uuid) {
+    $header_title = "Update Request";
+    $header_desc = "Review your changes before confirming the update.";
+    $confirm_label = "Update Appointment";
+}
 ?>
 
 <div class="w-full">
@@ -164,6 +173,10 @@ $display_date = date('l, F jS, Y', strtotime($sched_date));
                 'doctor_uuid' => $doctor_uuid,
                 'time_slot' => $sched_time
             ];
+            if ($reschedule_uuid)
+                $back_params['reschedule_uuid'] = $reschedule_uuid;
+            if ($edit_uuid)
+                $back_params['edit_uuid'] = $edit_uuid;
             if (isset($_GET['patient_id']))
                 $back_params['patient_id'] = $_GET['patient_id'];
             ?>
@@ -239,6 +252,11 @@ $display_date = date('l, F jS, Y', strtotime($sched_date));
                 notes: $('#notes').val()
             };
 
+            const appointmentUuid = '<?= $appointment_uuid ?>';
+            if (appointmentUuid) {
+                bookingData.appointment_uuid = appointmentUuid;
+            }
+
             if (patientId) {
                 bookingData.patient_id = patientId;
             }
@@ -251,9 +269,15 @@ $display_date = date('l, F jS, Y', strtotime($sched_date));
                 success: function (response) {
                     if (response.success) {
                         // Update modal with real info
+                        const isUpdate = !!appointmentUuid;
                         const doctorName = $('#doctor-name').text();
                         const displayDate = '<?= $display_date ?>';
-                        const modalDesc = `Your appointment request for <strong>${displayDate}</strong> has been sent to ${doctorName}'s team. You can track its status in your dashboard.`;
+                        const title = isUpdate ? 'Appointment Updated!' : 'Appointment Requested!';
+                        const modalDesc = isUpdate
+                            ? `Your changes for <strong>${displayDate}</strong> have been saved successfully.`
+                            : `Your appointment request for <strong>${displayDate}</strong> has been sent to ${doctorName}'s team. You can track its status in your dashboard.`;
+
+                        $('#success-modal h3').text(title);
                         $('#success-modal-description').html(modalDesc);
 
                         $('#success-modal').removeClass('hidden').addClass('flex');

@@ -186,9 +186,17 @@ $patients = [
             }
 
             // Manually build the URL and navigate
+            const editUuid = '<?= $_GET['edit_uuid'] ?? '' ?>';
+            const doctorUuid = '<?= $_GET['doctor_uuid'] ?? '' ?>';
             let targetUrl = `step-2-schedule.php?service=${encodeURIComponent(service)}`;
             if (patientId) {
                 targetUrl += `&patient_id=${encodeURIComponent(patientId)}`;
+            }
+            if (editUuid) {
+                targetUrl += `&edit_uuid=${encodeURIComponent(editUuid)}`;
+            }
+            if (doctorUuid) {
+                targetUrl += `&doctor_uuid=${encodeURIComponent(doctorUuid)}`;
             }
 
             console.log('Navigating to:', targetUrl);

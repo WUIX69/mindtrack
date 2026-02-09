@@ -103,6 +103,54 @@ class appointments extends Base
     }
 
     /**
+     * Update an existing appointment.
+     * 
+     * @param string $uuid
+     * @param array $data
+     * @return array
+     */
+    public static function update($uuid, $data = [])
+    {
+        try {
+            self::beginTransaction();
+
+            $stmt = self::conn()->prepare("
+                UPDATE appointments SET 
+                    doctor_uuid = ?, 
+                    service_uuid = ?, 
+                    sched_date = ?, 
+                    sched_time = ?, 
+                    status = ?, 
+                    notes = ?
+                WHERE uuid = ?
+            ");
+
+            $stmt->execute([
+                $data['doctor_uuid'],
+                $data['service_uuid'],
+                $data['sched_date'],
+                $data['sched_time'],
+                $data['status'] ?? 'pending',
+                $data['notes'] ?? null,
+                $uuid
+            ]);
+
+            self::commit();
+            return [
+                'success' => true,
+                'message' => 'Appointment updated successfully.',
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (appointments::update): " . $e->getMessage());
+            self::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Update failed: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
      * Update appointment status.
      * 
      * @param string $uuid

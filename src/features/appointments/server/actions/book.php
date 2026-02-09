@@ -36,6 +36,7 @@ try {
 
     $validData = $validation['data'];
     $patient_uuid = $session->get('uuid');
+    $existing_uuid = $input['appointment_uuid'] ?? null;
 
     if (!$patient_uuid) {
         $response['message'] = 'User session not found. Please log in again.';
@@ -45,7 +46,6 @@ try {
 
     // Prepare data for storage
     $data = [
-        'uuid' => uuid(),
         'patient_uuid' => $patient_uuid,
         'doctor_uuid' => $validData['doctor_uuid'],
         'service_uuid' => $validData['service_uuid'],
@@ -55,11 +55,16 @@ try {
         'notes' => $validData['notes'] ?? null
     ];
 
-    $result = appointments::store($data);
+    if ($existing_uuid) {
+        $result = appointments::update($existing_uuid, $data);
+    } else {
+        $data['uuid'] = uuid();
+        $result = appointments::store($data);
+    }
 
     if ($result['success']) {
         $response['success'] = true;
-        $response['message'] = 'Appointment booked successfully.';
+        $response['message'] = $existing_uuid ? 'Appointment updated successfully.' : 'Appointment booked successfully.';
     } else {
         $response['message'] = $result['message'];
     }

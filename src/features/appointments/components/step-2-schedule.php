@@ -109,8 +109,8 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
                             class="calendar-day aspect-square flex flex-col items-center justify-center rounded-2xl transition-all text-sm font-black border <?= $btnClass ?>">
                             <?= $d ?>
                             <?php if ($isToday): ?>
-                                <span
-                                    class="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[9px] opacity-90 font-black uppercase tracking-tighter">Today</span>
+                                <!-- <span
+                                    class="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[9px] opacity-90 font-black uppercase tracking-tighter">Today</span> -->
                             <?php endif; ?>
                         </button>
                         <?php
@@ -178,15 +178,29 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
         <!-- Sticky Bottom Navigation -->
         <div class="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
             <?php
-            $back_params = ['service' => $initial_service];
+            $reschedule_uuid = $_GET['reschedule_uuid'] ?? '';
+            $edit_uuid = $_GET['edit_uuid'] ?? '';
+
+            $back_params = [
+                'service' => $initial_service,
+                'doctor_uuid' => $_GET['doctor_uuid'] ?? ''
+            ];
+            if ($edit_uuid)
+                $back_params['edit_uuid'] = $edit_uuid;
             if (isset($_GET['patient_id']))
                 $back_params['patient_id'] = $_GET['patient_id'];
             ?>
-            <a href="step-1-service.php?<?= http_build_query($back_params) ?>"
-                class="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-sm bg-muted text-foreground hover:bg-muted/80 transition-colors w-full sm:w-auto justify-center shadow-sm">
-                <span class="material-symbols-outlined text-xl">arrow_back</span>
-                <?= $back_label ?>
-            </a>
+
+            <?php if (!$reschedule_uuid): ?>
+                <a href="step-1-service.php?<?= http_build_query($back_params) ?>"
+                    class="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-sm bg-muted text-foreground hover:bg-muted/80 transition-colors w-full sm:w-auto justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-xl">arrow_back</span>
+                    <?= $back_label ?>
+                </a>
+            <?php else: ?>
+                <div class="hidden sm:block"></div>
+            <?php endif; ?>
+
             <button type="submit"
                 class="inline-flex items-center justify-center gap-3 px-12 py-4 rounded-2xl font-black text-sm bg-primary text-white shadow-xl shadow-primary/25 hover:opacity-95 transform transition-all active:scale-[0.98] w-full sm:w-auto group">
                 <?= $continue_label ?>
@@ -251,10 +265,12 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
         $('#booking-form-step-2').on('submit', function (e) {
             e.preventDefault();
 
+            const doctorUuid = $doctorSelect.val();
             const service = $('input[name="service"]').val();
             const date = $('#selected-date').val();
             const timeSlot = $('input[name="time_slot"]:checked').val();
-            const doctorUuid = $('#doctor_uuid').val();
+            const rescheduleUuid = '<?= $_GET['reschedule_uuid'] ?? '' ?>';
+            const editUuid = '<?= $_GET['edit_uuid'] ?? '' ?>';
             const patientId = '<?= $_GET['patient_id'] ?? '' ?>';
 
             if (!doctorUuid) {
@@ -269,6 +285,8 @@ $timeSlots = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'
                 doctor_uuid: doctorUuid
             });
 
+            if (rescheduleUuid) params.append('reschedule_uuid', rescheduleUuid);
+            if (editUuid) params.append('edit_uuid', editUuid);
             if (patientId) {
                 params.append('patient_id', patientId);
             }
