@@ -12,14 +12,16 @@ $input = json_decode(file_get_contents('php://input'), true);
 $appointment_uuid = $input['appointment_uuid'] ?? null;
 
 if (!$appointment_uuid) {
-    echo json_encode(['success' => false, 'message' => 'Appointment ID is required.']);
+    $response['message'] = 'Appointment ID is required.';
+    echo json_encode($response);
     exit;
 }
 
 try {
     $patient_uuid = $session->get('uuid');
     if (!$patient_uuid) {
-        echo json_encode(['success' => false, 'message' => 'Unauthorized.']);
+        $response['message'] = 'Unauthorized.';
+        echo json_encode($response);
         exit;
     }
 
@@ -38,19 +40,24 @@ try {
     }
 
     if (!$isOwner) {
-        echo json_encode(['success' => false, 'message' => 'You do not have permission to modify this appointment.']);
+        $response['message'] = 'You do not have permission to modify this appointment.';
+        echo json_encode($response);
         exit;
     }
 
     $result = appointments::updateStatus($appointment_uuid, 'cancelled');
 
     if ($result['success']) {
-        echo json_encode(['success' => true, 'message' => 'Appointment withdrawn successfully.']);
+        $response['success'] = true;
+        $response['message'] = 'Appointment withdrawn successfully.';
+        $response = array_merge($response, $result);
     } else {
-        echo json_encode(['success' => false, 'message' => $result['message']]);
+        $response['message'] = $result['message'];
     }
 } catch (Exception $e) {
     error_log("Cancel Appointment Error: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'An internal error occurred.']);
+    $response['message'] = 'An internal error occurred.';
 }
+echo json_encode($response);
+exit;
 exit;

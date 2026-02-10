@@ -17,13 +17,7 @@ try {
     }
 
     $result = appointments::allWherePatient($patient_uuid);
-    if ($result['success']) {
-        $response['success'] = true;
-        $response['data'] = $result['data'];
-        $response['message'] = 'Appointments fetched successfully.';
-    } else {
-        $response['message'] = $result['message'];
-    }
+    $response = array_merge($response, $result);
 } catch (Exception $e) {
     error_log("List Appointments Error: " . $e->getMessage());
     $response['message'] = 'An internal error occurred.';

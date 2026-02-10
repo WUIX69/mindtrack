@@ -116,7 +116,7 @@ $patient_placeholder = 'Search patients...';
 
         function getServices() {
             $.ajax({
-                url: apiUrl("shared") + "list-services.php",
+                url: apiUrl("shared") + "services.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {

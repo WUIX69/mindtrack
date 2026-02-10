@@ -106,7 +106,7 @@ include __DIR__ . '/../layout.php';
 
         function fetchDoctors() {
             $.ajax({
-                url: apiUrl("shared") + "list-doctors.php",
+                url: apiUrl("shared") + "doctors.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -122,7 +122,7 @@ include __DIR__ . '/../layout.php';
 
         function fetchServices() {
             $.ajax({
-                url: apiUrl("shared") + "list-services.php",
+                url: apiUrl("shared") + "services.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {

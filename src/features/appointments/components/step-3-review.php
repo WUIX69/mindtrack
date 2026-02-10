@@ -211,7 +211,7 @@ $role = $role ?? 'patient';
 
         function getServiceDetails() {
             $.ajax({
-                url: apiUrl("shared") + "list-services.php",
+                url: apiUrl("shared") + "services.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -230,7 +230,7 @@ $role = $role ?? 'patient';
 
         function getDoctorDetails() {
             $.ajax({
-                url: apiUrl("shared") + "list-doctors.php",
+                url: apiUrl("shared") + "doctors.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
