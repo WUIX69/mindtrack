@@ -32,9 +32,10 @@ class Users extends Base
     {
         try {
             $stmt = self::conn()->prepare("
-            SELECT u.uuid, u.firstname, u.lastname, di.specialization 
+            SELECT u.uuid, u.firstname, u.lastname, s.name AS specialization 
             FROM users u 
             JOIN user_doctor_info di ON u.uuid = di.user_uuid 
+            LEFT JOIN specializations s ON di.specialization_id = s.id
             WHERE u.role = 'doctor' AND u.status = 'active'
         ");
             $stmt->execute();
@@ -49,6 +50,39 @@ class Users extends Base
             return [
                 'success' => false,
                 'message' => 'Failed to fetch doctors',
+            ];
+        }
+    }
+
+    public static function allWhereDoctorsBySpecialization($specializationId = null)
+    {
+        try {
+            // If no specialization required (NULL), return all doctors
+            if ($specializationId === null) {
+                return self::allWhereDoctors();
+            }
+
+            $stmt = self::conn()->prepare("
+                SELECT u.uuid, u.firstname, u.lastname, s.name AS specialization 
+                FROM users u 
+                JOIN user_doctor_info di ON u.uuid = di.user_uuid 
+                LEFT JOIN specializations s ON di.specialization_id = s.id
+                WHERE u.role = 'doctor' 
+                AND u.status = 'active'
+                AND di.specialization_id = ?
+            ");
+            $stmt->execute([$specializationId]);
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+            return [
+                'success' => true,
+                'message' => 'Doctors fetched successfully',
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch doctors by specialization',
             ];
         }
     }
@@ -88,7 +122,16 @@ class Users extends Base
     public static function singleWhereOtherData($uuid, $model)
     {
         try {
-            $stmt = self::conn()->prepare("SELECT * FROM user_{$model}_info WHERE user_uuid = ?");
+            $query = "SELECT * FROM user_{$model}_info WHERE user_uuid = ?";
+            if ($model === 'doctor') {
+                $query = "
+                    SELECT di.*, s.name AS specialization 
+                    FROM user_doctor_info di 
+                    LEFT JOIN specializations s ON di.specialization_id = s.id 
+                    WHERE di.user_uuid = ?
+                ";
+            }
+            $stmt = self::conn()->prepare($query);
             $stmt->execute([$uuid]);
             return $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
         } catch (PDOException $e) {
@@ -132,11 +175,17 @@ class Users extends Base
                 $stmtPatient->execute([$data['uuid']]);
             } elseif ($role === 'doctor') {
                 $stmtDoctor = self::conn()->prepare("
-                    INSERT INTO user_doctor_info (user_uuid, specialization, license_number, consultation_fee) VALUES (?, ?, ?, ?)
+                    INSERT INTO user_doctor_info (user_uuid, specialization_id, license_number, consultation_fee) VALUES (?, ?, ?, ?)
                 ");
+
+                // Keep defaults safe, assuming 'General Psychologist' is 8 or similar. 
+                // Creating a fallback logic if ID not known is complex without looking it up, 
+                // so we rely on the migration logic ensuring IDs exist.
+                $specId = $data['specialization_id'] ?? 8;
+
                 $stmtDoctor->execute([
                     $data['uuid'],
-                    $data['specialization'] ?? 'General Psychologist',
+                    $specId,
                     $data['license_number'] ?? 'LIC-' . strtoupper(bin2hex(random_bytes(4))),
                     $data['consultation_fee'] ?? 1000.00
                 ]);

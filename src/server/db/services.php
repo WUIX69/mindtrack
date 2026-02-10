@@ -61,9 +61,10 @@ class Services extends Base
                     description, 
                     status,
                     price, 
-                    duration
+                    duration,
+                    specialization_id
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?, ?, ?
                 )
             ");
 
@@ -74,7 +75,8 @@ class Services extends Base
                 $data['description'],
                 $data['status'],
                 $data['price'],
-                $data['duration']
+                $data['duration'],
+                $data['specialization_id'] ?? null
             ]);
 
             self::commit();
@@ -105,6 +107,7 @@ class Services extends Base
                     status=?,
                     price=?, 
                     duration=?,
+                    specialization_id=?,
                     updated_at=NOW()
                 WHERE uuid=?
             ");
@@ -116,6 +119,7 @@ class Services extends Base
                 $data['status'],
                 $data['price'],
                 $data['duration'],
+                $data['specialization_id'] ?? null,
                 $data['uuid']
             ]);
 

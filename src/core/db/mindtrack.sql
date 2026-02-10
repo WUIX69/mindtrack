@@ -69,13 +69,44 @@ ALTER TABLE `user_patient_info`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `specializations`
+--
+
+CREATE TABLE `specializations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `specializations`
+--
+
+INSERT INTO `specializations` (`id`, `name`, `description`, `status`) VALUES
+(1, 'Clinical Psychology', 'Diagnosis and treatment of mental disorders', 'active'),
+(2, 'Counseling Psychology', 'Guidance for emotional and behavioral issues', 'active'),
+(3, 'Child & Adolescent Psychology', 'Mental health care for children and teens', 'active'),
+(4, 'Neuropsychology', 'Brain-behavior relationships and cognitive assessment', 'active'),
+(5, 'Forensic Psychology', 'Psychology applied to legal and criminal contexts', 'active'),
+(6, 'Health Psychology', 'Behavioral factors in physical health and illness', 'active'),
+(7, 'Industrial-Organizational Psychology', 'Workplace behavior and organizational wellness', 'active'),
+(8, 'General Psychologist', 'Broad-spectrum psychological assessment and care', 'active');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_doctor_info`
 --
 
 CREATE TABLE `user_doctor_info` (
   `id` int(11) NOT NULL,
   `user_uuid` char(36) NOT NULL,
-  `specialization` varchar(255) DEFAULT NULL,
+  `specialization_id` int(11) DEFAULT NULL,
   `license_number` varchar(100) DEFAULT NULL,
   `bio` text DEFAULT NULL,
   `schedule` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`schedule`)),
@@ -87,7 +118,8 @@ CREATE TABLE `user_doctor_info` (
 --
 ALTER TABLE `user_doctor_info`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_uuid` (`user_uuid`);
+  ADD UNIQUE KEY `user_uuid` (`user_uuid`),
+  ADD KEY `specialization_id` (`specialization_id`);
 
 -- --------------------------------------------------------
 
@@ -126,6 +158,7 @@ CREATE TABLE `services` (
   `status` enum('active','inactive') NOT NULL DEFAULT 'active',
   `price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `duration` int(11) NOT NULL DEFAULT 60 COMMENT 'Duration in minutes',
+  `specialization_id` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -135,7 +168,8 @@ CREATE TABLE `services` (
 --
 ALTER TABLE `services`
   ADD PRIMARY KEY (`uuid`),
-  ADD KEY `category_id` (`category_id`);
+  ADD KEY `category_id` (`category_id`),
+  ADD KEY `specialization_id` (`specialization_id`);
 
 -- --------------------------------------------------------
 
@@ -283,13 +317,15 @@ ALTER TABLE `user_patient_info`
 -- Constraints for table `user_doctor_info`
 --
 ALTER TABLE `user_doctor_info`
-  ADD CONSTRAINT `fk_doctor_user` FOREIGN KEY (`user_uuid`) REFERENCES `users` (`uuid`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_doctor_user` FOREIGN KEY (`user_uuid`) REFERENCES `users` (`uuid`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_doctor_specialization` FOREIGN KEY (`specialization_id`) REFERENCES `specializations` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `services`
 --
 ALTER TABLE `services`
-  ADD CONSTRAINT `fk_service_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_service_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_service_specialization` FOREIGN KEY (`specialization_id`) REFERENCES `specializations` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `appointments`

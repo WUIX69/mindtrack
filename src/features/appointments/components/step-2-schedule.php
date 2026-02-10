@@ -226,7 +226,7 @@ $role = $role ?? 'patient';
 
         function getDoctors() {
             $.ajax({
-                url: apiUrl("shared") + "doctors.php",
+                url: apiUrl("shared") + "doctors.php?service_uuid=" + encodeURIComponent(config.service),
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
