@@ -23,7 +23,7 @@ include_once __DIR__ . '/../layout.php';
             'placeholder' => 'Add any specific concerns, recent symptoms, or information you\'d like your provider to know beforehand...'
         ],
         'alert' => [
-            'title' => 'Pending Approval',
+            'title' => isset($_GET['reschedule_uuid']) ? 'Reschedule Approval' : 'Pending Approval',
             'text' => "Your appointment is currently <strong>pending approval</strong> by the clinic staff. You will receive an email and mobile notification once your request is confirmed, typically within 2-4 business hours."
         ]
     ]) ?>

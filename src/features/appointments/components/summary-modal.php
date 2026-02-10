@@ -88,6 +88,9 @@
             } else if (isPending) {
                 statusClass = 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400';
                 statusLabel = 'Pending Approval';
+            } else if (a.status === 'rescheduled') {
+                statusClass = 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400';
+                statusLabel = 'Reschedule Approval';
             } else if (a.status === 'cancelled') {
                 statusClass = 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400';
                 statusLabel = 'Cancelled';

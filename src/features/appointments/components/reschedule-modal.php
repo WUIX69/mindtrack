@@ -124,7 +124,8 @@
                 doctor_uuid: activeRescheduleDoctor,
                 sched_date: date,
                 sched_time: timeSlot,
-                notes: activeRescheduleNotes
+                notes: activeRescheduleNotes,
+                is_reschedule: true
             };
 
             $.ajax({

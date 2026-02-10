@@ -51,7 +51,7 @@ try {
         'service_uuid' => $validData['service_uuid'],
         'sched_date' => $validData['sched_date'],
         'sched_time' => $validData['sched_time'],
-        'status' => 'pending',
+        'status' => ($existing_uuid && ($input['is_reschedule'] ?? false)) ? 'rescheduled' : 'pending',
         'notes' => $validData['notes'] ?: null
     ];
 

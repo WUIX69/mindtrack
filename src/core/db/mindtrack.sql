@@ -206,7 +206,7 @@ CREATE TABLE `appointments` (
   `service_uuid` char(36) NOT NULL,
   `sched_date` date NOT NULL,
   `sched_time` time NOT NULL,
-  `status` enum('pending','confirmed','completed','cancelled','no_show') NOT NULL DEFAULT 'pending',
+  `status` enum('pending','confirmed','completed','cancelled','no_show','rescheduled') NOT NULL DEFAULT 'pending',
   `notes` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
