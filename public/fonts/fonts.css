@@ -76,3 +76,37 @@
     font-display: swap;
     src: url("Poppins-ExtraBold.ttf") format("truetype");
 }
+
+/* 1. Define the local font face */
+@font-face {
+    font-family: "Material Symbols Outlined";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: block;
+    /* Adjust path if not using a standard /public folder */
+    src: url("material-symbols-outlined.woff2") format("woff2");
+}
+
+@layer base {
+    .material-symbols-outlined {
+        /* 2. Link the class to the @font-face name */
+        font-family: "Material Symbols Outlined";
+        font-weight: normal;
+        font-style: normal;
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+
+        /* Keep your existing variations */
+        font-variation-settings:
+            "FILL" 0,
+            "wght" 400,
+            "GRAD" 0,
+            "opsz" 24;
+    }
+}
