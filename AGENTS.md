@@ -138,6 +138,35 @@ src/features/[feature-name]/
 - **Partial/Views**: `kebab-case.php`
 - **JS/CSS**: `kebab-case.js`, `kebab-case.css`
 
+### Reusable Components
+
+- **Documentation**: All reusable components (e.g., modals, cards) MUST start with a PHP DocBlock header defining the expected parameters.
+    ```php
+    /**
+     * Component Name
+     *
+     * @param string $title
+     * @param string $message
+     */
+    ```
+- **Data Injection**:
+    - **Pattern**: Use **Client-Side Rendering (CSR)** for content injection. Avoid inline PHP echoing directly into HTML attributes or text content for dynamic data.
+    - **Implementation**: Initialize JavaScript constants from PHP variables at the start of the script block, then use jQuery/JS to inject content into the DOM.
+    - **Example**:
+
+        ```php
+        <!-- HTML Shell (Empty Containers) -->
+        <h3 id="modal-title">Default Title</h3>
+
+        <!-- Script -->
+        <script>
+            const title = "<?= $title ?? 'Default Title' ?>";
+            $('#modal-title').text(title);
+        </script>
+        ```
+
+    - This ensures cleaner separation of concerns and facilitates reusability.
+
 ---
 
 ## 🔌 API & Database Communication
@@ -155,7 +184,7 @@ src/features/[feature-name]/
     - Always end with `echo json_encode($response); exit;`.
 - **Naming Conventions**: Use **noun-based** naming for resource actions (e.g., `doctors.php`, `services.php`) rather than verb-based (e.g., `list-doctors.php`).
 - **Shared Actions**: Actions used across features (e.g., `doctors.php`, `register.php`) MUST go in `src/server/actions/`, not in feature specific folders.
-- **Database Logic**: Do NOT write raw SQL in actions. Encapsulate all DB logic in `src/server/db/` models (e.g., `Users::allWhereDoctors()`). Actions should be "thin" and only handle validation/response.
+- **Database Logic**: Do NOT write raw SQL in actions. Encapsulate all DB logic in `src/server/db/` models (e.g., `Users::allWhereDoctors()`) if its logic is share-able, if its only specific to a feature, then write it in the feature `src/features/<feature>/server/db` specific folder. Actions should be "thin" and only handle validation/response.
 
 ---
 
@@ -198,6 +227,7 @@ The universal HTML shell. All other layouts include this file.
 
 ```php
 <?php
+$currentPage = "dashboard";
 $pageTitle = "Dashboard";
 $headerData = [
     'title' => 'Welcome Back!',
