@@ -12,7 +12,6 @@ $headerData = [
     'actionUrl' => 'step-1-service.php',
     'mb' => 4
 ];
-
 include_once __DIR__ . '/../layout.php';
 ?>
 
@@ -139,19 +138,12 @@ include_once __DIR__ . '/../layout.php';
 
 <!-- Modals -->
 <?= featured('appointments', 'components/summary-modal') ?>
-<?php
-featured('appointments', 'components/withdraw-modal', [
+<?= featured('appointments', 'components/withdraw-modal', [
+    'role' => 'admin',
     'title' => 'Delete Appointment?',
     'message' => 'Are you sure you want to permanently delete this appointment? This action cannot be undone.',
     'confirm_text' => 'Yes, Delete',
-    'cancel_text' => 'Cancel'
-]);
-featured('appointments', 'components/confirmation-modal', [
-    'title' => 'Confirm Appointment?',
-    'message' => 'Are you sure you want to confirm this appointment? The status will be updated to Confirmed.',
-    'confirm_text' => 'Yes, Confirm'
-]);
-?>
+]); ?>
 
 <script>
     $(document).ready(function () {
@@ -278,16 +270,9 @@ featured('appointments', 'components/confirmation-modal', [
             const end = start + itemsPerPage;
             const pageData = window.filteredAppointments.slice(start, end);
 
+
             pageData.forEach(appt => {
-                const statusColors = {
-                    'pending': 'bg-warning/10 text-warning',
-                    'confirmed': 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-                    'scheduled': 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-                    'rescheduled': 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
-                    'completed': 'bg-success/10 text-success',
-                    'cancelled': 'bg-error/10 text-error',
-                    'no-show': 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
-                };
+                const statusColors = APPOINTMENT_STATUS_COLORS;
                 const statusClass = statusColors[appt.status.toLowerCase()] || 'bg-muted text-muted-foreground';
 
                 const pFirst = appt.patient_firstname || '';
@@ -305,7 +290,7 @@ featured('appointments', 'components/confirmation-modal', [
                 const formattedTime = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
                 const row = `
-                    <tr class="hover:bg-muted/30 transition-colors group">
+                    <tr class="hover:bg-muted/30 transition-colors group cursor-pointer appointment-row" data-uuid="${appt.uuid}">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="size-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
@@ -331,27 +316,51 @@ featured('appointments', 'components/confirmation-modal', [
                         </td>
                         <td class="px-6 py-4">
                             <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${statusClass} uppercase tracking-wide">
-                                ${appt.status}
+                                ${appt.status.replace('_', ' ')}
                             </span>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <button class="confirm-appt-trigger size-8 rounded-lg flex items-center justify-center bg-success/10 text-success hover:bg-success hover:text-white transition-all"
-                                    title="Confirm" data-uuid="${appt.uuid}">
-                                    <span class="material-symbols-outlined text-[18px]">check</span>
+                            <div class="relative action-dropdown">
+                                <button class="action-dropdown-toggle size-8 rounded-lg flex items-center justify-center bg-muted text-muted-foreground hover:text-primary hover:bg-muted/80 transition-all border border-border" 
+                                    title="Actions" data-uuid="${appt.uuid}" data-service="${appt.service_uuid}" data-patient="${appt.patient_uuid}">
+                                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
                                 </button>
-                                <button class="btn-edit size-8 rounded-lg flex items-center justify-center bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
-                                    title="Edit" data-uuid="${appt.uuid}" data-service="${appt.service_uuid}" data-patient="${appt.patient_uuid}">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                </button>
-                                <button class="view-summary-btn size-8 rounded-lg flex items-center justify-center bg-muted text-muted-foreground hover:text-primary transition-all border border-border"
-                                    title="View" data-uuid="${appt.uuid}">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                </button>
-                                <button class="withdraw-btn size-8 rounded-lg flex items-center justify-center bg-error/10 text-error hover:bg-error hover:text-white transition-all"
-                                    title="Delete" data-uuid="${appt.uuid}">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                                </button>
+                                <div class="action-dropdown-menu hidden absolute right-0 mt-1 w-52 bg-card rounded-xl border border-border shadow-xl z-50 py-1">
+                                    <!-- Change Status -->
+                                    <p class="text-left py-2 pl-3.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Change Status</p>
+                                    <button class="status-action w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}" data-status="pending">
+                                        <span>⏳</span> Pending
+                                    </button>
+                                    <button class="status-action w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}" data-status="confirmed">
+                                        <span>✅</span> Confirmed
+                                    </button>
+                                    <button class="status-action w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}" data-status="completed">
+                                        <span>🏁</span> Completed
+                                    </button>
+                                    <button class="status-action w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}" data-status="cancelled">
+                                        <span>❌</span> Cancelled
+                                    </button>
+                                    <button class="status-action w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}" data-status="no_show">
+                                        <span>🚫</span> No Show
+                                    </button>
+                                    <button class="status-action w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}" data-status="rescheduled">
+                                        <span>🔄</span> Rescheduled
+                                    </button>
+                                    <div class="border-t border-border my-1"></div>
+                                    <!-- Manage -->
+                                    <p class="text-left py-2 pl-3.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Manage</p>
+                                    <button class="btn-edit w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}" data-service="${appt.service_uuid}" data-patient="${appt.patient_uuid}">
+                                        <span>✏️</span> Edit
+                                    </button>
+                                    <button class="view-summary-btn w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${appt.uuid}">
+                                        <span>👁</span> View
+                                    </button>
+                                    <div class="border-t border-border my-1"></div>
+                                    <!-- Danger -->
+                                    <button class="delete-btn w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2 text-error font-semibold" data-uuid="${appt.uuid}">
+                                        <span>🗑</span> Delete
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -426,9 +435,124 @@ featured('appointments', 'components/confirmation-modal', [
 
         // --- Actions ---
 
+        // Dropdown Toggle
+        $('body').on('click', '.action-dropdown-toggle', function (e) {
+            e.stopPropagation();
+            const $menu = $(this).siblings('.action-dropdown-menu');
+            const wasHidden = $menu.hasClass('hidden');
 
+            // Close all other dropdowns
+            $('.action-dropdown-menu').addClass('hidden');
 
-        $(document).on('click', '.btn-edit', function () {
+            // Toggle this dropdown
+            if (wasHidden) {
+                $menu.removeClass('hidden');
+            }
+        });
+
+        // Close dropdown when clicking outside
+        $('body').on('click', function (e) {
+            if (!$(e.target).closest('.action-dropdown').length) {
+                $('.action-dropdown-menu').addClass('hidden');
+            }
+        });
+
+        // Close dropdown on Escape key
+        $('body').on('keydown', function (e) {
+            if (e.key === 'Escape') {
+                $('.action-dropdown-menu').addClass('hidden');
+            }
+        });
+
+        // Status Change Handler
+        $('body').on('click', '.status-action', function (e) {
+            e.stopPropagation();
+            const uuid = $(this).data('uuid');
+            const status = $(this).data('status');
+            const btn = $(this);
+            const originalText = btn.html();
+
+            btn.prop('disabled', true).html('<span class="loading loading-spinner loading-xs"></span> Updating...');
+
+            $.ajax({
+                url: apiUrl("appointments") + "update-status.php",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ appointment_uuid: uuid, status: status }),
+                success: function (response) {
+                    if (!response.success) {
+                        alert(response.message);
+                        return;
+                    }
+                    $('.action-dropdown-menu').addClass('hidden');
+                    fetchAppointments(); // Refresh list
+                },
+                error: function () {
+                    alert('Failed to update status. Please try again.');
+                },
+                complete: function () {
+                    btn.prop('disabled', false).html(originalText);
+                }
+            });
+        });
+
+        // Delete Handler - directly open withdraw modal
+        let activeWithdrawUuid = null;
+
+        $('body').on('click', '.delete-btn', function (e) {
+            e.stopPropagation();
+            const uuid = $(this).data('uuid');
+            $('.action-dropdown-menu').addClass('hidden');
+
+            // Set the UUID and open the modal directly
+            activeWithdrawUuid = uuid;
+            $('#withdraw-modal').removeClass('hidden').addClass('flex');
+        });
+
+        // Handle the actual delete confirmation
+        $('#confirm-withdraw-btn').off('click').on('click', function () {
+            if (!activeWithdrawUuid) return;
+            const btn = $(this);
+            const originalText = btn.text();
+            btn.prop('disabled', true).html('<span class="loading loading-spinner"></span> Processing...');
+
+            $.ajax({
+                url: apiUrl("appointments") + "delete-appointment.php",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ appointment_uuid: activeWithdrawUuid }),
+                success: function (response) {
+                    if (!response.success) {
+                        alert(response.message);
+                        return;
+                    }
+                    $('#withdraw-modal').addClass('hidden').removeClass('flex');
+                    fetchAppointments(); // Refresh list
+                },
+                error: function () {
+                    alert('Failed to delete appointment. Please try again.');
+                },
+                complete: function () {
+                    btn.prop('disabled', false).text(originalText);
+                    activeWithdrawUuid = null;
+                }
+            });
+        });
+
+        // Row Click Handler - open summary modal (exclude clicks on dropdown)
+        $('body').on('click', '.appointment-row', function (e) {
+            // Don't trigger if clicking inside the dropdown
+            if ($(e.target).closest('.action-dropdown').length) {
+                return;
+            }
+
+            const uuid = $(this).data('uuid');
+            // Trigger the view summary button logic
+            $(this).find('.view-summary-btn').trigger('click');
+        });
+
+        $('body').on('click', '.btn-edit', function (e) {
+            e.stopPropagation();
             const uuid = $(this).data('uuid');
             const service = $(this).data('service');
             const patient = $(this).data('patient');

@@ -54,6 +54,31 @@ class Users extends Base
         }
     }
 
+    public static function allWherePatients()
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT u.uuid as id, CONCAT(u.firstname, ' ', u.lastname) as name, u.email 
+                FROM users u 
+                WHERE u.role = 'patient' AND u.status = 'active'
+            ");
+            $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+            return [
+                'success' => true,
+                'message' => 'Patients fetched successfully',
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::allWherePatients): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch patients',
+            ];
+        }
+    }
+
+
     public static function allWhereDoctorsBySpecialization($specializationId = null)
     {
         try {

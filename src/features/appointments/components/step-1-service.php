@@ -7,6 +7,9 @@
 $role = $role ?? 'patient';
 $patient_placeholder = 'Search patients...';
 
+
+// Check if we are in edit mode
+$isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
 ?>
 
 <div class="w-full">
@@ -22,25 +25,43 @@ $patient_placeholder = 'Search patients...';
         <?php if ($role === 'admin'): ?>
             <!-- Patient Selection (Admin Only) -->
             <div class="bg-card p-8 rounded-[2rem] border border-border shadow-sm space-y-6">
+                <!-- Header -->
                 <div class="flex items-center gap-4">
                     <div class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
                         <span class="material-symbols-outlined text-2xl">person_search</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black text-foreground tracking-tight">Select Patient</h3>
-                        <p class="text-sm text-muted-foreground font-medium">Choose a patient from the directory.</p>
+                        <h3 class="text-xl font-black text-foreground tracking-tight">
+                            <?= $isEditMode ? 'Selected Patient' : 'Select Patient' ?>
+                        </h3>
+                        <p class="text-sm text-muted-foreground font-medium">
+                            <?= $isEditMode ? 'This appointment is for:' : 'Choose a patient from the directory.' ?>
+                        </p>
                     </div>
                 </div>
 
-                <div class="relative">
-                    <select name="patient_id" id="patient_id" required
-                        class="w-full bg-muted/30 border-border rounded-2xl py-4 px-6 text-sm font-bold appearance-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
-                        <option value="" disabled selected><?= $patient_placeholder ?></option>
-                    </select>
-                    <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                        <span class="material-symbols-outlined">expand_more</span>
+                <?php if ($isEditMode): ?>
+                    <!-- Edit Mode: Read-only Patient Info -->
+                    <div id="patient-read-only" class="w-full bg-muted/30 border border-border rounded-2xl py-4 px-6">
+                        <div class="flex flex-col gap-1">
+                            <span id="ro-patient-name" class="text-sm font-black text-foreground">Loading...</span>
+                            <span id="ro-patient-email" class="text-xs font-bold text-muted-foreground">Please wait</span>
+                        </div>
                     </div>
-                </div>
+                    <!-- Hidden input to carry the patient_id forward -->
+                    <input type="hidden" name="patient_id" id="patient_id_hidden">
+                <?php else: ?>
+                    <!-- Create Mode: Dropdown -->
+                    <div class="relative">
+                        <select name="patient_id" id="patient_id" required
+                            class="w-full bg-muted/30 border-border rounded-2xl py-4 px-6 text-sm font-bold appearance-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
+                            <option value="" disabled selected><?= $patient_placeholder ?></option>
+                        </select>
+                        <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                            <span class="material-symbols-outlined">expand_more</span>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
 
@@ -91,12 +112,49 @@ $patient_placeholder = 'Search patients...';
         // Initial Load
         getServices();
         if ("<?= $role ?>" === "admin") {
-            getPatients();
+            if (config.editUuid) {
+                // Edit Mode: Fetch info just for display
+                getPatientInfoForEdit(config.patientId);
+            } else {
+                // Create Mode: Load dropdown
+                getPatients();
+            }
+        }
+
+        // Fetch patient info for read-only display in edit mode
+        function getPatientInfoForEdit(id) {
+            if (!id) return;
+            $('#patient_id_hidden').val(id); // Set hidden input
+
+            // Reusing list.php as we don't have a specific 'get' endpoint yet
+            // This is acceptable as the list isn't massive, but ideally should be replaced by get.php?id=X
+            $.ajax({
+                url: apiUrl("shared") + "list-patients.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) {
+                        $('#ro-patient-name').text('Error');
+                        return;
+                    }
+                    const patient = response.data.find(p => p.id == id);
+                    if (patient) {
+                        $('#ro-patient-name').text(patient.name);
+                        $('#ro-patient-email').text(patient.email);
+                    } else {
+                        $('#ro-patient-name').text('Unknown Patient');
+                        $('#ro-patient-email').text('ID: ' + id);
+                    }
+                },
+                error: function () {
+                    $('#ro-patient-name').text('Error loading info');
+                }
+            });
         }
 
         function getPatients() {
             $.ajax({
-                url: apiUrl("patients") + "list.php",
+                url: apiUrl("shared") + "list-patients.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -184,7 +242,8 @@ $patient_placeholder = 'Search patients...';
             e.preventDefault();
 
             const service = $('input[name="service"]:checked').val();
-            const patientId = $('select[name="patient_id"]').val();
+            // In edit mode, patientId comes from hidden input. In create mode, from select.
+            const patientId = config.editUuid ? $('#patient_id_hidden').val() : $('select[name="patient_id"]').val();
 
             if (!service) {
                 alert('Please select a service before continuing.');

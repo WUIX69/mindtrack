@@ -62,6 +62,8 @@
         </button>
     </div>
 </div>
+
+<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <script>
     $(function () {
         // Action Handlers
@@ -77,24 +79,10 @@
             $('#summary-date').text(dateStr);
             $('#summary-time').text(a.sched_time);
 
-            const isConfirmed = a.status === 'confirmed';
-            const isPending = a.status === 'pending';
-            let statusClass = 'bg-muted text-muted-foreground';
-            let statusLabel = a.status.charAt(0).toUpperCase() + a.status.slice(1).replace('_', ' ');
+            const statusColors = APPOINTMENT_STATUS_COLORS;
 
-            if (isConfirmed) {
-                statusClass = 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400';
-                statusLabel = 'Approved';
-            } else if (isPending) {
-                statusClass = 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400';
-                statusLabel = 'Pending Approval';
-            } else if (a.status === 'rescheduled') {
-                statusClass = 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400';
-                statusLabel = 'Reschedule Approval';
-            } else if (a.status === 'cancelled') {
-                statusClass = 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400';
-                statusLabel = 'Cancelled';
-            }
+            const statusClass = statusColors[a.status.toLowerCase()] || 'bg-muted text-muted-foreground';
+            const statusLabel = a.status.charAt(0).toUpperCase() + a.status.slice(1).replace('_', ' ');
 
             $('#summary-status').text(statusLabel).attr('class', '').addClass(`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${statusClass}`);
 

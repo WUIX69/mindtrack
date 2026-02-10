@@ -6,6 +6,7 @@
  * @param string $message
  * @param string $confirm_text 
  * @param string $cancel_text (optional)
+ * @param string $role (e.g, patient, admin)
  */
 ?>
 
@@ -35,9 +36,10 @@
 </div>
 
 <script>
-    $(function () {
+    $(document).ready(function () {
         let activeWithdrawUuid = null;
 
+        const role = "<?= $role ?? 'patient' ?>";
         const title = "<?= $title ?? 'Withdraw Request?' ?>";
         const message = "<?= $message ?? 'This will cancel your pending appointment request. This action cannot be undone.' ?>";
         const confirmText = "<?= $confirm_text ?? 'Yes, Withdraw Request' ?>";
@@ -59,7 +61,7 @@
             btn.prop('disabled', true).html('<span class="loading loading-spinner"></span> Processing...');
 
             $.ajax({
-                url: apiUrl("appointments") + "cancel-appointment.php",
+                url: (role == 'admin') ? apiUrl("appointments") + "delete-appointment.php" : apiUrl("appointments") + "cancel-appointment.php",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ appointment_uuid: activeWithdrawUuid }),
