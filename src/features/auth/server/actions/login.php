@@ -3,9 +3,8 @@
 require_once dirname(__DIR__, 5) . '/src/core/app.php';
 apiHeaders();
 
+use Mindtrack\Features\Auth\Schemas\Login;
 use Mindtrack\Server\Db\Users;
-
-use Mindtrack\Schemas\Login;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';
