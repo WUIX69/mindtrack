@@ -254,6 +254,10 @@ class DataTables
 		$bindings = array();
 		$db = self::db($conn);
 
+		if (strpos($table, ' ') === false && strpos($table, '(') === false && strpos($table, '`') === false) {
+			$table = "`" . $table . "`";
+		}
+
 		// Allow for a JSON string to be passed in
 		if (isset($request['json'])) {
 			$request = json_decode($request['json'], true);
@@ -269,18 +273,19 @@ class DataTables
 			$db,
 			$bindings,
 			"SELECT `" . implode("`, `", self::pluck($columns, 'db')) . "`
-			 FROM `$table`
+			 FROM $table
 			 $where
 			 $order
 			 $limit"
 		);
+
 
 		// Data set length after filtering
 		$resFilterLength = self::sql_exec(
 			$db,
 			$bindings,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`
+			 FROM   $table
 			 $where"
 		);
 		$recordsFiltered = $resFilterLength[0][0];
@@ -290,7 +295,7 @@ class DataTables
 			$db,
 			[],
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`"
+			 FROM   $table"
 		);
 		$recordsTotal = $resTotalLength[0][0];
 
@@ -351,6 +356,10 @@ class DataTables
 		$db = self::db($conn);
 		$whereAllSql = '';
 
+		if (strpos($table, ' ') === false && strpos($table, '(') === false && strpos($table, '`') === false) {
+			$table = "`" . $table . "`";
+		}
+
 		// Build the SQL query string from the request
 		$limit = self::limit($request, $columns);
 		$order = self::order($request, $columns);
@@ -399,7 +408,7 @@ class DataTables
 			$db,
 			$bindings,
 			"SELECT `" . implode("`, `", self::pluck($columns, 'db')) . "`
-			 FROM `$table`
+			 FROM $table
 			 $where
 			 $order
 			 $limit"
@@ -410,7 +419,7 @@ class DataTables
 			$db,
 			$bindings,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`
+			 FROM   $table
 			 $where"
 		);
 		$recordsFiltered = $resFilterLength[0][0];
@@ -420,7 +429,7 @@ class DataTables
 			$db,
 			$whereAllBindings,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table` " .
+			 FROM   $table " .
 			$whereAllSql
 		);
 		$recordsTotal = $resTotalLength[0][0];

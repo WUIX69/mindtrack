@@ -26,5 +26,14 @@
         "autoprefixer": "^10.4.24",
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.18"
+    },
+    "dependencies": {
+        "datatables.net": "^2.3.7",
+        "datatables.net-buttons-dt": "^3.2.6",
+        "datatables.net-dt": "^2.3.7",
+        "datatables.net-responsive-dt": "^3.0.8",
+        "datatables.net-searchbuilder-dt": "^1.8.4",
+        "datatables.net-searchpanes-dt": "^2.3.5",
+        "datatables.net-staterestore-dt": "^1.4.3"
     }
 }

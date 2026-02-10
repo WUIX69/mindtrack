@@ -186,6 +186,19 @@ src/features/[feature-name]/
 - **Shared Actions**: Actions used across features (e.g., `doctors.php`, `register.php`) MUST go in `src/server/actions/`, not in feature specific folders.
 - **Database Logic**: Do NOT write raw SQL in actions. Encapsulate all DB logic in `src/server/db/` models (e.g., `Users::allWhereDoctors()`) if its logic is share-able, if its only specific to a feature, then write it in the feature `src/features/<feature>/server/db` specific folder. Actions should be "thin" and only handle validation/response.
 
+### 📊 DataTables Implementation
+
+- **Library**: Use the modified `Mindtrack\Lib\DataTables` class (located in `src/lib/data-tables.php`).
+- **Complex Data (JOINs)**:
+    - **Do NOT** use `CREATE VIEW` unless the data structure is needed across multiple features.
+    - **Prefer Subqueries (Derived Tables)**: Pass a full SQL subquery string (aliased) as the `$table` parameter.
+    - **Library Modification**: The library has been patched to support this by conditionally removing backticks if the table name contains spaces/complex characters.
+    - **Example**:
+        ```php
+        $table = "(SELECT a.uuid, u.name FROM appointments a JOIN users u ON ...) as derived_table";
+        ```
+- **Endpoint Convention**: Place server-side processing scripts in `src/features/[feature]/server/actions/[name]-dataTable.php`.
+
 ---
 
 ## 🔑 Authentication & Roles
