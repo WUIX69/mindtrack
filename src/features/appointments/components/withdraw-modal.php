@@ -1,3 +1,14 @@
+<?php
+/**
+ * Shared Withdraw/Delete Modal
+ * 
+ * @param string $title
+ * @param string $message
+ * @param string $confirm_text 
+ * @param string $cancel_text (optional)
+ */
+?>
+
 <!-- Withdraw Confirmation Modal -->
 <div id="withdraw-modal"
     class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
@@ -6,6 +17,7 @@
             <span class="material-symbols-outlined text-4xl">warning</span>
         </div>
         <h3 class="text-xl font-black text-center mb-2">Withdraw Request?</h3>
+
         <p class="text-muted-foreground text-center text-sm mb-8">This will cancel your pending appointment request.
             This action cannot be undone.</p>
 
@@ -26,16 +38,24 @@
     $(function () {
         let activeWithdrawUuid = null;
 
+        const title = "<?= $title ?? 'Withdraw Request?' ?>";
+        const message = "<?= $message ?? 'This will cancel your pending appointment request. This action cannot be undone.' ?>";
+        const confirmText = "<?= $confirm_text ?? 'Yes, Withdraw Request' ?>";
+
         $('body').on('click', '.withdraw-btn', function () {
             activeWithdrawUuid = $(this).data('uuid');
-            $('#withdraw-modal h3').text('Withdraw Request?');
-            $('#withdraw-modal p').text('Are you sure you want to retract your pending appointment request?');
+
+            $('#withdraw-modal h3').text(title);
+            $('#withdraw-modal p').text(message);
+            $('#confirm-withdraw-btn').text(confirmText);
+
             $('#withdraw-modal').removeClass('hidden').addClass('flex');
         });
 
         $('#confirm-withdraw-btn').on('click', function () {
             if (!activeWithdrawUuid) return;
             const btn = $(this);
+            const originalText = btn.text();
             btn.prop('disabled', true).html('<span class="loading loading-spinner"></span> Processing...');
 
             $.ajax({
@@ -54,7 +74,7 @@
                     }
                 },
                 complete: function () {
-                    btn.prop('disabled', false).text('Yes, Withdraw Request');
+                    btn.prop('disabled', false).text(originalText);
                     activeWithdrawUuid = null;
                 }
             });

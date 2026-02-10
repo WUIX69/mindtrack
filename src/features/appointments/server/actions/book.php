@@ -35,27 +35,69 @@ try {
     }
 
     $validData = $validation['data'];
-    $patient_uuid = $session->get('uuid');
+    $user_uuid = $session->get('uuid');
+    $user_type = $session->get('role');
     $existing_uuid = $input['appointment_uuid'] ?? null;
 
-    if (!$patient_uuid) {
+    if (!$user_uuid) {
         $response['message'] = 'User session not found. Please log in again.';
         echo json_encode($response);
         exit;
     }
 
+    // Determine target patient
+    $target_patient_uuid = $user_uuid;
+    if ($user_type === 'admin') {
+        if (isset($input['patient_uuid']) && !empty($input['patient_uuid'])) {
+            $target_patient_uuid = $input['patient_uuid'];
+        } elseif (!$existing_uuid) {
+            $response['message'] = 'Patient is required for admin booking.';
+            echo json_encode($response);
+            exit;
+        }
+    }
+
+    // Determine status
+    $status = 'pending';
+    if ($existing_uuid && ($input['is_reschedule'] ?? false)) {
+        $status = 'rescheduled';
+    }
+    // Admin actions are confirmed by default (unless specifically set otherwise, but here we assume confirmed)
+    if ($user_type === 'admin') {
+        $status = 'confirmed';
+    }
+
     // Prepare data for storage
     $data = [
-        'patient_uuid' => $patient_uuid,
+        'patient_uuid' => $target_patient_uuid,
         'doctor_uuid' => $validData['doctor_uuid'],
         'service_uuid' => $validData['service_uuid'],
         'sched_date' => $validData['sched_date'],
         'sched_time' => $validData['sched_time'],
-        'status' => ($existing_uuid && ($input['is_reschedule'] ?? false)) ? 'rescheduled' : 'pending',
+        'status' => $status,
         'notes' => $validData['notes'] ?: null
     ];
 
     if ($existing_uuid) {
+        // Ownership check for non-admins
+        if ($user_type !== 'admin') {
+            // Check if appointment belongs to patient
+            $check = appointments::allWherePatient($user_uuid);
+            $isOwner = false;
+            if ($check['success']) {
+                foreach ($check['data'] as $appt) {
+                    if ($appt['uuid'] === $existing_uuid) {
+                        $isOwner = true;
+                        break;
+                    }
+                }
+            }
+            if (!$isOwner) {
+                $response['message'] = 'Unauthorized modification.';
+                echo json_encode($response);
+                exit;
+            }
+        }
         $result = appointments::update($existing_uuid, $data);
     } else {
         $data['uuid'] = uuid();

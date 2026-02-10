@@ -121,6 +121,9 @@ class Users extends Base
 
     public static function singleWhereOtherData($uuid, $model)
     {
+        if ($model === 'admin') {
+            return [];
+        }
         try {
             $query = "SELECT * FROM user_{$model}_info WHERE user_uuid = ?";
             if ($model === 'doctor') {

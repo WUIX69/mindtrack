@@ -25,7 +25,7 @@ if (in_array($territory, $roles)) {
         exit;
     }
 
-    $userRole = $session->get('role') ?? $session->get('type');
+    $userRole = $session->get('role') ?? '';
     if ($userRole !== $territory) {
         header("Location: " . app($userRole));
         exit;
@@ -33,7 +33,7 @@ if (in_array($territory, $roles)) {
 } elseif ($territory === 'auth') {
     // Auth area (sign-in/sign-up)
     if ($session->has()) {
-        $userRole = $session->get('role') ?? $session->get('type');
+        $userRole = $session->get('role') ?? '';
         header("Location: " . app($userRole));
         exit;
     }

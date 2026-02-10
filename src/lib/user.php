@@ -20,7 +20,7 @@ function userData($uuid = null)
     $user = Users::single($uuid)['data'] ?? [];
     $user_other_data = Users::singleWhereOtherData($uuid, $session->get('role')) ?? [];
     $user_formatted_data = [
-        'role' => $session->get('role') ?? $session->get('type') ?? '',
+        'role' => $session->get('role') ?? '',
         'name' => ($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''),
         'profile' => Media::get($uuid) ?? null,
     ];

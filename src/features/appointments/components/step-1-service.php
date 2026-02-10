@@ -78,9 +78,11 @@ $patient_placeholder = 'Search patients...';
         const params = new URLSearchParams(window.location.search);
         const config = {
             preselectedService: params.get('service') || '',
+
             editUuid: params.get('edit_uuid') || '',
             doctorUuid: params.get('doctor_uuid') || '',
-            notes: params.get('notes') || ''
+            notes: params.get('notes') || '',
+            patientId: params.get('patient_id') || ''
         };
 
         // Disable continue button initially
@@ -107,6 +109,10 @@ $patient_placeholder = 'Search patients...';
                         html += `<option value="${p.id}">${p.name} (${p.email})</option>`;
                     });
                     $('#patient_id').html(html);
+
+                    if (config.patientId) {
+                        $('#patient_id').val(config.patientId);
+                    }
                 },
                 error: function () {
                     $('#patient_id').html('<option value="">Failed to connect to server</option>');

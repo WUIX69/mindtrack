@@ -18,23 +18,28 @@ if (!$appointment_uuid) {
 }
 
 try {
-    $patient_uuid = $session->get('uuid');
-    if (!$patient_uuid) {
+    $user_uuid = $session->get('uuid');
+    $user_type = $session->get('role');
+
+    if (!$user_uuid) {
         $response['message'] = 'Unauthorized.';
         echo json_encode($response);
         exit;
     }
 
-    // Double check ownership before updating
-    // We'll fetch all patient appointments and check if the UUID exists in the set
-    $check = appointments::allWherePatient($patient_uuid);
     $isOwner = false;
 
-    if ($check['success']) {
-        foreach ($check['data'] as $appt) {
-            if ($appt['uuid'] === $appointment_uuid) {
-                $isOwner = true;
-                break;
+    if ($user_type === 'admin') {
+        $isOwner = true;
+    } else {
+        // Double check ownership for patients
+        $check = appointments::allWherePatient($user_uuid);
+        if ($check['success']) {
+            foreach ($check['data'] as $appt) {
+                if ($appt['uuid'] === $appointment_uuid) {
+                    $isOwner = true;
+                    break;
+                }
             }
         }
     }

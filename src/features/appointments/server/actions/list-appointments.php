@@ -9,14 +9,21 @@ apiHeaders();
 use Mindtrack\Server\Db\appointments;
 
 try {
-    $patient_uuid = $session->get('uuid');
-    if (!$patient_uuid) {
+    $user_type = $session->get('role');
+    $user_uuid = $session->get('uuid');
+
+    if (!$user_uuid) {
         $response['message'] = 'Unauthorized.';
         echo json_encode($response);
         exit;
     }
 
-    $result = appointments::allWherePatient($patient_uuid);
+    if ($user_type === 'admin') {
+        $result = appointments::all();
+    } else {
+        $result = appointments::allWherePatient($user_uuid);
+    }
+
     $response = array_merge($response, $result);
 } catch (Exception $e) {
     error_log("List Appointments Error: " . $e->getMessage());

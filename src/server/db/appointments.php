@@ -181,4 +181,79 @@ class appointments extends Base
             ];
         }
     }
+    /**
+     * Fetch all appointments for admin view.
+     * 
+     * @return array
+     */
+    public static function all()
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT 
+                    a.*, 
+                    s.name as service_name, 
+                    s.duration as service_duration,
+                    u.firstname as doctor_firstname, 
+                    u.lastname as doctor_lastname,
+                    p.firstname as patient_firstname,
+                    p.lastname as patient_lastname,
+                    p.email as patient_email
+                FROM appointments a
+                LEFT JOIN services s ON a.service_uuid = s.uuid
+                LEFT JOIN users u ON a.doctor_uuid = u.uuid
+                LEFT JOIN users p ON a.patient_uuid = p.uuid
+                ORDER BY a.sched_date DESC, a.sched_time DESC
+            ");
+            $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+
+            return [
+                'success' => true,
+                'message' => 'All appointments fetched successfully.',
+                'data' => $data,
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (appointments::all): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch appointments: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Confirm an appointment (Admin only).
+     * 
+     * @param string $uuid
+     * @return array
+     */
+    public static function confirm($uuid)
+    {
+        return self::updateStatus($uuid, 'confirmed');
+    }
+
+    /**
+     * Delete an appointment (Hard Delete).
+     * 
+     * @param string $uuid
+     * @return array
+     */
+    public static function delete($uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare("DELETE FROM appointments WHERE uuid = ?");
+            $stmt->execute([$uuid]);
+            return [
+                'success' => true,
+                'message' => 'Appointment deleted successfully.',
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (appointments::delete): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Deletion failed: ' . $e->getMessage(),
+            ];
+        }
+    }
 }
