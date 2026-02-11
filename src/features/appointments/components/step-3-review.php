@@ -338,13 +338,31 @@ $role = $role ?? 'patient';
 
                     // Update modal with real info
                     const isUpdate = !!config.appointmentUuid;
-                    const title = isUpdate ? 'Appointment Updated!' : 'Appointment Requested!';
-                    const modalDesc = isUpdate
-                        ? `Your changes for <strong>${config.displayDate}</strong> have been saved successfully.`
-                        : `Your request for <strong>${config.displayDate}</strong> has been sent to the clinical team.`;
+                    const userRole = '<?= $role ?>';
+                    const displayDate = config.displayDate;
+                    const doctorName = $('#doctor-name').text();
+                    const patientName = $('#patient-name').text() || '{patient}';
 
-                    $('#success-title').text(title);
-                    $('#success-description').html(modalDesc);
+                    let title = isUpdate ? 'Appointment Updated!' : 'Appointment Created!';
+                    let description = '';
+
+                    if (userRole === 'admin') {
+                        if (isUpdate) {
+                            description = `The appointment for <strong>${patientName}</strong> in <strong>${displayDate}</strong> has been successfully updated with <strong>${doctorName}</strong>. And it will notify the both patient and doctor.`;
+                        } else {
+                            description = `The appointment for <strong>${patientName}</strong> in <strong>${displayDate}</strong> has been successfully booked with <strong>${doctorName}</strong>. The patient will be notified.`;
+                        }
+                    } else {
+                        // Patient
+                        if (isUpdate) {
+                            description = `Your appointment for <strong>${displayDate}</strong> has been successfully updated with <strong>${doctorName}</strong>. And it will notify the clinical team.`;
+                        } else {
+                            description = `Your appointment for <strong>${displayDate}</strong> has been successfully booked with <strong>${doctorName}</strong>. Please wait for doctor or admin approvals.`;
+                        }
+                    }
+
+                    $('#success-modal-title').text(title);
+                    $('#success-modal-description').html(description);
 
                     // Show Modal
                     $('#success-modal').removeClass('hidden').addClass('flex');
@@ -359,8 +377,4 @@ $role = $role ?? 'patient';
 </script>
 
 <!-- Success Modal -->
-<?= featured('appointments', 'components/success-modal', [
-    'role' => $role,
-    'date' => 'Oct 25th',
-    'doctor' => ($role == 'admin' ? 'Dr. Mitchell' : 'Dr. Sarah Mitchell, MD'),
-]) ?>
+<?= featured('appointments', 'components/success-modal', ['role' => $role]) ?>
