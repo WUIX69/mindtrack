@@ -242,7 +242,7 @@ include_once __DIR__ . '/../layout.php';
                                 </button>
                                 <div class="border-t border-border my-1"></div>
                                 <p class="text-left py-2 pl-3.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Manage</p>
-                                <button class="btn-edit w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${row.uuid}" data-service="${row.service_uuid}" data-patient="${row.patient_uuid}">
+                                <button class="btn-edit w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${row.uuid}" data-service="${row.service_uuid}" data-patient="${row.patient_uuid}" data-doctor="${row.doctor_uuid}" data-notes="${row.notes}">
                                     <span>✏️</span> Edit
                                 </button>
                                 <button class="view-summary-btn w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${row.uuid}">
@@ -431,7 +431,10 @@ include_once __DIR__ . '/../layout.php';
             const uuid = $(this).data('uuid');
             const service = $(this).data('service');
             const patient = $(this).data('patient');
-            window.location.href = `step-1-service.php?edit_uuid=${uuid}&service=${service}&patient_id=${patient}`;
+            const doctor = $(this).data('doctor');
+            const notes = $(this).data('notes');
+
+            window.location.href = `step-1-service.php?edit_uuid=${encodeURIComponent(uuid)}&service=${encodeURIComponent(service)}&patient_id=${encodeURIComponent(patient)}&doctor_uuid=${encodeURIComponent(doctor)}&notes=${encodeURIComponent(notes)}`;
         });
     });
 </script>
