@@ -266,8 +266,11 @@ $role = $role ?? 'patient';
             }
 
             if (config.patientId) {
-                bookingData.patient_id = config.patientId;
+                bookingData.patient_uuid = config.patientId;
             }
+
+            // console.log('bookingData', bookingData);
+            // return false;
 
             $.ajax({
                 url: apiUrl("appointments") + "book.php",
@@ -275,6 +278,7 @@ $role = $role ?? 'patient';
                 contentType: 'application/json',
                 data: JSON.stringify(bookingData),
                 success: function (response) {
+                    console.log('response', response);
                     if (!response.success) {
                         alert('Error: ' + response.message);
                         btn.prop('disabled', false).html('Confirm Appointment <span class="material-symbols-outlined text-xl">check_circle</span>');
