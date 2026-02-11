@@ -410,6 +410,9 @@
   .-bottom-1 {
     bottom: calc(var(--spacing) * -1);
   }
+  .-bottom-2 {
+    bottom: calc(var(--spacing) * -2);
+  }
   .-bottom-4 {
     bottom: calc(var(--spacing) * -4);
   }
@@ -436,6 +439,9 @@
   }
   .left-1\/2 {
     left: calc(1/2 * 100%);
+  }
+  .left-2\.5 {
+    left: calc(var(--spacing) * 2.5);
   }
   .left-3 {
     left: calc(var(--spacing) * 3);
@@ -679,6 +685,9 @@
   }
   .table {
     display: table;
+  }
+  .table-cell {
+    display: table-cell;
   }
   .aspect-\[4\/3\] {
     aspect-ratio: 4/3;
@@ -934,6 +943,9 @@
   .w-52 {
     width: calc(var(--spacing) * 52);
   }
+  .w-56 {
+    width: calc(var(--spacing) * 56);
+  }
   .w-64 {
     width: calc(var(--spacing) * 64);
   }
@@ -1023,6 +1035,9 @@
   }
   .min-w-\[140px\] {
     min-width: 140px;
+  }
+  .min-w-\[150px\] {
+    min-width: 150px;
   }
   .min-w-\[180px\] {
     min-width: 180px;
@@ -1938,6 +1953,9 @@
   .py-6 {
     padding-block: calc(var(--spacing) * 6);
   }
+  .py-8 {
+    padding-block: calc(var(--spacing) * 8);
+  }
   .py-10 {
     padding-block: calc(var(--spacing) * 10);
   }
@@ -1982,6 +2000,9 @@
   }
   .pr-6 {
     padding-right: calc(var(--spacing) * 6);
+  }
+  .pr-8 {
+    padding-right: calc(var(--spacing) * 8);
   }
   .pr-12 {
     padding-right: calc(var(--spacing) * 12);
