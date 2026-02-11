@@ -215,7 +215,7 @@ $doctorFilterConfig = [
                 },
                 {
                     data: 'patients',
-                    className: "text-center",
+                    className: "!text-center",
                     render: function (data) {
                         return `<span class="px-2.5 py-1 bg-muted rounded-full text-xs font-bold text-foreground overflow-hidden">${data || 0}</span>`;
                     }
