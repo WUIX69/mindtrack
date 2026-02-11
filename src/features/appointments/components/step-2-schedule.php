@@ -147,7 +147,7 @@ $role = $role ?? 'patient';
             doctorUuid: params.get('doctor_uuid') || '',
             rescheduleUuid: params.get('reschedule_uuid') || '',
             editUuid: params.get('edit_uuid') || '',
-            patientId: params.get('patient_id') || '',
+            patientUuid: params.get('patient_uuid') || '',
             notes: params.get('notes') || '',
             date: params.get('date') || new Date().toISOString().split('T')[0],
             time: params.get('time') || ''
@@ -337,7 +337,7 @@ $role = $role ?? 'patient';
                 if (config.doctorUuid) backParams.append('doctor_uuid', config.doctorUuid); // Maybe they selected a doctor in step 1?
                 if (config.notes) backParams.append('notes', config.notes);
                 if (config.editUuid) backParams.append('edit_uuid', config.editUuid);
-                if (config.patientId) backParams.append('patient_id', config.patientId);
+                if (config.patientUuid) backParams.append('patient_uuid', config.patientUuid);
 
                 $backBtn.attr('href', `step-1-service.php?${backParams.toString()}`);
             }
@@ -370,7 +370,7 @@ $role = $role ?? 'patient';
 
             if (config.rescheduleUuid) nextParams.append('reschedule_uuid', config.rescheduleUuid);
             if (config.editUuid) nextParams.append('edit_uuid', config.editUuid);
-            if (config.patientId) nextParams.append('patient_id', config.patientId);
+            if (config.patientUuid) nextParams.append('patient_uuid', config.patientUuid);
             if (config.notes) nextParams.append('notes', config.notes);
 
             window.location.href = `step-3-review.php?${nextParams.toString()}`;

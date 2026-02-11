@@ -434,7 +434,7 @@ include_once __DIR__ . '/../layout.php';
             const doctor = $(this).data('doctor');
             const notes = $(this).data('notes');
 
-            window.location.href = `step-1-service.php?edit_uuid=${encodeURIComponent(uuid)}&service=${encodeURIComponent(service)}&patient_id=${encodeURIComponent(patient)}&doctor_uuid=${encodeURIComponent(doctor)}&notes=${encodeURIComponent(notes)}`;
+            window.location.href = `step-1-service.php?edit_uuid=${encodeURIComponent(uuid)}&service=${encodeURIComponent(service)}&patient_uuid=${encodeURIComponent(patient)}&doctor_uuid=${encodeURIComponent(doctor)}&notes=${encodeURIComponent(notes)}`;
         });
     });
 </script>

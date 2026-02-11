@@ -148,7 +148,7 @@ $role = $role ?? 'patient';
         const config = {
             serviceUuid: params.get('service') || '',
             doctorUuid: params.get('doctor_uuid') || '',
-            patientId: params.get('patient_id') || '',
+            patientUuid: params.get('patient_uuid') || '',
             rescheduleUuid: params.get('reschedule_uuid') || '',
             editUuid: params.get('edit_uuid') || '',
             schedDate: params.get('date') || new Date().toISOString().split('T')[0],
@@ -203,7 +203,7 @@ $role = $role ?? 'patient';
 
             if (config.rescheduleUuid) backParams.append('reschedule_uuid', config.rescheduleUuid);
             if (config.editUuid) backParams.append('edit_uuid', config.editUuid);
-            if (config.patientId) backParams.append('patient_id', config.patientId);
+            if (config.patientUuid) backParams.append('patient_uuid', config.patientUuid);
             if (config.notes) backParams.append('notes', config.notes);
 
             $('#back-btn').attr('href', `step-2-schedule.php?${backParams.toString()}`);
@@ -265,8 +265,8 @@ $role = $role ?? 'patient';
                 bookingData.appointment_uuid = config.appointmentUuid;
             }
 
-            if (config.patientId) {
-                bookingData.patient_uuid = config.patientId;
+            if (config.patientUuid) {
+                bookingData.patient_uuid = config.patientUuid;
             }
 
             // console.log('bookingData', bookingData);

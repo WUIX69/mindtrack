@@ -48,12 +48,12 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
                             <span id="ro-patient-email" class="text-xs font-bold text-muted-foreground">Please wait</span>
                         </div>
                     </div>
-                    <!-- Hidden input to carry the patient_id forward -->
-                    <input type="hidden" name="patient_id" id="patient_id_hidden">
+                    <!-- Hidden input to carry the patient_uuid forward -->
+                    <input type="hidden" name="patient_uuid" id="patient_uuid_hidden">
                 <?php else: ?>
                     <!-- Create Mode: Dropdown -->
                     <div class="relative">
-                        <select name="patient_id" id="patient_id" required
+                        <select name="patient_uuid" id="patient_uuid" required
                             class="w-full bg-muted/30 border-border rounded-2xl py-4 px-6 text-sm font-bold appearance-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
                             <option value="" disabled selected><?= $patient_placeholder ?></option>
                         </select>
@@ -103,7 +103,7 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
             editUuid: params.get('edit_uuid') || '',
             doctorUuid: params.get('doctor_uuid') || '',
             notes: params.get('notes') || '',
-            patientId: params.get('patient_id') || ''
+            patientUuid: params.get('patient_uuid') || ''
         };
 
         // Disable continue button initially
@@ -114,7 +114,7 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
         if ("<?= $role ?>" === "admin") {
             if (config.editUuid) {
                 // Edit Mode: Fetch info just for display
-                getPatientInfoForEdit(config.patientId);
+                getPatientInfoForEdit(config.patientUuid);
             } else {
                 // Create Mode: Load dropdown
                 getPatients();
@@ -124,7 +124,7 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
         // Fetch patient info for read-only display in edit mode
         function getPatientInfoForEdit(id) {
             if (!id) return;
-            $('#patient_id_hidden').val(id); // Set hidden input
+            $('#patient_uuid_hidden').val(id); // Set hidden input
 
             // Reusing list.php as we don't have a specific 'get' endpoint yet
             // This is acceptable as the list isn't massive, but ideally should be replaced by get.php?id=X
@@ -159,21 +159,21 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
                 dataType: "json",
                 success: function (response) {
                     if (!response.success) {
-                        $('#patient_id').html('<option value="">Error loading patients</option>');
+                        $('#patient_uuid').html('<option value="">Error loading patients</option>');
                         return;
                     }
                     let html = '<option value="" disabled selected><?= $patient_placeholder ?></option>';
                     response.data.forEach(p => {
                         html += `<option value="${p.id}">${p.name} (${p.email})</option>`;
                     });
-                    $('#patient_id').html(html);
+                    $('#patient_uuid').html(html);
 
-                    if (config.patientId) {
-                        $('#patient_id').val(config.patientId);
+                    if (config.patientUuid) {
+                        $('#patient_uuid').val(config.patientUuid);
                     }
                 },
                 error: function () {
-                    $('#patient_id').html('<option value="">Failed to connect to server</option>');
+                    $('#patient_uuid').html('<option value="">Failed to connect to server</option>');
                 }
             });
         }
@@ -242,8 +242,8 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
             e.preventDefault();
 
             const service = $('input[name="service"]:checked').val();
-            // In edit mode, patientId comes from hidden input. In create mode, from select.
-            const patientId = config.editUuid ? $('#patient_id_hidden').val() : $('select[name="patient_id"]').val();
+            // In edit mode, patientUuid comes from hidden input. In create mode, from select.
+            const patientUuid = config.editUuid ? $('#patient_uuid_hidden').val() : $('select[name="patient_uuid"]').val();
 
             if (!service) {
                 alert('Please select a service before continuing.');
@@ -251,7 +251,7 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
             }
 
             let targetUrl = `step-2-schedule.php?service=${encodeURIComponent(service)}`;
-            if (patientId) targetUrl += `&patient_id=${encodeURIComponent(patientId)}`;
+            if (patientUuid) targetUrl += `&patient_uuid=${encodeURIComponent(patientUuid)}`;
             if (config.editUuid) targetUrl += `&edit_uuid=${encodeURIComponent(config.editUuid)}`;
             if (config.doctorUuid) targetUrl += `&doctor_uuid=${encodeURIComponent(config.doctorUuid)}`;
             if (config.notes) targetUrl += `&notes=${encodeURIComponent(config.notes)}`;
