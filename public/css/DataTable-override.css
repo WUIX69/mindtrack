@@ -1,0 +1,17 @@
+div.dt-container div.dt-layout-row {
+    margin-top: 0;
+}
+
+div.dt-container .dt-layout-row {
+    font-size: 12px;
+}
+
+div.dt-container .dt-layout-row .dt-info {
+    padding-left: 1rem;
+}
+
+div.dt-container .dt-layout-row .dt-length {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

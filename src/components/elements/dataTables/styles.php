@@ -11,3 +11,5 @@
 <link rel="stylesheet" href="<?= asset('lib/DataTables/buttons.dataTables.min.css') ?>">
 <link rel="stylesheet" href="<?= asset('lib/DataTables/searchBuilder.dataTables.min.css') ?>">
 <link rel="stylesheet" href="<?= asset('lib/DataTables/searchPanes.dataTables.min.css') ?>"> -->
+
+<link rel="stylesheet" href="<?= asset('css/DataTable-override.css') ?>">

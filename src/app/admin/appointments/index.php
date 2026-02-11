@@ -66,17 +66,17 @@ include_once __DIR__ . '/../layout.php';
 <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
     <!-- Appointments Table Section -->
     <div class="xl:col-span-3">
-        <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
+        <div class="bg-card rounded-xl border border-border shadow-sm">
             <table id="appointments-table" class="w-full text-left border-collapse display responsive nowrap"
                 style="width:100%">
                 <thead>
                     <tr class="bg-muted/50 text-muted-foreground uppercase text-[11px] font-bold tracking-wider">
-                        <th class="px-6 py-4">Patient</th>
-                        <th class="px-6 py-4">Service</th>
-                        <th class="px-6 py-4">Schedule</th>
-                        <th class="px-6 py-4">Provider</th>
-                        <th class="px-6 py-4">Status</th>
-                        <th class="px-6 py-4 text-right">Actions</th>
+                        <th class="!p-5">Patient</th>
+                        <th class="!p-5">Service</th>
+                        <th class="!p-5">Schedule</th>
+                        <th class="!p-5">Provider</th>
+                        <th class="!p-5">Status</th>
+                        <th class="!p-5 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-border/50">
@@ -293,7 +293,6 @@ include_once __DIR__ . '/../layout.php';
         // --- Filters Interactivity ---
 
         fetchDoctors();
-
         function fetchDoctors() {
             $.ajax({
                 url: apiUrl("shared") + "doctors.php",
@@ -424,17 +423,6 @@ include_once __DIR__ . '/../layout.php';
             if (data && data.uuid) {
                 $(this).find('.view-summary-btn').trigger('click');
             }
-        });
-
-        // View Summary Trigger
-        $('body').on('click', '.view-summary-btn', function (e) {
-            // The existing summary modal JS should handle this if it listens to something?
-            // Or we need to manually trigger it. 
-            // The previous code had: $(this).find('.view-summary-btn').trigger('click');
-            // But what LISTENS to .view-summary-btn?
-            // It seems "components/summary-modal" likely attaches a listener. 
-            // IMPORTANT: If summary-modal uses a global listener on .view-summary-btn, we are good.
-            // If it needs initialization, we rely on it being loaded.
         });
 
         // Edit
