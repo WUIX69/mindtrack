@@ -139,6 +139,9 @@ shared('components', 'layout/filterbar', $filterConfig);
 <?= shared('components', 'elements/dataTables/scripts'); ?>
 <script>
     $(document).ready(function () {
+        // Global array to store all appointments and use it in other components (e.g., summary-modal, reschedule-modal)
+        window.allAppointments = [];
+
         // --- DataTables Init ---
         const $appointmentsTable = $('#appointments-table').DataTable({
             layout: {
@@ -304,6 +307,8 @@ shared('components', 'layout/filterbar', $filterConfig);
                             $('#pending-count').text(response.counts.pending);
                         }
                     }
+
+                    window.allAppointments = response.data;
                     return response.data;
                 },
                 error: function (xhr, error, thrown) {
