@@ -45,28 +45,44 @@ include_once __DIR__ . '/layout.php';
     </div>
 </div>
 
+<?php
+$serviceFilterConfig = [
+    'primary' => [
+        'name' => 'status',
+        'label' => 'Status:',
+        'options' => [
+            ['value' => '', 'label' => 'All'],
+            ['value' => 'active', 'label' => 'Active'],
+            ['value' => 'inactive', 'label' => 'Inactive']
+        ]
+    ],
+    'secondary_filters' => [
+        [
+            'type' => 'search',
+            'name' => 'search',
+            'placeholder' => 'Search services...',
+            'icon' => 'search'
+        ],
+        [
+            'type' => 'select',
+            'name' => 'category',
+            'icon' => 'category',
+            'placeholder' => 'All Categories',
+            'options' => [
+                'therapy' => 'Therapy',
+                'consultation' => 'Consultation',
+                'program' => 'Clinical Program',
+                'group' => 'Group Session'
+            ]
+        ]
+    ]
+];
+?>
+
+<?= shared('components', 'layout/filterbar', $serviceFilterConfig) ?>
+
 <!-- Services Table Section -->
 <section class="bg-card rounded-xl border border-border shadow-sm overflow-hidden mb-8">
-    <div class="p-6 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="relative max-w-sm w-full">
-            <span
-                class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-muted-foreground text-xl">search</span>
-            <input
-                class="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:ring-primary focus:border-primary placeholder:text-muted-foreground/60 transition-all"
-                placeholder="Search services..." type="text" />
-        </div>
-        <div class="flex items-center gap-3">
-            <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Category:</span>
-            <select
-                class="rounded-lg p-2 bg-muted border-border text-xs font-bold text-foreground focus:ring-primary focus:border-primary min-w-[150px] cursor-pointer">
-                <option>All Categories</option>
-                <option>Therapy</option>
-                <option>Consultation</option>
-                <option>Clinical Program</option>
-                <option>Group Session</option>
-            </select>
-        </div>
-    </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
@@ -215,3 +231,13 @@ include_once __DIR__ . '/layout.php';
         </p>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        // Event Listeners for Filters
+        $(document).on('filter:change', function (e, filters) {
+            console.log("Service Filters changed:", filters);
+            // Implement filtering logic here
+        });
+    });
+</script>

@@ -16,38 +16,44 @@ $currentPage = 'doctors';
 include_once __DIR__ . '/layout.php';
 ?>
 
+
+<?php
+$doctorFilterConfig = [
+    'primary' => [
+        'name' => 'specialty',
+        'label' => 'Specialty:',
+        'options' => [
+            ['value' => '', 'label' => 'All'],
+            ['value' => 'psychotherapy', 'label' => 'Psychotherapy'],
+            ['value' => 'cbt', 'label' => 'CBT'],
+            ['value' => 'ot', 'label' => 'OT']
+        ]
+    ],
+    'secondary_filters' => [
+        [
+            'type' => 'select',
+            'name' => 'status',
+            'icon' => 'check_circle',
+            'placeholder' => 'All Statuses',
+            'options' => [
+                'active' => 'Active',
+                'on_leave' => 'On Leave',
+                'inactive' => 'Inactive'
+            ]
+        ]
+    ],
+    'actions' => [
+        [
+            'label' => 'Advanced Filters',
+            'icon' => 'tune',
+            'id' => 'advanced-filters',
+            'class' => 'text-primary hover:opacity-80'
+        ]
+    ]
+];
+?>
 <!-- Filter Sub-header -->
-<div class="bg-card rounded-xl border border-border p-4 flex flex-wrap items-center gap-4 mb-8">
-    <div class="flex items-center gap-2">
-        <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Specialty:</span>
-        <div class="flex bg-muted p-1 rounded-lg">
-            <button class="px-4 py-1.5 text-xs font-bold rounded-md bg-card shadow-sm text-primary">All</button>
-            <button
-                class="px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-colors">Psychotherapy</button>
-            <button
-                class="px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-colors">CBT</button>
-            <button
-                class="px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-colors">OT</button>
-        </div>
-    </div>
-    <div class="h-8 w-px bg-border hidden md:block"></div>
-    <div class="flex items-center gap-4 flex-1">
-        <div class="relative">
-            <span
-                class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-muted-foreground">check_circle</span>
-            <select
-                class="pl-10 pr-8 py-2 bg-muted border-none rounded-lg text-xs font-bold text-foreground focus:ring-primary/20 appearance-none cursor-pointer">
-                <option>Status: Active</option>
-                <option>Status: On Leave</option>
-                <option>Status: Inactive</option>
-            </select>
-        </div>
-    </div>
-    <button class="flex items-center gap-1.5 text-xs font-bold text-primary hover:opacity-80 transition-opacity">
-        <span class="material-symbols-outlined text-[18px]">tune</span>
-        Advanced Filters
-    </button>
-</div>
+<?= shared('components', 'layout/filterbar', $doctorFilterConfig) ?>
 
 <!-- Main Grid Layout -->
 <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
@@ -265,3 +271,25 @@ include_once __DIR__ . '/layout.php';
         </div>
     </div>
 </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Event Listeners for Filters
+        $(document).on('filter:change', function (e, filters) {
+            console.log("Filters changed:", filters);
+            // Implement simple client-side filtering for demonstration, 
+            // or trigger DataTables redraw if this was a DataTable (it's a static table currently in this view)
+
+            // For now, since the table is hardcoded in PHP, we just log it.
+            // In a real app, this would trigger an AJAX reload or filter the DOM rows.
+
+            // Example Client-side row filtering:
+            // const specialty = filters.specialty;
+            // const status = filters.status;
+            // $('tbody tr').each(function() {
+            //    ... matching logic ...
+            // });
+        });
+    });
+</script>

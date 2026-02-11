@@ -16,43 +16,48 @@ $currentPage = 'patients';
 include_once __DIR__ . '/layout.php';
 ?>
 
+<?php
+$patientFilterConfig = [
+    'primary' => [
+        'name' => 'status',
+        'label' => 'Status:',
+        'options' => [
+            ['value' => '', 'label' => 'All'],
+            ['value' => 'active', 'label' => 'Active'],
+            ['value' => 'inactive', 'label' => 'Inactive']
+        ]
+    ],
+    'secondary_filters' => [
+        [
+            'type' => 'select',
+            'name' => 'sort',
+            'icon' => 'event_repeat',
+            'placeholder' => 'Sort Order',
+            'options' => [
+                'recent' => 'Recent First',
+                'oldest' => 'Oldest First',
+                'last_visit' => 'Last Visit'
+            ]
+        ],
+        [
+            'type' => 'date',
+            'name' => 'registration_date',
+            'icon' => 'calendar_today',
+            'placeholder' => 'Registration Date'
+        ]
+    ],
+    'actions' => [
+        [
+            'label' => 'More Filters',
+            'icon' => 'filter_list',
+            'id' => 'more-filters',
+            'class' => 'text-primary hover:opacity-80'
+        ]
+    ]
+];
+?>
 <!-- Filter Sub-header -->
-<div class="bg-card rounded-xl border border-border p-4 flex flex-wrap items-center gap-4 mb-8">
-    <div class="flex items-center gap-2">
-        <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Status:</span>
-        <div class="flex bg-muted p-1 rounded-lg">
-            <button class="px-4 py-1.5 text-xs font-bold rounded-md bg-card shadow-sm text-primary">All</button>
-            <button
-                class="px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-colors">Active</button>
-            <button
-                class="px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-colors">Inactive</button>
-        </div>
-    </div>
-    <div class="h-8 w-px bg-border hidden md:block"></div>
-    <div class="flex items-center gap-4 flex-1">
-        <div class="relative">
-            <span
-                class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-muted-foreground">event_repeat</span>
-            <select
-                class="pl-10 pr-8 py-2 bg-muted border-none rounded-lg text-xs font-bold text-foreground focus:ring-primary/20 appearance-none cursor-pointer">
-                <option>Sort by Last Visit</option>
-                <option>Recent First</option>
-                <option>Oldest First</option>
-            </select>
-        </div>
-        <div class="relative">
-            <span
-                class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-muted-foreground">calendar_today</span>
-            <input
-                class="pl-10 pr-4 py-2 bg-muted border-none rounded-lg text-xs font-bold text-foreground w-56 focus:ring-primary/20"
-                placeholder="Registration Date" type="text" />
-        </div>
-    </div>
-    <button class="flex items-center gap-1.5 text-xs font-bold text-primary hover:opacity-80 transition-opacity">
-        <span class="material-symbols-outlined text-[18px]">filter_list</span>
-        More Filters
-    </button>
-</div>
+<?= shared('components', 'layout/filterbar', $patientFilterConfig) ?>
 
 <!-- Main Grid Layout -->
 <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
@@ -273,3 +278,14 @@ include_once __DIR__ . '/layout.php';
         </div>
     </div>
 </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Event Listeners for Filters
+        $(document).on('filter:change', function (e, filters) {
+            console.log("Patient Filters changed:", filters);
+            // Implement filtering logic here
+        });
+    });
+</script>

@@ -15,52 +15,56 @@ $headerData = [
 // $headContent = `shared('components', 'elements/dataTables/styles')`;
 include_once __DIR__ . '/../layout.php';
 ?>
-
 <?= shared('components', 'elements/dataTables/styles') ?>
 
-<!-- Filter Sub-header -->
-<div class="bg-card rounded-xl border border-border p-4 flex flex-wrap items-center gap-4 mb-8">
-    <div class="flex items-center gap-2">
-        <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Status:</span>
-        <div class="flex bg-muted p-1 rounded-lg" id="status-filters">
-            <button
-                class="filter-btn active px-4 py-1.5 text-xs font-bold rounded-md bg-card shadow-sm text-primary transition-all"
-                data-status="all">All</button>
-            <button
-                class="filter-btn px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-all"
-                data-status="pending">Pending</button>
-            <button
-                class="filter-btn px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-all"
-                data-status="uptcoming">Upcoming</button>
-            <button
-                class="filter-btn px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-all"
-                data-status="completed">Completed</button>
-            <button
-                class="filter-btn px-4 py-1.5 text-xs font-bold rounded-md text-muted-foreground hover:text-foreground transition-all"
-                data-status="cancelled">Cancelled</button>
-        </div>
-    </div>
-    <div class="h-8 w-px bg-border hidden md:block"></div>
-    <div class="flex items-center gap-4 flex-1">
-        <select id="filter-doctor"
-            class="bg-muted border-none p-2 rounded-lg text-xs font-bold text-foreground focus:ring-primary/20 cursor-pointer w-48">
-            <option value="">All Providers</option>
-            <!-- Populated by JS -->
-        </select>
-        <div class="relative">
-            <span
-                class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-muted-foreground">calendar_today</span>
-            <input id="filter-date"
-                class="pl-10 pr-4 py-2 bg-muted border-none rounded-lg text-xs font-bold text-foreground w-64 focus:ring-primary/20"
-                placeholder="Filter by Date" type="date" />
-        </div>
-    </div>
-    <button id="reset-filters"
-        class="flex items-center gap-1.5 text-xs font-bold text-primary hover:opacity-80 transition-opacity">
-        <span class="material-symbols-outlined text-[18px]">filter_list_off</span>
-        Reset Filters
-    </button>
-</div>
+<?php
+// Define Filter Configuration
+$filterConfig = [
+    'primary' => [
+        'name' => 'status',
+        'label' => 'Status:',
+        'options' => [
+            ['value' => '', 'label' => 'All'],
+            ['value' => 'pending', 'label' => 'Pending'],
+            ['value' => 'confirmed', 'label' => 'Upcoming'],
+            ['value' => 'completed', 'label' => 'Completed'],
+            ['value' => 'cancelled', 'label' => 'Cancelled']
+        ]
+    ],
+    'secondary_filters' => [
+        [
+            'type' => 'select',
+            'name' => 'service',
+            'icon' => 'medical_services',
+            'placeholder' => 'All Services',
+            'options' => [] // Populated by JS
+        ],
+        [
+            'type' => 'select',
+            'name' => 'doctor',
+            'icon' => 'person',
+            'placeholder' => 'All Providers',
+            'options' => [] // Populated by JS
+        ],
+        [
+            'type' => 'date',
+            'name' => 'date',
+            'icon' => 'calendar_month'
+        ]
+    ],
+    'actions' => [
+        [
+            'label' => 'Reset Filters',
+            'icon' => 'filter_list_off',
+            'id' => 'reset-filters',
+            'class' => 'text-primary hover:opacity-80'
+        ]
+    ]
+];
+
+// Filter Sub-header 
+shared('components', 'layout/filterbar', $filterConfig);
+?>
 
 <!-- Main Grid Layout -->
 <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
@@ -269,9 +273,14 @@ include_once __DIR__ . '/../layout.php';
                 method: "GET",
                 dataType: "json",
                 data: function (d) {
-                    d.filter_status = $('.filter-btn.active').data('status');
-                    d.filter_doctor = $('#filter-doctor').val();
-                    d.filter_date = $('#filter-date').val();
+                    const statusBtn = $('.filter-primary-btn.bg-card[data-group="status"]');
+                    d.filter_status = statusBtn.length ? statusBtn.data('value') : '';
+
+                    d.filter_doctor = $('#doctor-filter').val();
+
+                    d.filter_service = $('#service-filter').val();
+
+                    d.filter_date = $('#date-filter').val();
                     return d;
                 },
                 dataSrc: function (response) {
@@ -307,7 +316,7 @@ include_once __DIR__ . '/../layout.php';
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        const select = $('#filter-doctor');
+                        const select = $('#doctor-filter');
                         response.data.forEach(function (doc) {
                             select.append(`<option value="${doc.uuid}">Dr. ${doc.firstname} ${doc.lastname}</option>`);
                         });
@@ -316,24 +325,28 @@ include_once __DIR__ . '/../layout.php';
             });
         }
 
-        // Status Filter
-        $('.filter-btn').click(function () {
-            $('.filter-btn').removeClass('active bg-card shadow-sm text-primary').addClass('text-muted-foreground');
-            $(this).addClass('active bg-card shadow-sm text-primary').removeClass('text-muted-foreground');
-            $appointmentsTable.draw(); // Trigger server-side reload
-        });
+        // Also fetch services
+        fetchServices();
+        function fetchServices() {
+            $.ajax({
+                url: apiUrl("shared") + "services.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        const select = $('#service-filter');
+                        response.data.forEach(function (svc) {
+                            select.append(`<option value="${svc.uuid}">${svc.name}</option>`);
+                        });
+                    }
+                }
+            });
+        }
 
-        // Other Filters
-        $('#filter-doctor, #filter-date').change(function () {
-            $appointmentsTable.draw();
-        });
+        // --- Filters Interactivity ---
 
-        // Reset
-        $('#reset-filters').click(function () {
-            $('.filter-btn').removeClass('active bg-card shadow-sm text-primary').addClass('text-muted-foreground');
-            $('[data-status="all"]').addClass('active bg-card shadow-sm text-primary').removeClass('text-muted-foreground');
-            $('#filter-doctor').val('');
-            $('#filter-date').val('');
+        // Listen for changes from the FilterBar component
+        $(document).on('filter:change', function (e, filters) {
             $appointmentsTable.draw();
         });
 

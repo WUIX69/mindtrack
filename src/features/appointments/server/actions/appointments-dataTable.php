@@ -1,10 +1,8 @@
 <?php
 
 require_once dirname(__DIR__, 5) . '/src/core/app.php';
-use Mindtrack\Server\Db\Base;
 
-// Explicitly require DataTables lib as filename 'data-tables.php' doesn't match class 'DataTables' for autoloader
-require_once dirname(__DIR__, 5) . '/src/lib/data-tables.php';
+use Mindtrack\Server\Db\Base;
 use Mindtrack\Lib\DataTables;
 
 // Get DB Connection
@@ -125,6 +123,13 @@ try {
     if (!empty($_GET['filter_doctor'])) {
         $doctorUuid = addslashes($_GET['filter_doctor']);
         $clause = "`doctor_uuid` = '$doctorUuid'";
+        $whereAll = $whereAll ? "$whereAll AND $clause" : $clause;
+    }
+
+    // Service filter
+    if (!empty($_GET['filter_service'])) {
+        $serviceUuid = addslashes($_GET['filter_service']);
+        $clause = "`service_uuid` = '$serviceUuid'";
         $whereAll = $whereAll ? "$whereAll AND $clause" : $clause;
     }
 
