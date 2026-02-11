@@ -66,6 +66,9 @@
 <script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <script>
     $(function () {
+        // Initialize global array if not already present
+        window.allAppointments = window.allAppointments || [];
+
         // Action Handlers
         $('body').on('click', '.view-summary-btn', function () {
             const uuid = $(this).data('uuid');

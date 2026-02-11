@@ -56,6 +56,9 @@
 <script>
     $(function () {
 
+        // Initialize global array if not already present
+        window.allAppointments = window.allAppointments || [];
+
         let activeRescheduleUuid = null;
         let activeRescheduleService = null;
         let activeRescheduleDoctor = null;
