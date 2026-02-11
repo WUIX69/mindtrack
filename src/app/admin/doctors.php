@@ -7,8 +7,7 @@ $headerData = [
     'title' => 'Doctors',
     'description' => 'Manage clinical staff, specialties, and provider availability.',
     'searchPlaceholder' => 'Search providers by name, specialty, or ID...',
-    'actionLabel' => 'Add New Doctor',
-    'actionIcon' => 'add_moderator',
+    'actionUrl' => 'doctors/create.php',
     'mb' => 4
 ];
 $currentPage = 'doctors';
@@ -17,30 +16,26 @@ include_once __DIR__ . '/layout.php';
 ?>
 <?= shared('components', 'elements/dataTables/styles') ?>
 
-
 <?php
+// Define Filter Configuration
 $doctorFilterConfig = [
     'primary' => [
-        'name' => 'specialty',
-        'label' => 'Specialty:',
+        'name' => 'status',
+        'label' => 'Status:',
         'options' => [
             ['value' => '', 'label' => 'All'],
-            ['value' => 'psychotherapy', 'label' => 'Psychotherapy'],
-            ['value' => 'cbt', 'label' => 'CBT'],
-            ['value' => 'ot', 'label' => 'OT']
+            ['value' => 'active', 'label' => 'Active'],
+            ['value' => 'on_leave', 'label' => 'On Leave'],
+            ['value' => 'inactive', 'label' => 'Inactive']
         ]
     ],
     'secondary_filters' => [
         [
             'type' => 'select',
-            'name' => 'status',
-            'icon' => 'check_circle',
-            'placeholder' => 'All Statuses',
-            'options' => [
-                'active' => 'Active',
-                'on_leave' => 'On Leave',
-                'inactive' => 'Inactive'
-            ]
+            'name' => 'specialty',
+            'icon' => 'medical_services',
+            'placeholder' => 'All Specialties',
+            'options' => [] // Populated by JS
         ]
     ],
     'actions' => [
@@ -293,11 +288,11 @@ $doctorFilterConfig = [
                 dataType: "json",
                 data: function (d) {
                     // Filters
-                    const specialty = $('.filter-primary-btn.bg-card[data-group="specialty"]');
-                    d.filter_specialty = specialty.length ? specialty.data('value') : '';
+                    const statusBtn = $('.filter-primary-btn.bg-card[data-group="status"]');
+                    d.filter_status = statusBtn.length ? statusBtn.data('value') : '';
 
-                    const status = $('select[name="status"]').val(); // Assuming filterbar uses select name="status"
-                    d.filter_status = status || '';
+                    const specialty = $('select[name="specialty"]').val();
+                    d.filter_specialty = specialty || '';
 
                     return d;
                 },
@@ -306,6 +301,26 @@ $doctorFilterConfig = [
                 }
             }
         });
+
+        // --- Fetch Specialties Dynamically ---
+        fetchSpecialties();
+        function fetchSpecialties() {
+            $.ajax({
+                url: apiUrl("shared") + "specializations.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        // The filterbar component might output a generic select. We need to find it.
+                        // The name is "specialty".
+                        const select = $('select[name="specialty"]');
+                        response.data.forEach(function (spec) {
+                            select.append(`<option value="${spec.name}">${spec.name}</option>`);
+                        });
+                    }
+                }
+            });
+        }
 
         // Event Listeners for Filters
         $(document).on('filter:change', function (e, filters) {
