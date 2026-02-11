@@ -33,7 +33,8 @@ $format_table = "
         u.status,
         s.name AS specialty,
         di.availability,
-        (SELECT COUNT(DISTINCT patient_uuid) FROM appointments WHERE doctor_uuid = u.uuid AND status IN ('confirmed', 'completed')) as patient_count
+        (SELECT COUNT(DISTINCT patient_uuid) FROM appointments WHERE doctor_uuid = u.uuid AND status IN ('confirmed', 'completed')) as patient_count,
+        u.created_at
     FROM users u
     JOIN user_doctor_info di ON u.uuid = di.user_uuid
     LEFT JOIN specializations s ON di.specialization_id = s.id
@@ -55,6 +56,7 @@ $columns = array(
     ['db' => 'status', 'dt' => 'status'],
     ['db' => 'uuid', 'dt' => 'uuid'], // For actions
     ['db' => null, 'dt' => 'actions'], // Placeholder for client-side actions
+    ['db' => 'created_at', 'dt' => 'created_at'] // Invisible column for sorting
 );
 
 // Apply Filters

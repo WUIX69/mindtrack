@@ -36,6 +36,18 @@ $doctorFilterConfig = [
             'icon' => 'medical_services',
             'placeholder' => 'All Specialties',
             'options' => [] // Populated by JS
+        ],
+        [
+            'type' => 'select',
+            'name' => 'sort',
+            'icon' => 'sort',
+            'placeholder' => 'Sort By',
+            'options' => [
+                'newest' => 'Newest First',
+                'oldest' => 'Oldest First',
+                'name_asc' => 'Name (A-Z)',
+                'name_desc' => 'Name (Z-A)'
+            ]
         ]
     ],
     'actions' => [
@@ -280,7 +292,11 @@ $doctorFilterConfig = [
                             </div>
                         `;
                     }
-                }
+                },
+                // { data: 'specialty', visible: false },
+                // { data: 'phone', visible: false },
+                // { data: 'uuid', visible: false },
+                { data: 'created_at', visible: false }
             ],
             ajax: {
                 url: apiUrl("doctors") + "doctors-dataTable.php",
@@ -325,8 +341,20 @@ $doctorFilterConfig = [
         // Event Listeners for Filters
         $(document).on('filter:change', function (e, filters) {
             console.log("Filters changed:", filters);
+
+            // Handle Search
             if (filters.search !== undefined) {
                 $table.search(filters.search);
+            }
+
+            // Handle Sort
+            if (filters.sort) {
+                switch (filters.sort) {
+                    case 'newest': $table.order([9, 'desc']); break;
+                    case 'oldest': $table.order([9, 'asc']); break;
+                    case 'name_asc': $table.order([0, 'asc']); break;
+                    case 'name_desc': $table.order([0, 'desc']); break;
+                }
             }
             $table.draw();
         });
