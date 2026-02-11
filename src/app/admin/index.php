@@ -89,6 +89,38 @@ include_once __DIR__ . '/layout.php';
             <h3 class="text-lg font-bold">Recent Appointment Requests</h3>
             <button class="text-sm text-primary font-semibold hover:underline">View All</button>
         </div>
+        <div class="mb-4">
+            <?= shared('components', 'layout/filterbar', [
+                'isTransparent' => true,
+                'mb' => '4',
+                'primary' => [
+                    'name' => 'status',
+                    'options' => [
+                        ['value' => '', 'label' => 'All', 'count_id' => 'count-all'],
+                        ['value' => 'pending', 'label' => 'Pending', 'count_id' => 'count-pending'],
+                        ['value' => 'confirmed', 'label' => 'Upcoming', 'count_id' => 'count-confirmed'],
+                        ['value' => 'completed', 'label' => 'Completed', 'count_id' => 'count-completed'],
+                        ['value' => 'cancelled', 'label' => 'Cancelled', 'count_id' => 'count-cancelled']
+                    ]
+                ],
+                'secondary_filters' => [
+                    [
+                        'type' => 'search',
+                        'name' => 'search',
+                        'placeholder' => 'Search services...',
+                        'icon' => 'search'
+                    ],
+                ],
+                'actions' => [
+                    [
+                        'label' => 'Reset Filters',
+                        'icon' => 'filter_list_off',
+                        'id' => 'reset-filters',
+                        'class' => 'text-primary hover:opacity-80'
+                    ]
+                ]
+            ]) ?>
+        </div>
         <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
             <table class="w-full text-left border-collapse">
                 <thead>
