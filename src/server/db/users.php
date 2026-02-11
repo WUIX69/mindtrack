@@ -32,11 +32,11 @@ class Users extends Base
     {
         try {
             $stmt = self::conn()->prepare("
-            SELECT u.uuid, u.firstname, u.lastname, s.name AS specialization 
+            SELECT u.uuid, u.firstname, u.lastname, u.email, u.phone, u.status, s.name AS specialization, di.availability 
             FROM users u 
             JOIN user_doctor_info di ON u.uuid = di.user_uuid 
             LEFT JOIN specializations s ON di.specialization_id = s.id
-            WHERE u.role = 'doctor' AND u.status = 'active'
+            WHERE u.role = 'doctor'
         ");
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
@@ -120,13 +120,12 @@ class Users extends Base
             }
 
             $stmt = self::conn()->prepare("
-                SELECT u.uuid, u.firstname, u.lastname, s.name AS specialization 
-                FROM users u 
-                JOIN user_doctor_info di ON u.uuid = di.user_uuid 
-                LEFT JOIN specializations s ON di.specialization_id = s.id
-                WHERE u.role = 'doctor' 
-                AND u.status = 'active'
-                AND di.specialization_id = ?
+            SELECT u.uuid, u.firstname, u.lastname, u.email, u.phone, u.status, s.name AS specialization, di.availability 
+            FROM users u 
+            JOIN user_doctor_info di ON u.uuid = di.user_uuid 
+            LEFT JOIN specializations s ON di.specialization_id = s.id
+            WHERE u.role = 'doctor' 
+            AND di.specialization_id = ?
             ");
             $stmt->execute([$specializationId]);
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
