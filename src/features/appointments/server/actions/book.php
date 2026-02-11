@@ -78,6 +78,7 @@ try {
         'notes' => $validData['notes'] ?: null
     ];
 
+    $result = null;
     if ($existing_uuid) {
         // Ownership check for non-admins
         if ($user_type !== 'admin') {
@@ -104,12 +105,7 @@ try {
         $result = appointments::store($data);
     }
 
-    if ($result['success']) {
-        $response['success'] = true;
-        $response['message'] = $existing_uuid ? 'Appointment updated successfully.' : 'Appointment booked successfully.';
-    } else {
-        $response['message'] = $result['message'];
-    }
+    $response = array_merge($response, $result);
 
 } catch (Exception $e) {
     error_log("Booking Error: " . $e->getMessage());
