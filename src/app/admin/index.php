@@ -6,8 +6,7 @@ $pageTitle = "MindTrack Admin Dashboard";
 $headerData = [
     'title' => 'Morning Overview',
     'description' => "Here's what's happening at Wayside Psyche Center today.",
-    'searchPlaceholder' => 'Search patient or record...',
-    'actionLabel' => 'Add New Record',
+    'actionLabel' => 'Add New Appointment',
     'mb' => 4
 ];
 include_once __DIR__ . '/layout.php';
