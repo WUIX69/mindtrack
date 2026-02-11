@@ -14,7 +14,7 @@ MindTrack is a web-based **Patient Management and Online Appointment System** bu
 | :--------------- | :----------------------------------- |
 | **Framework**    | Custom PHP (LAMP/WAMP Stack)         |
 | **Core**         | PHP 8.1+, MySQL 8.0+                 |
-| **Frontend**     | HTML5, JavaScript, jQuery, DaisyUI   |
+| **Frontend**     | HTML5, JavaScript, jQuery            |
 | **Styling**      | TailwindCSS 4, PostCSS, Autoprefixer |
 | **Backend Libs** | PHPMailer, Dompdf, Ramsey UUID       |
 | **Database**     | MySQL / MariaDB                      |
@@ -98,11 +98,12 @@ Each feature is a **self-contained module**.
 
 ```text
 src/features/[feature-name]/
-├── components/    # Feature UI components (Include jQuery logic here)
+├── components/    # Feature-specific UI components (Include jQuery logic here)
 ├── schemas/       # Feature-specific validation schema (Respect Validation)
 ├── server/
-│   ├── actions/   # API endpoints (e.g., list-items.php, book.php) returning JSON
-│   └── ...        # Other server-side logic
+│   ├── actions/   # Feature-specific API endpoints (e.g., list-items.php, book.php) returning JSON
+│   └── ...        # Other feature-specific server-side logic
+├── utils/         # Feature-specific Utility Functions
 └── ...
 ```
 
@@ -125,11 +126,7 @@ src/features/[feature-name]/
 ### Frontend (JS/CSS)
 
 - **Styling**: Always use **TailwindCSS** utility classes. Avoid inline styles.
-- **DaisyUI Components**: Leverage DaisyUI component classes for common UI elements:
-    - Use semantic component classes: `btn`, `card`, `input`, `modal`, `dropdown`, etc.
-    - Combine with Tailwind utilities for customization
-    - Refer to [DaisyUI documentation](https://daisyui.com/components/) for available components
-    - DaisyUI themes are disabled; use custom CSS variables from `global.css` for theming
+
 - **JavaScript**: Use modern ES6+ features where supported, or jQuery for DOM manipulation if legacy consistency is needed.
 
 ### File Naming
