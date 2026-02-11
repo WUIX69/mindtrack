@@ -156,7 +156,7 @@ include_once __DIR__ . '/../layout.php';
             language: {
                 info: "Showing _START_ to _END_ of _TOTAL_ appointments",
                 lengthMenu: "Entries per page _MENU_",
-                processing: '<div class="flex items-center gap-2 text-sm text-muted-foreground"><span class="loading loading-spinner loading-md text-primary"></span> Loading...</div>',
+                // processing: '<div class="flex items-center gap-2 text-sm text-muted-foreground"><span class="loading loading-spinner loading-md text-primary"></span> Loading...</div>',
                 infoEmpty: "No appointments found",
                 emptyTable: "No appointments found.",
                 zeroRecords: "No matching appointments found"
