@@ -282,7 +282,7 @@ include __DIR__ . '/../layout.php';
                             ${isConfirmed ? `
                                 <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>
                             ` : (isPending || isRescheduled) ? `
-                                ${isPending ? `<button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="edit-request-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors">Edit Request</button>` : `
+                                ${isPending ? `<button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" data-date="${a.sched_date}" data-time="${a.sched_time}" class="edit-request-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors">Edit Request</button>` : `
                                 <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>`}
                                 <button data-uuid="${a.uuid}" class="withdraw-btn px-5 py-2.5 rounded-xl border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors">Withdraw</button>
                             ` : `
@@ -301,8 +301,10 @@ include __DIR__ . '/../layout.php';
             const service = $(this).data('service');
             const doctor = $(this).data('doctor');
             const notes = $(this).data('notes');
+            const date = $(this).data('date');
+            const time = $(this).data('time');
             // Redirect to step-1 with edit_uuid and carry over previous selections
-            window.location.href = `step-1-service.php?edit_uuid=${encodeURIComponent(uuid)}&service=${encodeURIComponent(service)}&doctor_uuid=${encodeURIComponent(doctor)}&notes=${encodeURIComponent(notes)}`;
+            window.location.href = `step-1-service.php?edit_uuid=${encodeURIComponent(uuid)}&service=${encodeURIComponent(service)}&doctor_uuid=${encodeURIComponent(doctor)}&notes=${encodeURIComponent(notes)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
         });
 
         // Event Listeners for Filters

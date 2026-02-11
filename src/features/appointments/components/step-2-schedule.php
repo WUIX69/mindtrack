@@ -166,8 +166,38 @@ $role = $role ?? 'patient';
         currentMonth = initialDate.getMonth(); // 0-indexed
 
         // Update Time Selection if exists in URL or default to first
+        // Update Time Selection if exists in URL or default to first
         if (config.time) {
-            $(`input[name="time_slot"][value="${config.time}"]`).prop('checked', true);
+            // Try exact string match first
+            let $radio = $(`input[name="time_slot"][value="${config.time}"]`);
+
+            // If not found, try fuzzy match (handling 24h vs 12h format)
+            if ($radio.length === 0) {
+                // Use a dummy date to parse the time strings
+                const dummyDate = '2000-01-01';
+                const targetDate = new Date(`${dummyDate} ${config.time}`);
+
+                if (!isNaN(targetDate.getTime())) {
+                    $('input[name="time_slot"]').each(function () {
+                        const slotVal = $(this).val(); // e.g. "9:00 AM"
+                        const slotDate = new Date(`${dummyDate} ${slotVal}`);
+
+                        // Compare hours and minutes
+                        if (!isNaN(slotDate.getTime()) &&
+                            slotDate.getHours() === targetDate.getHours() &&
+                            slotDate.getMinutes() === targetDate.getMinutes()) {
+                            $radio = $(this);
+                            return false; // break loop
+                        }
+                    });
+                }
+            }
+
+            if ($radio.length) {
+                $radio.prop('checked', true);
+            } else {
+                $('input[name="time_slot"]').first().prop('checked', true);
+            }
         } else {
             $('input[name="time_slot"]').first().prop('checked', true);
         }

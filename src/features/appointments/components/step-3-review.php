@@ -21,6 +21,35 @@ $role = $role ?? 'patient';
         <!-- Main Summary Card -->
         <div class="bg-card rounded-[2.5rem] shadow-sm border border-border overflow-hidden">
             <div class="p-10 space-y-10" id="review-content">
+                <!-- Summary Section 0: Patient (Admin Only) -->
+                <div class="hidden" id="patient-review-section">
+                    <div class="flex items-start gap-6" id="patient-review-loading">
+                        <div class="size-24 bg-muted animate-pulse rounded-[2rem]"></div>
+                        <div class="flex-1 space-y-3">
+                            <div class="h-4 w-24 bg-muted animate-pulse rounded"></div>
+                            <div class="h-8 w-48 bg-muted animate-pulse rounded"></div>
+                        </div>
+                    </div>
+
+                    <div class="hidden" id="patient-review-data">
+                        <div class="flex items-start gap-6">
+                            <div
+                                class="flex items-center justify-center rounded-[1.5rem] bg-indigo-50 text-indigo-600 p-5 shrink-0 shadow-inner">
+                                <span class="material-symbols-outlined text-5xl">person</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
+                                    Patient Information
+                                </p>
+                                <p class="text-3xl font-black text-foreground tracking-tight" id="patient-name">
+                                    Loading...</p>
+                                <p class="text-base text-muted-foreground mt-2 font-medium" id="patient-email"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="border-border/50 mt-10" />
+                </div>
+
                 <!-- Summary Section 1: Service -->
                 <div class="flex items-start gap-6" id="service-review-loading">
                     <div class="size-24 bg-muted animate-pulse rounded-[1.5rem]"></div>
@@ -180,6 +209,10 @@ $role = $role ?? 'patient';
         setupNavigation();
         getServiceDetails();
         getDoctorDetails();
+        if (config.patientUuid) {
+            $('#patient-review-section').removeClass('hidden');
+            getPatientDetails();
+        }
 
         function setupNavigation() {
             const backParams = new URLSearchParams();
@@ -244,6 +277,24 @@ $role = $role ?? 'patient';
                         $('#doctor-review-loading').addClass('hidden');
                         $('#doctor-review-data').removeClass('hidden');
                     }
+                }
+            });
+        }
+
+        function getPatientDetails() {
+            $.ajax({
+                url: apiUrl("shared") + "patients.php",
+                method: "GET",
+                data: { uuid: config.patientUuid },
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) return;
+
+                    const p = response.data;
+                    $('#patient-name').text(p.name);
+                    $('#patient-email').text(p.email);
+                    $('#patient-review-loading').addClass('hidden');
+                    $('#patient-review-data').removeClass('hidden');
                 }
             });
         }

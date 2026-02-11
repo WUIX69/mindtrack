@@ -79,6 +79,38 @@ class Users extends Base
     }
 
 
+    public static function singleWherePatient($uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT u.uuid as id, CONCAT(u.firstname, ' ', u.lastname) as name, u.email 
+                FROM users u 
+                WHERE u.role = 'patient' AND u.status = 'active' AND u.uuid = ?
+            ");
+            $stmt->execute([$uuid]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
+
+            if (!$data) {
+                return [
+                    'success' => false,
+                    'message' => 'Patient not found',
+                ];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Patient fetched successfully',
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::singleWherePatient): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch patient',
+            ];
+        }
+    }
+
     public static function allWhereDoctorsBySpecialization($specializationId = null)
     {
         try {
