@@ -24,11 +24,11 @@ $filterConfig = [
         'name' => 'status',
         'label' => 'Status:',
         'options' => [
-            ['value' => '', 'label' => 'All'],
-            ['value' => 'pending', 'label' => 'Pending'],
-            ['value' => 'confirmed', 'label' => 'Upcoming'],
-            ['value' => 'completed', 'label' => 'Completed'],
-            ['value' => 'cancelled', 'label' => 'Cancelled']
+            ['value' => '', 'label' => 'All', 'count_id' => 'count-all'],
+            ['value' => 'pending', 'label' => 'Pending', 'count_id' => 'count-pending'],
+            ['value' => 'confirmed', 'label' => 'Upcoming', 'count_id' => 'count-confirmed'],
+            ['value' => 'completed', 'label' => 'Completed', 'count_id' => 'count-completed'],
+            ['value' => 'cancelled', 'label' => 'Cancelled', 'count_id' => 'count-cancelled']
         ]
     ],
     'secondary_filters' => [
@@ -284,19 +284,25 @@ shared('components', 'layout/filterbar', $filterConfig);
                     return d;
                 },
                 dataSrc: function (response) {
-                    // Update global state for Sidebar Stats
+                    // Update Status Counts
+                    if (response.counts) {
+                        // All count (sum of all statuses)
+                        let total = 0;
+                        for (const status in response.counts) {
+                            total += parseInt(response.counts[status]);
+                            const countId = `count-${status}`;
+                            $(`#${countId}`).text(response.counts[status]);
+                        }
+                        $('#count-all').text(total);
+                    }
+
+                    // Update Sidebar Stats
                     if (response.data) {
-                        window.allAppointments = response.data; // Store current page data (for stats approximation)
-                        // Ideally stats should come from a separate API or the endpoint response if we want accurate total stats
-                        // For now we'll update with what we have or mock it. 
-                        // The endpoint should probably return stats? DataTables response format is fixed.
-                        // We'll approximate or fetch stats separately if needed.
-                        // For now, let's just use the recordsTotal from response if available?
-                        // response.recordsTotal available in response object, not dataSrc return.
-                        // But we can access it here.
                         $('#total-count').text(response.recordsTotal || '-');
-                        $('#pending-count').text('-'); // We don't have pending count in standard DT response unless we add it. 
-                        // Start a separate fetch for stats? Or just show totals.
+                        // Pending count from the counts object if available
+                        if (response.counts && response.counts.pending !== undefined) {
+                            $('#pending-count').text(response.counts.pending);
+                        }
                     }
                     return response.data;
                 },
@@ -342,6 +348,16 @@ shared('components', 'layout/filterbar', $filterConfig);
                 }
             });
         }
+
+        // --- Global Search Integration ---
+        let searchTimeout = null;
+        $('#global-search-input').on('keyup', function () {
+            const val = $(this).val();
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function () {
+                $appointmentsTable.search(val).draw();
+            }, 300);
+        });
 
         // --- Filters Interactivity ---
 

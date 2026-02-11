@@ -256,4 +256,64 @@ class appointments extends Base
             ];
         }
     }
+    /**
+     * Get appointment counts grouped by status.
+     * 
+     * @param array $filters (doctor_uuid, service_uuid, start_date, end_date)
+     * @return array
+     */
+    public static function countWhereStatus($filters = [])
+    {
+        try {
+            $query = "SELECT status, COUNT(*) as count FROM appointments a WHERE 1=1";
+            $params = [];
+
+            if (!empty($filters['doctor_uuid']) || !empty($filters['filter_doctor'])) {
+                $query .= " AND doctor_uuid = ?";
+                $params[] = $filters['doctor_uuid'] ?? $filters['filter_doctor'];
+            }
+
+            if (!empty($filters['service_uuid']) || !empty($filters['filter_service'])) {
+                $query .= " AND service_uuid = ?";
+                $params[] = $filters['service_uuid'] ?? $filters['filter_service'];
+            }
+
+            if (!empty($filters['sched_date']) || !empty($filters['filter_date'])) {
+                $query .= " AND sched_date = ?";
+                $params[] = $filters['sched_date'] ?? $filters['filter_date'];
+            }
+
+            // Global search filter (if applicable for counts?)
+            // Usually counts on top are independent of text search, but let's keep it simple for now.
+
+            $query .= " GROUP BY status";
+
+            $stmt = self::conn()->prepare($query);
+            $stmt->execute($params);
+
+            $rawCounts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR) ?? [];
+
+            // Map DB statuses to UI filter keys
+            // UI "Upcoming" (value='confirmed') should include 'confirmed' + 'scheduled'
+            $counts = [
+                'pending' => 0,
+                'confirmed' => 0,
+                'completed' => 0,
+                'cancelled' => 0
+            ];
+
+            foreach ($rawCounts as $status => $count) {
+                if ($status === 'scheduled' || $status === 'confirmed') {
+                    $counts['confirmed'] += $count;
+                } elseif (isset($counts[$status])) {
+                    $counts[$status] += $count;
+                }
+            }
+
+            return $counts;
+        } catch (PDOException $e) {
+            error_log("SQL Error (appointments::countWhereStatus): " . $e->getMessage());
+            return [];
+        }
+    }
 }

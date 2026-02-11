@@ -53,7 +53,7 @@ $userSub = match ($userRole) {
                 <div class="relative hidden lg:block">
                     <span
                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-variation-settings-['FILL'_0,'wght'_400]">search</span>
-                    <input
+                    <input id="global-search-input"
                         class="pl-10 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:ring-primary focus:border-primary w-64 transition-all placeholder:text-muted-foreground"
                         placeholder="<?= htmlspecialchars($searchPlaceholder) ?>" type="text" />
                 </div>

@@ -4,6 +4,7 @@ require_once dirname(__DIR__, 5) . '/src/core/app.php';
 
 use Mindtrack\Server\Db\Base;
 use Mindtrack\Lib\DataTables;
+use Mindtrack\Server\Db\Appointments;
 
 // Get DB Connection
 $conn = Base::conn();
@@ -44,8 +45,8 @@ try {
         LEFT JOIN users u ON a.doctor_uuid = u.uuid
         LEFT JOIN users p ON a.patient_uuid = p.uuid      
     ";
-    $table = "($format_table) as derived_table";
 
+    $table = "($format_table) as derived_table";
     $primaryKey = 'uuid';
 
     $columns = array(
@@ -70,14 +71,15 @@ try {
         ['db' => 'created_at', 'dt' => 'created_at'],
     );
 
-    if (is_null($conn)) {
-        $conn = array(
-            'user' => $_ENV['DB_USERNAME'],
-            'pass' => $_ENV['DB_PASSWORD'],
-            'db' => $_ENV['DB_DATABASE'],
-            'host' => $_ENV['DB_HOST']
-        );
-    }
+    // BACKUP:
+    // if (is_null($conn)) {
+    //     $conn = array(
+    //         'user' => $_ENV['DB_USERNAME'],
+    //         'pass' => $_ENV['DB_PASSWORD'],
+    //         'db' => $_ENV['DB_DATABASE'],
+    //         'host' => $_ENV['DB_HOST']
+    //     );
+    // }
 
     // Build extra WHERE conditions from filter params
     $whereResult = null;
@@ -90,29 +92,6 @@ try {
         if ($status === 'upcoming') {
             $whereResult = "`status` IN ('confirmed', 'scheduled')";
         } else {
-            // Complex where expects full condition string + bindings is handled mostly via library logic if simplified, 
-            // but the library supports raw WHERE strings or structured?
-            // Checking library documentation or code: 'complex' ($request, $conn, $table, $primaryKey, $columns, $whereResult=null, $whereAll=null)
-            // The library code applies $whereResult simply as string if provided directly?
-            // "if ( $whereResult ) { $where = $whereResult; }"  <- No, looking at library source:
-            /*
-            if ( $whereResult ) {
-                $where = Mindtrack\Lib\DataTables::filter( $request, $columns, $bindings );
-                if ( $where ) {
-                    $where .= ' AND ' . $whereResult;
-                } else {
-                    $where = 'WHERE ' . $whereResult;
-                }
-            }
-            */
-            // So $whereResult must be a SQL string (e.g. "status='pending'").
-            // To be safe with bindings, the library handles bindings internally for standard filters.
-            // For custom WHERE, if we want parameterized queries, the library might not support easy binding injection for custom strings unless we modify it.
-            // But looking at library: `static function complex ( $request, $sql_details, $table, $primaryKey, $columns, $whereResult=null, $whereAll=null )`
-            // It calls `self::data_output` -> `self::pluck`.
-            // Wait, the library does NOT seem to accept bindings for $whereResult easily from outside?
-            // Let's assume input is sanitized or safe enough here since it's an enum-like status.
-
             // Actually, for safety, let's just quote it manually since status is a simple string.
             $safeStatus = addslashes($status);
             $whereResult = "`status` = '$safeStatus'";
@@ -141,7 +120,7 @@ try {
     }
 
     $response = DataTables::complex($_GET, $conn, $table, $primaryKey, $columns, $whereResult, $whereAll);
-    $response['success'] = true;
+    $response['counts'] = Appointments::countWhereStatus($_GET);
 
 } catch (Exception $e) {
     error_log($e->getMessage());
