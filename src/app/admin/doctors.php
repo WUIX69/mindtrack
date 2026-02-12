@@ -9,7 +9,8 @@ $headerData = [
     'searchPlaceholder' => 'Search providers by name, specialty, or ID...',
     'actionLabel' => 'Add New Doctor',
     'actionIcon' => 'person_add',
-    'actionUrl' => 'doctors/create.php',
+    'actionUrl' => 'javascript:void(0);',
+    'actionClass' => 'bg-primary hover:bg-primary/90 text-primary-foreground manage-doctor-btn',
     'mb' => 4
 ];
 $currentPage = 'doctors';
@@ -173,8 +174,68 @@ $doctorFilterConfig = [
 </div>
 
 <?= shared('components', 'elements/dataTables/scripts'); ?>
+<?php featured('doctors', 'components/manage-doctor-modal'); ?>
+
 <script>
     $(document).ready(function () {
+        // Trigger Add Doctor Modal
+        // Trigger Add/Edit Doctor Modal
+        $(document).on('click', '.manage-doctor-btn', function (e) {
+            e.preventDefault();
+            const doctorId = $(this).data('id');
+
+            if (doctorId) {
+                // Edit Mode - Fetch data first
+                $.ajax({
+                    url: apiUrl('doctors') + 'manage-doctor.php',
+                    type: 'GET',
+                    data: { uuid: doctorId, action: 'get_single' },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            openDoctorModal('edit', response.data);
+                        } else {
+                            alert(response.error || 'Could not fetch doctor details');
+                        }
+                    },
+                    error: function () {
+                        alert('Error fetching doctor data');
+                    }
+                });
+            } else {
+                // Add Mode
+                openDoctorModal('add');
+            }
+        });
+
+        // Trigger Delete Doctor Modal
+        $(document).on('click', '.delete-doctor-btn', function (e) {
+            e.preventDefault();
+            const doctorUuid = $(this).data('id');
+
+            if (confirm("Are you sure you want to delete this doctor? This action cannot be undone.")) {
+                $.ajax({
+                    url: apiUrl('doctors') + 'manage-doctor.php',
+                    type: 'DELETE',
+                    data: {
+                        uuid: doctorUuid
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            // alert(response.message);
+                            $('#doctors-table').DataTable().ajax.reload();
+                        } else {
+                            alert(response.message || 'Error deleting doctor');
+                        }
+                    },
+                    error: function () {
+                        alert('Server error executing delete');
+                    }
+                });
+            }
+        });
+
         const $table = $('#doctors-table').DataTable({
             layout: {
                 topStart: null,
@@ -289,8 +350,8 @@ $doctorFilterConfig = [
                     render: function (data, type, row) {
                         return `
                             <div class="flex items-center justify-end gap-2">
-                                <a href="doctors/manage.php?id=${row.uuid}" class="px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded hover:bg-primary hover:text-white transition-all">Manage</a>
-                                <a href="doctors/edit.php?id=${row.uuid}" class="px-3 py-1.5 bg-muted text-muted-foreground text-xs font-bold rounded hover:bg-muted/80 transition-all">Edit</a>
+                                <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded hover:bg-primary hover:text-white transition-all manage-doctor-btn">Manage</button>
+                                <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-red-500/10 text-red-600 text-xs font-bold rounded hover:bg-red-500 hover:text-white transition-all delete-doctor-btn">Delete</button>
                             </div>
                         `;
                     }

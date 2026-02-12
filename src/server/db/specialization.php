@@ -35,4 +35,28 @@ class Specialization extends Base
         }
     }
 
+    public static function findByName($name)
+    {
+        try {
+            $stmt = self::conn()->prepare("SELECT * FROM specializations WHERE name = ? LIMIT 1");
+            $stmt->execute([$name]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        } catch (PDOException $e) {
+            error_log("SQL Error (Specialization::findByName): " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public static function create($name)
+    {
+        try {
+            $stmt = self::conn()->prepare("INSERT INTO specializations (name) VALUES (?)");
+            $stmt->execute([$name]);
+            return self::conn()->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("SQL Error (Specialization::create): " . $e->getMessage());
+            return null;
+        }
+    }
+
 }

@@ -354,4 +354,149 @@ class Users extends Base
             ];
         }
     }
+
+    public static function storeWhereDoctor($data)
+    {
+        try {
+            self::beginTransaction();
+
+            // 1. Insert User
+            $stmt = self::conn()->prepare("
+                INSERT INTO users (uuid, firstname, lastname, email, password, phone, role, status, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'doctor', 'active', NOW())
+            ");
+
+            $stmt->execute([
+                $data['uuid'],
+                $data['firstname'],
+                $data['lastname'],
+                $data['email'],
+                $data['password'],
+                $data['phone']
+            ]);
+
+            // 2. Insert Doctor Info
+            $stmt = self::conn()->prepare("
+                INSERT INTO user_doctor_info (user_uuid, specialization_id, license_number, bio, availability)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+
+            $stmt->execute([
+                $data['uuid'],
+                $data['specialization_id'],
+                $data['license_number'],
+                $data['bio'],
+                json_encode($data['availability'])
+            ]);
+
+            self::commit();
+            return ['success' => true, 'message' => 'Doctor created successfully'];
+
+        } catch (PDOException $e) {
+            self::rollBack();
+            error_log("SQL Error (Users::storeWhereDoctor): " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to create doctor'];
+        }
+    }
+
+    public static function updateWhereDoctor($data)
+    {
+        try {
+            self::beginTransaction();
+
+            // 1. Update User
+            $query = "UPDATE users SET firstname=?, lastname=?, email=?, phone=?";
+            $params = [
+                $data['firstname'],
+                $data['lastname'],
+                $data['email'],
+                $data['phone']
+            ];
+
+            if (!empty($data['password'])) {
+                $query .= ", password=?";
+                $params[] = $data['password'];
+            }
+
+            $query .= " WHERE uuid=?";
+            $params[] = $data['uuid'];
+
+            $stmt = self::conn()->prepare($query);
+            $stmt->execute($params);
+
+            // 2. Update Doctor Info (Upsert)
+            $stmt = self::conn()->prepare("
+                INSERT INTO user_doctor_info (user_uuid, specialization_id, license_number, bio, availability)
+                VALUES (?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    specialization_id = VALUES(specialization_id),
+                    license_number = VALUES(license_number),
+                    bio = VALUES(bio),
+                    availability = VALUES(availability)
+            ");
+
+            $stmt->execute([
+                $data['uuid'],
+                $data['specialization_id'],
+                $data['license_number'],
+                $data['bio'],
+                json_encode($data['availability'])
+            ]);
+
+            self::commit();
+            return ['success' => true, 'message' => 'Doctor updated successfully'];
+
+        } catch (PDOException $e) {
+            self::rollBack();
+            error_log("SQL Error (Users::updateWhereDoctor): " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to update doctor'];
+        }
+    }
+
+    public static function singleWhereDoctor($uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT 
+                    u.uuid,
+                    CONCAT(u.firstname, ' ', u.lastname) AS doctor_name,
+                    u.firstname,
+                    u.lastname,
+                    u.email,
+                    u.phone,
+                    u.status,
+                    s.id as specialization_id,
+                    s.name AS specialty,
+                    di.license_number,
+                    di.bio,
+                    di.availability
+                FROM users u
+                LEFT JOIN user_doctor_info di ON u.uuid = di.user_uuid
+                LEFT JOIN specializations s ON di.specialization_id = s.id
+                WHERE u.uuid = ? AND u.role = 'doctor'
+            ");
+            $stmt->execute([$uuid]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($data) {
+                return [
+                    'success' => true,
+                    'message' => 'Doctor details fetched successfully.',
+                    'data' => $data
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Doctor not found.'
+            ];
+
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::singleWhereDoctor): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Database error occurred.'
+            ];
+        }
+    }
 }
