@@ -158,25 +158,61 @@
                     </div>
                 </div>
 
-                <!-- Section 3: Availability -->
+                <!-- Section 3: Detailed Availability -->
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">schedule</span> 3. Initial Availability
+                        <span class="material-symbols-outlined text-sm">schedule</span> 3. Weekly Availability
                     </h4>
-                    <div class="flex flex-wrap gap-2">
-                        <?php
-                        $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                        foreach ($days as $day):
-                            ?>
-                            <label class="cursor-pointer">
-                                <input type="checkbox" name="availability[]" value="<?= strtolower($day) ?>"
-                                    class="hidden peer" <?= in_array($day, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']) ? 'checked' : '' ?>>
-                                <div
-                                    class="px-3 py-2 rounded-lg border border-border text-xs font-bold text-muted-foreground peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary transition-all">
-                                    <?= $day ?>
+
+                    <div class="bg-muted/30 rounded-xl border border-border overflow-hidden">
+                        <div class="divide-y divide-border/50">
+                            <?php
+                            $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                            $defaultStart = '09:00';
+                            $defaultEnd = '17:00';
+
+                            foreach ($days as $day):
+                                $dayLabel = ucfirst($day);
+                                $isWeekend = in_array($day, ['saturday', 'sunday']);
+                                $isChecked = !$isWeekend ? 'checked' : '';
+                                $containerClass = !$isWeekend ? '' : 'opacity-50 pointer-events-none grayscale';
+                                ?>
+                                <div class="flex items-center justify-between p-4 group">
+                                    <div class="w-20 shrink-0">
+                                        <span
+                                            class="text-xs font-bold text-muted-foreground uppercase tracking-wider"><?= $dayLabel ?></span>
+                                    </div>
+                                    <div class="flex-1 flex justify-center items-center gap-3 time-container transition-all <?= $containerClass ?>"
+                                        id="container-<?= $day ?>">
+                                        <div class="relative">
+                                            <span
+                                                class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">From</span>
+                                            <input type="time" name="availability[<?= $day ?>][start]"
+                                                value="<?= $defaultStart ?>"
+                                                class="bg-card border-border rounded-lg pl-10 pr-2 py-1.5 text-xs focus:ring-primary focus:border-primary w-full border shadow-sm">
+                                        </div>
+                                        <span class="text-muted-foreground text-xs font-bold lg:block hidden">—</span>
+                                        <div class="relative">
+                                            <span
+                                                class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">To</span>
+                                            <input type="time" name="availability[<?= $day ?>][end]"
+                                                value="<?= $defaultEnd ?>"
+                                                class="bg-card border-border rounded-lg pl-10 pr-2 py-1.5 text-xs focus:ring-primary focus:border-primary w-full border shadow-sm">
+                                        </div>
+                                    </div>
+                                    <div class="w-12 flex justify-end">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" name="availability[<?= $day ?>][active]" value="1"
+                                                class="hidden peer day-toggle" data-target="container-<?= $day ?>"
+                                                <?= $isChecked ?>>
+                                            <div
+                                                class="w-10 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary shadow-inner">
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
-                            </label>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -195,12 +231,24 @@
 
 <script>
     $(document).ready(function () {
-
         const $modal = $('#doctor-modal');
         const $backdrop = $('#modal-backdrop');
         const $panel = $('#modal-panel');
         const $form = $('#doctor-form');
         const $submitBtn = $form.find('button[type="submit"]');
+
+        // Toggle Day Logic
+        $(document).on('change', '.day-toggle', function () {
+            const targetId = $(this).data('target');
+            const $container = $('#' + targetId);
+            const isChecked = $(this).is(':checked');
+
+            if (isChecked) {
+                $container.removeClass('opacity-50 pointer-events-none grayscale');
+            } else {
+                $container.addClass('opacity-50 pointer-events-none grayscale');
+            }
+        });
 
         // UI Reusable Variables
         let $modalTitle = "<?= $title ?? 'Add New Doctor' ?>";
@@ -210,7 +258,6 @@
         // Animation Helpers
         function openModal() {
             $modal.removeClass('hidden');
-            // Small timeout to allow removing hidden to take effect before animating opacity
             setTimeout(() => {
                 $backdrop.removeClass('opacity-0');
                 $panel.removeClass('scale-95 opacity-0');
@@ -220,19 +267,19 @@
         window.closeDoctorModal = function () {
             $backdrop.addClass('opacity-0');
             $panel.addClass('scale-95 opacity-0');
-
-            // Wait for transition to finish
             setTimeout(() => {
                 $modal.addClass('hidden');
-                $form[0].reset(); // Reset form on close
-                // Reset state
+                $form[0].reset();
+                // Reset availability UI state
+                $('.day-toggle').each(function () {
+                    $(this).trigger('change');
+                });
                 $('#doctor-uuid').val('');
-                $form.find('input[name="password"]').prop('required', true); // Require password for new
+                $form.find('input[name="password"]').prop('required', true);
                 $('#password-help').addClass('hidden');
             }, 300);
         }
 
-        // Global function to open modal in specific mode
         window.openDoctorModal = function (mode, data = null) {
             if (mode === 'edit' && data) {
                 // Edit Mode
@@ -240,39 +287,48 @@
                 $('#modal-subtitle').text('Update Provider Details');
                 $submitBtn.text('Save Changes');
 
-                // Populate Form
+                // Populate Standard Fields
                 $('#doctor-uuid').val(data.uuid);
                 $('input[name="firstname"]').val(data.firstname);
                 $('input[name="lastname"]').val(data.lastname);
                 $('input[name="email"]').val(data.email);
                 $('input[name="phone"]').val(data.phone);
-                $('input[name="phone"]').val(data.phone);
-                // Fetch and select specialty
                 window.fetchSpecialties(data.specialization_id);
-
                 $('input[name="license_number"]').val(data.license_number);
                 $('textarea[name="bio"]').val(data.bio);
 
-                // Availability
-                $('input[name="availability[]"]').prop('checked', false); // clear all
-                if (data.availability) {
-                    let availability = data.availability;
-                    if (typeof availability === 'string') {
-                        try {
-                            availability = JSON.parse(availability);
-                            // Handle object format (monday: {active: true...})
-                            Object.keys(availability).forEach(day => {
-                                if (availability[day].active) {
-                                    $(`input[name="availability[]"][value="${day}"]`).prop('checked', true);
-                                }
-                            });
-                        } catch (e) {
-                            // Handle simple array format if exists
-                        }
-                    }
+                // Populate Availability
+                // Reset all to default first
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+                // Uncheck all initially to clear state
+                // but actually standard form reset handles inputs, we need to handle visual state
+
+                let schedule = data.availability;
+                // Parse if string
+                if (typeof schedule === 'string') {
+                    try { schedule = JSON.parse(schedule); } catch (e) { schedule = {}; }
                 }
 
-                // Password not required for edit
+                if (schedule && typeof schedule === 'object') {
+                    days.forEach(day => {
+                        const dayData = schedule[day];
+                        const $row = $(`#container-${day}`).closest('.group');
+                        const $toggle = $row.find('.day-toggle');
+
+                        if (dayData && dayData.active) {
+                            $toggle.prop('checked', true);
+                            $row.find(`input[name="availability[${day}][start]"]`).val(dayData.start || '09:00');
+                            $row.find(`input[name="availability[${day}][end]"]`).val(dayData.end || '17:00');
+                        } else {
+                            $toggle.prop('checked', false);
+                        }
+                        // Update visual state
+                        $toggle.trigger('change');
+                    });
+                }
+
+                // Password Handling
                 $form.find('input[name="password"]').prop('required', false);
                 $('#password-container').addClass('hidden');
                 $('#password-help').removeClass('hidden');
@@ -285,7 +341,17 @@
                 $('#doctor-uuid').val('');
                 $form[0].reset();
 
-                // Password required for new
+                // Reset Availability UI
+                // Default Mon-Fri active, Sat-Sun inactive
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                days.forEach(day => {
+                    const isWeekend = (day === 'saturday' || day === 'sunday');
+                    const $toggle = $(`#container-${day}`).closest('.group').find('.day-toggle');
+                    $toggle.prop('checked', !isWeekend);
+                    $toggle.trigger('change');
+                });
+
+                // Password Handling
                 $form.find('input[name="password"]').prop('required', true);
                 $('#password-container').removeClass('hidden');
                 $('#password-help').addClass('hidden');
@@ -293,7 +359,6 @@
             openModal();
         };
 
-        // Generate Password Handler
         $('#generate-password-btn').on('click', function () {
             const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
             let password = '';
@@ -303,23 +368,16 @@
             $('#temp-password').val(password);
         });
 
-        // Handle Form Submission
         $form.on('submit', function (e) {
             e.preventDefault();
-
             const uuid = $('#doctor-uuid').val();
             const url = apiUrl('doctors') + 'manage-doctor.php';
-
             const formData = new FormData(this);
-
-            // Button Loading State
             const originalText = $submitBtn.text();
             $submitBtn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Saving...');
 
-            // console.log(formData);
-            // return false;
-
             $.ajax({
+                url: apiUrl('doctors') + 'manage-doctor.php', // Use full path logic if apiUrl is complex
                 url: url,
                 type: 'POST',
                 data: formData,
@@ -327,14 +385,8 @@
                 contentType: false,
                 dataType: 'json',
                 success: function (response) {
-                    // console.log(response);
-                    // return false;
-
                     if (response.success) {
-                        // Show success toast (if available) or alert
-                        // alert(response.message || 'Saved successfully');
                         closeDoctorModal();
-                        // Reload DataTable
                         $('#doctors-table').DataTable().ajax.reload();
                     } else {
                         alert(response.error || 'An error occurred');
@@ -348,6 +400,7 @@
                 }
             });
         });
+
 
         $(document).on('click', '.modal-close', function () {
             closeDoctorModal();
