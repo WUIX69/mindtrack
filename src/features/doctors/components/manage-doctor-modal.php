@@ -108,7 +108,7 @@
                             <div>
                                 <label
                                     class="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Specialty</label>
-                                <select name="specialty" id="doctor-specialty"
+                                <select name="specialty" id="doctor-specialty" data-is-managed-modal="true"
                                     class="w-full bg-muted/50 border border-border rounded-lg py-2 px-3 text-sm focus:ring-primary focus:border-primary transition-all">
                                     <option value="">Select Specialty</option>
                                     <!-- Populated via JS -->
@@ -207,46 +207,6 @@
         let $modalSubtitle = "<?= $subtitle ?? 'Onboarding New Provider' ?>";
         let $isSubmit = "<?= $isSubmit ?? false ?>";
 
-        // Fetch Specializations
-        // function fetchSpecializations(selectedId = null) {
-        //     const $select = $('#doctor-specialty');
-        //     // Only fetch if empty (or force reload if needed, but checking length is good for caching in session)
-        //     if ($select.children('option').length > 1 && !selectedId) return;
-
-        //     $.get('/mindtrack/src/server/actions/specializations.php', function (response) {
-        //         if (response.success) {
-        //             let options = '<option value="">Select Specialty</option>';
-        //             response.data.forEach(spec => {
-        //                 options += `<option value="${spec.id}">${spec.name}</option>`;
-        //             });
-        //             $select.html(options);
-        //             if (selectedId) $select.val(selectedId);
-        //         }
-        //     }, 'json');
-        // }
-
-        // --- Fetch Specialties Dynamically ---
-        fetchSpecializations();
-        function fetchSpecializations(selectedId = null) {
-            $.ajax({
-                url: apiUrl("shared") + "specializations.php",
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                        // The filterbar component might output a generic select. We need to find it.
-                        // The name is "specialty".
-                        const $select = $('#doctor-specialty');
-                        response.data.forEach(function (spec) {
-                            $select.append(`<option value="${spec.id}">${spec.name}</option>`);
-                        });
-
-                        if (selectedId) $select.val(selectedId);
-                    }
-                }
-            });
-        }
-
         // Animation Helpers
         function openModal() {
             $modal.removeClass('hidden');
@@ -288,7 +248,7 @@
                 $('input[name="phone"]').val(data.phone);
                 $('input[name="phone"]').val(data.phone);
                 // Fetch and select specialty
-                fetchSpecializations(data.specialization_id);
+                window.fetchSpecialties(data.specialization_id);
 
                 $('input[name="license_number"]').val(data.license_number);
                 $('textarea[name="bio"]').val(data.bio);

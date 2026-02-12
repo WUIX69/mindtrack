@@ -382,24 +382,42 @@ $doctorFilterConfig = [
         });
 
         // --- Fetch Specialties Dynamically ---
-        fetchSpecialties();
-        function fetchSpecialties() {
+        // --- Fetch Specialties Dynamically ---
+        window.fetchSpecialties = function (selectedId = null) {
             $.ajax({
                 url: apiUrl("shared") + "specializations.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
-                    if (response.success) {
-                        // The filterbar component might output a generic select. We need to find it.
-                        // The name is "specialty".
-                        const select = $('select[name="specialty"]');
+                    if (!response.success) return false;
+                    const $select = $('select[name="specialty"]');
+
+                    // Clear existing options but keep the first one (placeholder)
+                    $select.each(function () {
+                        const $el = $(this);
+                        const placeholder = $el.find('option:first');
+                        const isManagedModal = $el.data('is-managed-modal') ?? false;
+
+                        // Only fetch if empty (or force reload if needed, but checking length is good for caching in session)
+                        if ($el.children('option').length > 1 && !selectedId) return;
+
+                        $el.empty();
+                        if (placeholder.length) $el.append(placeholder);
+
+                        let options = '';
                         response.data.forEach(function (spec) {
-                            select.append(`<option value="${spec.name}">${spec.name}</option>`);
+                            options += `<option value="${isManagedModal ? spec.id : spec.name}">${spec.name}</option>`;
                         });
-                    }
+                        $el.append(options);
+
+                        if (selectedId) $el.val(selectedId);
+                    });
                 }
             });
         }
+
+        // Initial fetch
+        window.fetchSpecialties();
 
         // Event Listeners for Filters
         $(document).on('filter:change', function (e, filters) {
