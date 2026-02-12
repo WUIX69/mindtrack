@@ -18,7 +18,7 @@ class appointments extends Base
      * @param string $patient_uuid
      * @return array
      */
-    public static function allWherePatient($patient_uuid)
+    public static function allWherePatients($patient_uuid)
     {
         try {
             $stmt = self::conn()->prepare("
@@ -42,7 +42,7 @@ class appointments extends Base
                 'data' => $data,
             ];
         } catch (PDOException $e) {
-            error_log("SQL Error (appointments::allWherePatient): " . $e->getMessage());
+            error_log("SQL Error (appointments::allWherePatients): " . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Failed to fetch appointments: ' . $e->getMessage(),

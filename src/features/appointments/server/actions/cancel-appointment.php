@@ -33,7 +33,7 @@ try {
         $isOwner = true;
     } else {
         // Double check ownership for patients
-        $check = appointments::allWherePatient($user_uuid);
+        $check = appointments::allWherePatients($user_uuid);
         if ($check['success']) {
             foreach ($check['data'] as $appt) {
                 if ($appt['uuid'] === $appointment_uuid) {

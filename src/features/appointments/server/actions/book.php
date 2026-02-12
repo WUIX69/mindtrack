@@ -83,7 +83,7 @@ try {
         // Ownership check for non-admins
         if ($user_type !== 'admin') {
             // Check if appointment belongs to patient
-            $check = appointments::allWherePatient($user_uuid);
+            $check = appointments::allWherePatients($user_uuid);
             $isOwner = false;
             if ($check['success']) {
                 foreach ($check['data'] as $appt) {

@@ -21,7 +21,7 @@ try {
     if ($user_type === 'admin') {
         $result = appointments::all();
     } else {
-        $result = appointments::allWherePatient($user_uuid);
+        $result = appointments::allWherePatients($user_uuid);
     }
 
     $response = array_merge($response, $result);
