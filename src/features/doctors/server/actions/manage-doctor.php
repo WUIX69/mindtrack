@@ -3,7 +3,6 @@ require_once dirname(__DIR__, 5) . '/src/core/app.php';
 apiHeaders();
 
 use Mindtrack\Features\Doctors\Schemas\Doctors;
-use Mindtrack\Server\Db\Specialization;
 use Mindtrack\Server\Db\Users;
 
 global $response; // already handles default (status, message, data)
@@ -39,17 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $uuid = $_POST['uuid'] ?? ''; // From form hidden input
 
     // 2. Handle Specialization
-    $specId = 8; // Default
-    if (!empty($data['specialty'])) {
-        $spec = Specialization::findByName($data['specialty']);
-        if ($spec) {
-            $specId = $spec['id'];
-        } else {
-            $specId = Specialization::create($data['specialty']);
-        }
-    }
-
-    $data['specialization_id'] = $specId;
+    // $data['specialty'] now contains the ID directly from the frontend
+    $data['specialization_id'] = $data['specialty'] ?? 8; // Default to 8 (General) if not set
 
     // 3. Process based on UUID presence (Update vs Create)
     if (!empty($uuid)) {
