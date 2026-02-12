@@ -7,6 +7,8 @@ $headerData = [
     'title' => 'Doctors',
     'description' => 'Manage clinical staff, specialties, and provider availability.',
     'searchPlaceholder' => 'Search providers by name, specialty, or ID...',
+    'actionLabel' => 'Add New Doctor',
+    'actionIcon' => 'person_add',
     'actionUrl' => 'doctors/create.php',
     'mb' => 4
 ];
@@ -52,9 +54,9 @@ $doctorFilterConfig = [
     ],
     'actions' => [
         [
-            'label' => 'Advanced Filters',
-            'icon' => 'tune',
-            'id' => 'advanced-filters',
+            'label' => 'Reset Filters',
+            'icon' => 'filter_list_off',
+            'id' => 'reset-filters',
             'class' => 'text-primary hover:opacity-80'
         ]
     ]
