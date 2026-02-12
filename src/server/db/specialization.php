@@ -35,27 +35,79 @@ class Specialization extends Base
         }
     }
 
-    public static function findByName($name)
+    public static function single($id)
     {
         try {
-            $stmt = self::conn()->prepare("SELECT * FROM specializations WHERE name = ? LIMIT 1");
-            $stmt->execute([$name]);
-            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+            $stmt = self::conn()->prepare("SELECT * FROM specializations WHERE id = ? LIMIT 1");
+            $stmt->execute([$id]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+            return [
+                'success' => true,
+                'message' => 'Specialization fetched successfully.',
+                'data' => $data,
+            ];
         } catch (PDOException $e) {
-            error_log("SQL Error (Specialization::findByName): " . $e->getMessage());
-            return null;
+            error_log("SQL Error (Specialization::single): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Specialization fetching failed: ' . $e->getMessage(),
+            ];
         }
     }
 
-    public static function create($name)
+    public static function store($data)
     {
         try {
-            $stmt = self::conn()->prepare("INSERT INTO specializations (name) VALUES (?)");
-            $stmt->execute([$name]);
-            return self::conn()->lastInsertId();
+            $stmt = self::conn()->prepare("INSERT INTO specializations (name, description) VALUES (?, ?)");
+            $stmt->execute([$data['name'], $data['description']]);
+            $data = self::conn()->lastInsertId();
+            return [
+                'success' => true,
+                'message' => 'Specialization created successfully.',
+                'data' => $data,
+            ];
         } catch (PDOException $e) {
-            error_log("SQL Error (Specialization::create): " . $e->getMessage());
-            return null;
+            error_log("SQL Error (Specialization::store): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Specialization creation failed: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    public static function update($id, $data)
+    {
+        try {
+            $stmt = self::conn()->prepare("UPDATE specializations SET name = ?, description = ? WHERE id = ?");
+            $stmt->execute([$data['name'], $data['description'], $id]);
+            return [
+                'success' => true,
+                'message' => 'Specialization updated successfully.',
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (Specialization::update): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Specialization update failed: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    public static function delete($id)
+    {
+        try {
+            $stmt = self::conn()->prepare("DELETE FROM specializations WHERE id = ?");
+            $stmt->execute([$id]);
+            return [
+                'success' => true,
+                'message' => 'Specialization deleted successfully.',
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (Specialization::delete): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Specialization deletion failed: ' . $e->getMessage(),
+            ];
         }
     }
 
