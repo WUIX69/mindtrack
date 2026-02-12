@@ -1,7 +1,8 @@
 <?php
 
 if (!function_exists('getNavigation')) {
-    function getNavigation() {
+    function getNavigation()
+    {
         return [
             'admin' => [
                 ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('admin')],
@@ -9,6 +10,7 @@ if (!function_exists('getNavigation')) {
                 ['id' => 'patients', 'label' => 'Patients Record', 'icon' => 'patient_list', 'url' => app('admin/patients.php')],
                 ['id' => 'doctors', 'label' => 'Doctors Management', 'icon' => 'medical_services', 'url' => app('admin/doctors.php')],
                 ['id' => 'services', 'label' => 'Clinical Services', 'icon' => 'list_alt', 'url' => app('admin/services.php')],
+                ['id' => 'specializations', 'label' => 'Specializations', 'icon' => 'category', 'url' => app('admin/specializations.php')],
             ],
             'doctor' => [
                 ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('doctor')],

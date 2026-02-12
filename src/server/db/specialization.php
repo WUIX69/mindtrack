@@ -58,8 +58,8 @@ class Specialization extends Base
     public static function store($data)
     {
         try {
-            $stmt = self::conn()->prepare("INSERT INTO specializations (name, description) VALUES (?, ?)");
-            $stmt->execute([$data['name'], $data['description']]);
+            $stmt = self::conn()->prepare("INSERT INTO specializations (name, description, status) VALUES (?, ?, ?)");
+            $stmt->execute([$data['name'], $data['description'], $data['status']]);
             $data = self::conn()->lastInsertId();
             return [
                 'success' => true,
@@ -78,8 +78,8 @@ class Specialization extends Base
     public static function update($id, $data)
     {
         try {
-            $stmt = self::conn()->prepare("UPDATE specializations SET name = ?, description = ? WHERE id = ?");
-            $stmt->execute([$data['name'], $data['description'], $id]);
+            $stmt = self::conn()->prepare("UPDATE specializations SET name = ?, description = ?, status = ? WHERE id = ?");
+            $stmt->execute([$data['name'], $data['description'], $data['status'], $id]);
             return [
                 'success' => true,
                 'message' => 'Specialization updated successfully.',
