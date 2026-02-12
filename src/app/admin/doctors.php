@@ -354,7 +354,7 @@ $doctorFilterConfig = [
                     render: function (data, type, row) {
                         return `
                             <div class="flex items-center justify-end gap-2">
-                                <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded hover:bg-slate-200 hover:text-slate-800 transition-all view-doctor-btn">View</button>
+                                <!-- <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded hover:bg-slate-200 hover:text-slate-800 transition-all view-doctor-btn">View</button> -->
                                 <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded hover:bg-primary hover:text-white transition-all manage-doctor-btn">Manage</button>
                                 <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-red-500/10 text-red-600 text-xs font-bold rounded hover:bg-red-500 hover:text-white transition-all delete-doctor-btn">Delete</button>
                             </div>
