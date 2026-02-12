@@ -393,7 +393,6 @@ $doctorFilterConfig = [
         });
 
         // --- Fetch Specialties Dynamically ---
-        // --- Fetch Specialties Dynamically ---
         window.fetchSpecialties = function (selectedId = null) {
             $.ajax({
                 url: apiUrl("shared") + "specializations.php",
@@ -468,14 +467,24 @@ $doctorFilterConfig = [
             }
         });
 
+        // --- Global Search Filter Integration ---
+        let searchTimeout = null;
+        $('#global-search-input').on('keydown keyup input', function () {
+            const val = $(this).val();
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function () {
+                $table.search(val).draw();
+            }, 300);
+        });
+
         // Event Listeners for Filters
         $(document).on('filter:change', function (e, filters) {
             console.log("Filters changed:", filters);
 
             // Handle Search
-            if (filters.search !== undefined) {
-                $table.search(filters.search);
-            }
+            // if (filters.search !== undefined) {
+            //     $table.search(filters.search);
+            // }
 
             // Handle Sort
             if (filters.sort) {
