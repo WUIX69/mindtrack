@@ -175,6 +175,7 @@ $doctorFilterConfig = [
 
 <?= shared('components', 'elements/dataTables/scripts'); ?>
 <?php featured('doctors', 'components/manage-doctor-modal'); ?>
+<?php featured('doctors', 'components/summary-modal'); ?>
 
 <script>
     $(document).ready(function () {
@@ -182,6 +183,7 @@ $doctorFilterConfig = [
         // Trigger Add/Edit Doctor Modal
         $(document).on('click', '.manage-doctor-btn', function (e) {
             e.preventDefault();
+            e.stopPropagation(); // Prevent row click
             const doctorId = $(this).data('id');
 
             if (doctorId) {
@@ -211,6 +213,7 @@ $doctorFilterConfig = [
         // Trigger Delete Doctor Modal
         $(document).on('click', '.delete-doctor-btn', function (e) {
             e.preventDefault();
+            e.stopPropagation(); // Prevent row click
             const doctorUuid = $(this).data('id');
 
             if (confirm("Are you sure you want to delete this doctor? This action cannot be undone.")) {
@@ -334,10 +337,17 @@ $doctorFilterConfig = [
                             'on_leave': 'amber'
                         };
                         const color = statusColors[data] || 'slate';
+                        // Map status for display
+                        const displayStatus = {
+                            'active': 'Active',
+                            'inactive': 'Inactive',
+                            'on_leave': 'On Leave'
+                        }[data] || data || 'Unknown';
+
                         return `
                             <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-${color}-100 text-${color}-700 dark:bg-${color}-900/30 dark:text-${color}-400">
                                 <span class="size-1.5 rounded-full bg-${color}-500"></span>
-                                ${(data || 'Unknown').replace('_', ' ')}
+                                ${displayStatus}
                             </span>
                         `;
                     }
@@ -350,6 +360,7 @@ $doctorFilterConfig = [
                     render: function (data, type, row) {
                         return `
                             <div class="flex items-center justify-end gap-2">
+                                <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded hover:bg-slate-200 hover:text-slate-800 transition-all view-doctor-btn">View</button>
                                 <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded hover:bg-primary hover:text-white transition-all manage-doctor-btn">Manage</button>
                                 <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-red-500/10 text-red-600 text-xs font-bold rounded hover:bg-red-500 hover:text-white transition-all delete-doctor-btn">Delete</button>
                             </div>
@@ -418,6 +429,44 @@ $doctorFilterConfig = [
 
         // Initial fetch
         window.fetchSpecialties();
+
+        // Trigger View Doctor Modal
+        const getSingleDoctor = (id) => {
+            $.ajax({
+                url: apiUrl('doctors') + 'manage-doctor.php',
+                type: 'GET',
+                data: { uuid: id, action: 'get_single' },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        DoctorSummaryModal.open(response.data);
+                    } else {
+                        alert(response.error || 'Could not fetch doctor details');
+                    }
+                },
+                error: function () {
+                    alert('Error fetching doctor data');
+                }
+            });
+        };
+
+        $(document).on('click', '.view-doctor-btn', function (e) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent row click
+            const doctorId = $(this).data('id');
+            getSingleDoctor(doctorId);
+        });
+
+        // Row Click to View Summary
+        $('#doctors-table tbody').on('click', 'tr', function (e) {
+            // Ignore if click is on button or interactive element
+            if ($(e.target).closest('button, a, input, select').length) return;
+
+            const data = $table.row(this).data();
+            if (data && data.uuid) {
+                getSingleDoctor(data.uuid);
+            }
+        });
 
         // Event Listeners for Filters
         $(document).on('filter:change', function (e, filters) {
