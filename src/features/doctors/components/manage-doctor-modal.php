@@ -235,7 +235,8 @@
         const $backdrop = $('#modal-backdrop');
         const $panel = $('#modal-panel');
         const $form = $('#doctor-form');
-        const $submitBtn = $form.find('button[type="submit"]');
+        // Button is outside the form, so find it within the panel
+        const $submitBtn = $panel.find('button[type="submit"]');
 
         // Toggle Day Logic
         $(document).on('change', '.day-toggle', function () {

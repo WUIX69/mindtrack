@@ -304,25 +304,19 @@ $doctorFilterConfig = [
                         if (!data) return '<span class="text-xs text-muted-foreground">Not set</span>';
                         try {
                             const schedule = typeof data === 'string' ? JSON.parse(data) : data;
-                            // Basic formatting: check if Mon-Fri are active and same hours
-                            let summary = "Custom Schedule";
-                            let hours = "";
+                            const daysMap = {
+                                'monday': 'MON', 'tuesday': 'TUE', 'wednesday': 'WED', 'thursday': 'THU',
+                                'friday': 'FRI', 'saturday': 'SAT', 'sunday': 'SUN'
+                            };
+                            const order = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
-                            if (schedule.monday?.active && schedule.friday?.active) {
-                                summary = "Mon-Fri";
-                                hours = `${schedule.monday.start} - ${schedule.monday.end}`;
-                            } else {
-                                // Fallback
-                                const activeDays = Object.keys(schedule).filter(day => schedule[day]?.active).map(d => d.substring(0, 3).replace(/b/g, '').replace(/^a/, 'A').toUpperCase());
-                                summary = activeDays.length > 0 ? activeDays.join(', ') : 'Unavailable';
-                            }
+                            const activeDays = order
+                                .filter(day => schedule[day] && schedule[day].active)
+                                .map(day => daysMap[day]);
 
-                            return `
-                                <div class="text-xs font-medium text-muted-foreground">
-                                    ${summary}
-                                    <p class="text-[10px] text-muted-foreground/60">${hours}</p>
-                                </div>
-                            `;
+                            if (activeDays.length === 0) return '<span class="text-xs text-muted-foreground">Unavailable</span>';
+
+                            return `<span class="text-xs font-bold text-slate-600 dark:text-slate-400">${activeDays.join(', ')}</span>`;
                         } catch (e) {
                             return '<span class="text-xs text-error">Invalid Data</span>';
                         }
