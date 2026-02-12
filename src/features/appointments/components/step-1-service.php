@@ -132,7 +132,7 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
             // Reusing list.php as we don't have a specific 'get' endpoint yet
             // This is acceptable as the list isn't massive, but ideally should be replaced by get.php?id=X
             $.ajax({
-                url: apiUrl("shared") + "list-patients.php",
+                url: apiUrl("shared") + "patients.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -157,7 +157,7 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
 
         function getPatients() {
             $.ajax({
-                url: apiUrl("shared") + "list-patients.php",
+                url: apiUrl("shared") + "patients.php",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {

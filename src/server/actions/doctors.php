@@ -9,17 +9,25 @@ apiHeaders();
 use Mindtrack\Server\Db\Users;
 use Mindtrack\Server\Db\Services;
 
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    $response['message'] = 'Invalid request method';
+    echo json_encode($response);
+    exit;
+}
+
 try {
+
     $serviceUuid = $_GET['service_uuid'] ?? null;
-    $specializationId = null;
 
     if ($serviceUuid) {
-        $service = Services::single($serviceUuid)['data'] ?? [];
-        $specializationId = $service['specialization_id'] ?? null;
+        $specializationId = Services::single($serviceUuid)['data']['specialization_id'] ?? null;
+        $result = Users::allWhereDoctorsSpecialization($specializationId);
+    } else {
+        $result = Users::allWhereDoctors();
     }
 
-    $result = Users::allWhereDoctorsBySpecialization($specializationId);
     $response = array_merge($response, $result);
+
 } catch (Exception $e) {
     error_log("List Doctors Error: " . $e->getMessage());
     $response['message'] = 'An internal error occurred.';

@@ -54,6 +54,33 @@ class Users extends Base
         }
     }
 
+    public static function allWhereDoctorsSpecialization($specializationId = null)
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT u.uuid, u.firstname, u.lastname, u.email, u.phone, u.status, s.name AS specialization, di.availability 
+                FROM users u 
+                JOIN user_doctor_info di ON u.uuid = di.user_uuid 
+                LEFT JOIN specializations s ON di.specialization_id = s.id
+                WHERE u.role = 'doctor' 
+                AND di.specialization_id = ?
+            ");
+            $stmt->execute([$specializationId]);
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+            return [
+                'success' => true,
+                'message' => 'Doctors fetched successfully',
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch doctors by specialization',
+            ];
+        }
+    }
+
     public static function allWherePatients()
     {
         try {
@@ -78,70 +105,6 @@ class Users extends Base
         }
     }
 
-
-    public static function singleWherePatient($uuid)
-    {
-        try {
-            $stmt = self::conn()->prepare("
-                SELECT u.uuid as id, CONCAT(u.firstname, ' ', u.lastname) as name, u.email 
-                FROM users u 
-                WHERE u.role = 'patient' AND u.status = 'active' AND u.uuid = ?
-            ");
-            $stmt->execute([$uuid]);
-            $data = $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
-
-            if (!$data) {
-                return [
-                    'success' => false,
-                    'message' => 'Patient not found',
-                ];
-            }
-
-            return [
-                'success' => true,
-                'message' => 'Patient fetched successfully',
-                'data' => $data
-            ];
-        } catch (PDOException $e) {
-            error_log("SQL Error (Users::singleWherePatient): " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Failed to fetch patient',
-            ];
-        }
-    }
-
-    public static function allWhereDoctorsBySpecialization($specializationId = null)
-    {
-        try {
-            // If no specialization required (NULL), return all doctors
-            if ($specializationId === null) {
-                return self::allWhereDoctors();
-            }
-
-            $stmt = self::conn()->prepare("
-            SELECT u.uuid, u.firstname, u.lastname, u.email, u.phone, u.status, s.name AS specialization, di.availability 
-            FROM users u 
-            JOIN user_doctor_info di ON u.uuid = di.user_uuid 
-            LEFT JOIN specializations s ON di.specialization_id = s.id
-            WHERE u.role = 'doctor' 
-            AND di.specialization_id = ?
-            ");
-            $stmt->execute([$specializationId]);
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
-            return [
-                'success' => true,
-                'message' => 'Doctors fetched successfully',
-                'data' => $data
-            ];
-        } catch (PDOException $e) {
-            error_log("SQL Error: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Failed to fetch doctors by specialization',
-            ];
-        }
-    }
 
     public static function single($uuid = null)
     {
@@ -199,6 +162,37 @@ class Users extends Base
         }
     }
 
+    public static function singleWherePatient($uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT u.uuid as id, CONCAT(u.firstname, ' ', u.lastname) as name, u.email 
+                FROM users u 
+                WHERE u.role = 'patient' AND u.status = 'active' AND u.uuid = ?
+            ");
+            $stmt->execute([$uuid]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
+
+            if (!$data) {
+                return [
+                    'success' => false,
+                    'message' => 'Patient not found',
+                ];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Patient fetched successfully',
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::singleWherePatient): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch patient',
+            ];
+        }
+    }
 
     public static function store($data = [])
     {
