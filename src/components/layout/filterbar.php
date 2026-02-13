@@ -45,6 +45,7 @@
 
 $isTransparent = $isTransparent ?? false;
 $mb = $mb ?? '6';
+$mt = $mt ?? '5';
 $primary = $config['primary'] ?? $primary ?? null;
 $secondary = $config['secondary_filters'] ?? $secondary_filters ?? [];
 $actions = $config['actions'] ?? $actions ?? [];
@@ -61,7 +62,7 @@ if (empty($actions) && (!empty($primary) || !empty($secondary))) {
 ?>
 
 <div
-    class="<?= $isTransparent ? '' : 'bg-card rounded-2xl border border-border shadow-sm py-2 px-4' ?> flex flex-wrap items-center gap-6 mb-<?= $mb ?> mt-5 filter-bar-component">
+    class="<?= $isTransparent ? '' : 'bg-card rounded-2xl border border-border shadow-sm py-2 px-4' ?> flex flex-wrap items-center gap-6 mb-<?= $mb ?> mt-<?= $mt ?> filter-bar-component">
 
     <!-- Primary Filter (Button Group) -->
     <?php if ($primary): ?>

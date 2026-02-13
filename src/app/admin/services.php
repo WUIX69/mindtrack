@@ -2,234 +2,314 @@
 /**
  * Admin - Services Management
  */
-$pageTitle = "Clinical Services - MindTrack";
+$pageTitle = "Service Management - MindTrack";
 $headerData = [
-    'title' => 'Services',
-    'description' => 'Manage clinical programs, therapy types, and consultation sessions.',
+    'title' => 'Service Management',
+    'description' => 'Categorize and manage your clinical services and therapy offerings.',
     'actionLabel' => 'Add New Service',
-    'actionIcon' => 'add'
+    'actionIcon' => 'add',
+    'mb' => '6' // Adjust bottom margin
 ];
 $currentPage = 'services';
 
 include_once __DIR__ . '/layout.php';
-?>
 
-<!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="bg-card p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
-        <div class="bg-primary/10 text-primary p-3 rounded-xl size-12 flex items-center justify-center">
-            <span class="material-symbols-outlined text-2xl">list_alt</span>
-        </div>
-        <div>
-            <p class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Services</p>
-            <p class="text-2xl font-black text-foreground">24</p>
-        </div>
-    </div>
-    <div class="bg-card p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
-        <div class="bg-success/10 text-success p-3 rounded-xl size-12 flex items-center justify-center">
-            <span class="material-symbols-outlined text-2xl">check_circle</span>
-        </div>
-        <div>
-            <p class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Programs</p>
-            <p class="text-2xl font-black text-foreground">18</p>
-        </div>
-    </div>
-    <div class="bg-card p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
-        <div class="bg-muted text-muted-foreground p-3 rounded-xl size-12 flex items-center justify-center">
-            <span class="material-symbols-outlined text-2xl">pause_circle</span>
-        </div>
-        <div>
-            <p class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Inactive Services</p>
-            <p class="text-2xl font-black text-foreground">6</p>
-        </div>
-    </div>
-</div>
+// --- Filter Configurations ---
 
-<?php
-$serviceFilterConfig = [
-    'primary' => [
-        'name' => 'status',
-        'label' => 'Status:',
-        'options' => [
-            ['value' => '', 'label' => 'All'],
-            ['value' => 'active', 'label' => 'Active'],
-            ['value' => 'inactive', 'label' => 'Inactive']
-        ]
-    ],
+// Categories Filter: Search + Add Button
+$categoriesFilterConfig = [
+    'mt' => 0,
+    'mb' => 0,
+    'isTransparent' => true,
     'secondary_filters' => [
         [
             'type' => 'search',
-            'name' => 'search',
+            'name' => 'search_categories',
+            'placeholder' => 'Search categories...',
+            'icon' => 'search'
+        ]
+    ],
+    'actions' => [
+        [
+            'label' => 'Add Category',
+            'icon' => 'add_circle',
+            'id' => 'add-category-btn',
+            'class' => 'text-primary hover:bg-primary/5 border border-primary/20' // Match reference outline style
+        ]
+    ]
+];
+
+// Services Filter: Search + Category Select
+$servicesFilterConfig = [
+    'mt' => 0,
+    'mb' => 0,
+    'isTransparent' => true,
+    'secondary_filters' => [
+        [
+            'type' => 'search',
+            'name' => 'search_services',
             'placeholder' => 'Search services...',
             'icon' => 'search'
         ],
         [
             'type' => 'select',
-            'name' => 'category',
-            'icon' => 'category',
+            'name' => 'filter_category',
             'placeholder' => 'All Categories',
+            'icon' => 'category',
             'options' => [
                 'therapy' => 'Therapy',
+                'assessment' => 'Assessment',
                 'consultation' => 'Consultation',
-                'program' => 'Clinical Program',
-                'group' => 'Group Session'
+                'programs' => 'Programs',
+                'general' => 'General'
             ]
         ]
     ]
 ];
 ?>
 
-<?= shared('components', 'layout/filterbar', $serviceFilterConfig) ?>
+<div class="space-y-8">
 
-<!-- Services Table Section -->
-<section class="bg-card rounded-xl border border-border shadow-sm overflow-hidden mb-8">
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-muted/50 text-muted-foreground uppercase text-[11px] font-bold tracking-wider">
-                    <th class="px-6 py-4">Service Name</th>
-                    <th class="px-6 py-4 whitespace-nowrap">Description</th>
-                    <th class="px-6 py-4">Category</th>
-                    <th class="px-6 py-4">Duration</th>
-                    <th class="px-6 py-4">Base Rate</th>
-                    <th class="px-6 py-4">Status</th>
-                    <th class="px-6 py-4 text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-border/50">
-                <?php
-                $services = [
-                    [
-                        'name' => 'CBT',
-                        'desc' => 'Individual Cognitive Behavioral Therapy sessions for anxiety and depression.',
-                        'category' => 'Therapy',
-                        'catColor' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-                        'duration' => '60 mins',
-                        'rate' => '$120.00',
-                        'active' => true
-                    ],
-                    [
-                        'name' => 'Psychotherapy',
-                        'desc' => 'General psychotherapy assessment and long-term care plans.',
-                        'category' => 'Consultation',
-                        'catColor' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-                        'duration' => '90 mins',
-                        'rate' => '$180.00',
-                        'active' => true
-                    ],
-                    [
-                        'name' => 'DBT Intensive',
-                        'desc' => 'Dialectical Behavior Therapy 12-week specialized program.',
-                        'category' => 'Clinical Program',
-                        'catColor' => 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-                        'duration' => '120 mins',
-                        'rate' => '$250.00',
-                        'active' => false
-                    ],
-                    [
-                        'name' => 'Mindfulness Group',
-                        'desc' => 'Weekly group session focused on grounding techniques.',
-                        'category' => 'Group Session',
-                        'catColor' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-                        'duration' => '45 mins',
-                        'rate' => '$45.00',
-                        'active' => true
-                    ],
-                ];
-
-                foreach ($services as $s):
-                    ?>
-                    <tr class="hover:bg-muted/30 transition-colors group">
-                        <td class="px-6 py-4">
-                            <span class="text-sm font-bold text-foreground">
-                                <?= $s['name'] ?>
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 max-w-xs">
-                            <p class="text-xs text-muted-foreground truncate">
-                                <?= $s['desc'] ?>
-                            </p>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider <?= $s['catColor'] ?>">
-                                <?= $s['category'] ?>
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm text-muted-foreground">
-                                <?= $s['duration'] ?>
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm font-bold text-foreground">
-                                <?= $s['rate'] ?>
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input <?= $s['active'] ? 'checked' : '' ?> class="sr-only peer" type="checkbox" />
-                                <div
-                                    class="w-10 h-5 bg-border peer-focus:outline-none rounded-full peer dark:bg-muted/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary">
-                                </div>
-                            </label>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-3 text-muted-foreground">
-                                <button
-                                    class="hover:text-primary transition-colors flex items-center justify-center size-8 rounded-lg hover:bg-primary/10">
-                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                </button>
-                                <button
-                                    class="hover:text-primary transition-colors flex items-center justify-center size-8 rounded-lg hover:bg-primary/10">
-                                    <span class="material-symbols-outlined text-[20px]">content_copy</span>
-                                </button>
-                                <button
-                                    class="hover:text-error transition-colors flex items-center justify-center size-8 rounded-lg hover:bg-error/10">
-                                    <span class="material-symbols-outlined text-[20px]">delete</span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-    <!-- Pagination -->
-    <div class="px-6 py-4 bg-muted/50 border-t border-border flex items-center justify-between">
-        <p class="text-xs text-muted-foreground font-medium">Showing 1 to 4 of 24 services</p>
-        <div class="flex items-center gap-2">
-            <button
-                class="p-1 px-2 rounded border border-border text-muted-foreground hover:bg-card hover:text-foreground disabled:opacity-50 transition-all font-bold text-xs flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">chevron_left</span> Previous
-            </button>
-            <div class="flex gap-1">
-                <button
-                    class="size-8 flex items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">1</button>
-                <button
-                    class="size-8 flex items-center justify-center rounded hover:bg-muted text-foreground text-xs font-bold transition-all border border-border">2</button>
-                <button
-                    class="size-8 flex items-center justify-center rounded hover:bg-muted text-foreground text-xs font-bold transition-all border border-border">3</button>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Categories Stat -->
+        <div class="bg-card p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+            <div class="bg-primary/10 text-primary p-3 rounded-lg">
+                <span class="material-symbols-outlined">category</span>
             </div>
-            <button
-                class="p-1 px-2 rounded border border-border text-muted-foreground hover:bg-card hover:text-foreground transition-all font-bold text-xs flex items-center gap-1">
-                Next <span class="material-symbols-outlined text-sm">chevron_right</span>
-            </button>
+            <div>
+                <p class="text-sm font-medium text-muted-foreground">Categories</p>
+                <p class="text-2xl font-bold text-foreground">5</p>
+            </div>
+        </div>
+        <!-- Active Services Stat -->
+        <div class="bg-card p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+            <div class="bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 p-3 rounded-lg">
+                <span class="material-symbols-outlined">list_alt</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-muted-foreground">Active Services</p>
+                <p class="text-2xl font-bold text-foreground">18</p>
+            </div>
+        </div>
+        <!-- Inactive Services Stat -->
+        <div class="bg-card p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+            <div class="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 p-3 rounded-lg">
+                <span class="material-symbols-outlined">pause_circle</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-muted-foreground">Total Inactive</p>
+                <p class="text-2xl font-bold text-foreground">6</p>
+            </div>
         </div>
     </div>
-</section>
 
-<!-- Footnote Info -->
-<div class="p-6 bg-primary/5 rounded-xl border border-primary/10 flex items-start gap-4">
-    <span class="material-symbols-outlined text-primary">info</span>
-    <div>
-        <h4 class="text-sm font-bold text-primary">Service Catalog Optimization</h4>
-        <p class="text-xs text-primary/80 mt-1 leading-relaxed">
-            Updates to base rates or standard durations will only affect new appointments booked from this point
-            forward.
-            Existing appointments will maintain their original pricing and time allocation.
-        </p>
+    <!-- Service Categories Section -->
+    <section class="space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h3 class="text-lg font-bold text-foreground flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">folder_open</span>
+                Service Categories
+            </h3>
+            <!-- Filter Bar for Categories -->
+            <?= shared('components', 'layout/filterbar', $categoriesFilterConfig) ?>
+        </div>
+
+        <div class="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-muted/50 border-b border-border">
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Category
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Description</th>
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Associated Services</th>
+                            <th
+                                class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border/50">
+                        <?php
+                        $categories = [
+                            ['name' => 'Therapy', 'icon' => 'psychology', 'color' => 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400', 'desc' => 'Various therapeutic interventions for mental health.', 'count' => '12 Services'],
+                            ['name' => 'Assessment', 'icon' => 'clinical_notes', 'color' => 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400', 'desc' => 'Diagnostic and psychological testing services.', 'count' => '4 Services'],
+                            ['name' => 'Consultation', 'icon' => 'medical_services', 'color' => 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400', 'desc' => 'Initial and follow-up clinical consultations.', 'count' => '8 Services'],
+                            ['name' => 'Programs', 'icon' => 'groups', 'color' => 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400', 'desc' => 'Training and development programs.', 'count' => '4 Services'],
+                            ['name' => 'General', 'icon' => 'local_hospital', 'color' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400', 'desc' => 'General Services', 'count' => '2 Services'],
+                        ];
+                        foreach ($categories as $cat):
+                            ?>
+                            <tr class="hover:bg-muted/30 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-1.5 rounded <?= $cat['color'] ?>">
+                                            <span class="material-symbols-outlined text-lg"><?= $cat['icon'] ?></span>
+                                        </div>
+                                        <span class="text-sm font-bold text-foreground"><?= $cat['name'] ?></span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <p class="text-xs text-muted-foreground max-w-md truncate"><?= $cat['desc'] ?></p>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-muted-foreground"><?= $cat['count'] ?></td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2 text-muted-foreground">
+                                        <button class="hover:text-primary transition-colors"><span
+                                                class="material-symbols-outlined text-lg">edit</span></button>
+                                        <button class="hover:text-error transition-colors"><span
+                                                class="material-symbols-outlined text-lg">delete</span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Individual Services Section -->
+    <section class="space-y-4">
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h3 class="text-lg font-bold text-foreground flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">medical_services</span>
+                All Individual Services
+            </h3>
+            <!-- Filter Bar for Categories -->
+            <?= shared('components', 'layout/filterbar', $servicesFilterConfig) ?>
+        </div>
+
+        <div class="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-muted/50 border-b border-border">
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Service Name
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Description</th>
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Category
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Duration
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Base
+                                Rate
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th
+                                class="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border/50">
+                        <?php
+                        $services = [
+                            [
+                                'name' => 'CBT',
+                                'desc' => 'Individual Cognitive Behavioral Therapy sessions for anxiety and depression.',
+                                'cat' => 'Therapy',
+                                'catColor' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                                'dur' => '60 mins',
+                                'rate' => '$120.00',
+                                'active' => true
+                            ],
+                            [
+                                'name' => 'Psychotherapy',
+                                'desc' => 'General psychotherapy assessment and long-term care plans.',
+                                'cat' => 'Consultation',
+                                'catColor' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+                                'dur' => '90 mins',
+                                'rate' => '$180.00',
+                                'active' => true
+                            ]
+                        ];
+                        foreach ($services as $svc):
+                            ?>
+                            <tr class="hover:bg-muted/30 transition-colors">
+                                <td class="px-6 py-4">
+                                    <span class="text-sm font-bold text-foreground"><?= $svc['name'] ?></span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <p class="text-xs text-muted-foreground max-w-xs truncate"><?= $svc['desc'] ?></p>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider <?= $svc['catColor'] ?>">
+                                        <?= $svc['cat'] ?>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-muted-foreground"><?= $svc['dur'] ?></span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm font-semibold text-foreground"><?= $svc['rate'] ?></span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input <?= $svc['active'] ? 'checked' : '' ?> class="sr-only peer" type="checkbox" />
+                                        <div
+                                            class="w-10 h-5 bg-border peer-focus:outline-none rounded-full peer dark:bg-muted/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary">
+                                        </div>
+                                    </label>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2 text-muted-foreground">
+                                        <button class="hover:text-primary transition-colors"><span
+                                                class="material-symbols-outlined text-lg">edit</span></button>
+                                        <button class="hover:text-primary transition-colors"><span
+                                                class="material-symbols-outlined text-lg">content_copy</span></button>
+                                        <button class="hover:text-error transition-colors"><span
+                                                class="material-symbols-outlined text-lg">delete</span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 bg-muted/50 border-t border-border flex items-center justify-between">
+                <p class="text-xs text-muted-foreground">Showing 1 to 2 of 18 active services</p>
+                <div class="flex items-center gap-2">
+                    <button
+                        class="p-1 rounded border border-border hover:bg-card disabled:opacity-50 transition-colors text-muted-foreground">
+                        <span class="material-symbols-outlined text-sm">chevron_left</span>
+                    </button>
+                    <button
+                        class="size-8 flex items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">1</button>
+                    <button
+                        class="size-8 flex items-center justify-center rounded hover:bg-muted text-xs font-medium text-foreground transition-colors">2</button>
+                    <button
+                        class="p-1 rounded border border-border hover:bg-card transition-colors text-muted-foreground">
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footnote Info -->
+    <div class="p-6 bg-primary/5 rounded-xl border border-primary/10 flex items-start gap-4">
+        <span class="material-symbols-outlined text-primary">info</span>
+        <div>
+            <h4 class="text-sm font-bold text-primary">Service Catalog Management</h4>
+            <p class="text-xs text-primary/80 mt-1">Changes to service categories will immediately update the filtering
+                options for all administrative and patient-facing views. Deleting a category will move its services to
+                'Uncategorized'.</p>
+        </div>
     </div>
+
 </div>
 
 <script>
