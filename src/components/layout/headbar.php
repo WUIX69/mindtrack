@@ -84,7 +84,7 @@ $userSub = match ($userRole) {
         </div>
 
         <!-- User Identity Section -->
-        <div class="flex items-center gap-4 border-l border-border pl-4">
+        <div class="flex items-center gap-4 border-l border-border pl-3">
             <!-- Theme Toggle Switch (Tailwind) -->
             <label
                 class="relative inline-flex items-center justify-center size-10 rounded-full hover:bg-muted/50 transition-colors cursor-pointer group">
@@ -97,7 +97,7 @@ $userSub = match ($userRole) {
                     class="material-symbols-outlined text-blue-400 text-xl absolute transition-all duration-300 transform scale-100 opacity-100 rotate-0 peer-checked:scale-0 peer-checked:opacity-0 peer-checked:-rotate-90">dark_mode</span>
             </label>
 
-            <button class="relative p-2 text-muted-foreground hover:bg-muted rounded-full transition-all group">
+            <button class="relative text-muted-foreground hover:bg-muted rounded-full transition-all group pr-2">
                 <span
                     class="material-symbols-outlined text-2xl font-variation-settings-['FILL'_0,'wght'_400]">notifications</span>
                 <span
