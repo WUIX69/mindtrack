@@ -8,6 +8,7 @@ $headerData = [
     'description' => 'Categorize and manage your clinical services and therapy offerings.',
     'actionLabel' => 'Add New Service',
     'actionIcon' => 'add',
+    'actionId' => 'add-service-btn',
     'mb' => '6' // Adjust bottom margin
 ];
 $currentPage = 'services';
@@ -312,12 +313,32 @@ $servicesFilterConfig = [
 
 </div>
 
+<!-- Modals -->
+<?= featured('services', 'components/category-modal') ?>
+<?= featured('services', 'components/service-modal') ?>
+
+</div>
+
 <script>
     $(document).ready(function () {
         // Event Listeners for Filters
         $(document).on('filter:change', function (e, filters) {
             console.log("Service Filters changed:", filters);
             // Implement filtering logic here
+        });
+
+        // Add Category Button
+        $('#add-category-btn').on('click', function () {
+            if (window.openCategoryModal) {
+                window.openCategoryModal('add');
+            }
+        });
+
+        // Add Service Button (Headbar)
+        $('#add-service-btn').on('click', function () {
+            if (window.openServiceModal) {
+                window.openServiceModal('add');
+            }
         });
     });
 </script>

@@ -19,6 +19,7 @@ $searchPlaceholder = $searchPlaceholder ?? '';
 $actionLabel = $actionLabel ?? '';
 $actionIcon = $actionIcon ?? 'add_circle';
 $actionUrl = $actionUrl ?? '#';
+$actionId = $actionId ?? '';
 $actionClass = $actionClass ?? 'bg-primary hover:bg-primary/90 text-primary-foreground';
 $role = $role ?? 'patient';
 $mb = $mb ?? 8;
@@ -61,7 +62,7 @@ $userSub = match ($userRole) {
 
             <?php if ($actionLabel): ?>
                 <?php if ($actionUrl !== '#'): ?>
-                    <a href="<?= $actionUrl ?>"
+                    <a href="<?= $actionUrl ?>" id="<?= $actionId ?>"
                         class="<?= $actionClass ?> px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[20px]">
                             <?= $actionIcon ?>
@@ -69,7 +70,7 @@ $userSub = match ($userRole) {
                         <span class="hidden lg:block"><?= $actionLabel ?></span>
                     </a>
                 <?php else: ?>
-                    <button
+                    <button id="<?= $actionId ?>"
                         class="<?= $actionClass ?> px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[20px] font-variation-settings-['FILL'_0,'wght'_400]">
                             <?= $actionIcon ?>
