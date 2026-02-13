@@ -54,12 +54,7 @@
                             <select
                                 class="w-full bg-muted/50 border border-border rounded-lg py-2 px-3 text-sm focus:ring-primary focus:border-primary transition-all"
                                 id="service-category" name="category">
-                                <option disabled="" selected="" value="">Select a category</option>
-                                <option value="therapy">Therapy</option>
-                                <option value="assessment">Assessment</option>
-                                <option value="consultation">Consultation</option>
-                                <option value="programs">Programs</option>
-                                <option value="general">General</option>
+                                <!-- Options will be populated dynamically -->
                             </select>
                         </div>
                     </div>
@@ -95,7 +90,7 @@
                                     class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-muted-foreground text-lg">schedule</span>
                                 <input
                                     class="w-full bg-muted/50 border border-border rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-primary focus:border-primary transition-all"
-                                    name="duration" placeholder="60" type="number" />
+                                    name="duration" id="service-duration" placeholder="60" type="number" />
                             </div>
                         </div>
                         <div class="space-y-2">
@@ -107,25 +102,45 @@
                                     class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">₱</span>
                                 <input
                                     class="w-full bg-muted/50 border border-border rounded-lg pl-8 pr-3 py-2 text-sm focus:ring-primary focus:border-primary transition-all"
-                                    name="rate" placeholder="150.00" type="number" />
+                                    name="price" id="service-price" placeholder="150.00" type="number" />
                             </div>
                         </div>
+                        <input type="hidden" name="uuid" id="service-uuid">
                     </div>
                 </div>
 
-                <!-- Active Status -->
-                <div class="pt-4 border-t border-border flex items-center justify-between">
-                    <div class="flex flex-col">
-                        <span class="text-sm font-bold text-foreground">Active Status</span>
-                        <span class="text-xs text-muted-foreground">Enable or disable this service across the
-                            platform.</span>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input checked="" class="sr-only peer" type="checkbox" name="active" />
-                        <div
-                            class="w-14 h-7 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary shadow-inner">
+                <!-- Active Status & Specialization -->
+                <div class="grid grid-cols-2 gap-6 pt-4 border-t border-border items-end">
+                    <!-- Specialization -->
+                    <div>
+                        <label class="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2"
+                            for="service-specialization">
+                            Specialization
+                        </label>
+                        <div class="relative">
+                            <select
+                                class="w-full bg-muted/50 border border-border rounded-lg py-2 px-3 text-sm focus:ring-primary focus:border-primary transition-all"
+                                id="service-specialization" name="specialization_id">
+                                <option disabled="" selected="" value="">Select a specialization (Optional)</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
                         </div>
-                    </label>
+                    </div>
+
+                    <!-- Status Toggle -->
+                    <div
+                        class="flex items-center justify-between p-2 bg-muted/30 rounded-lg border border-border h-full">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm font-bold text-foreground">Active Status</span>
+                            <span class="text-xs text-muted-foreground">Enable service</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input checked="" class="sr-only peer" type="checkbox" name="status" value="active" />
+                            <div
+                                class="w-10 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary shadow-inner">
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </form>
         </div>
@@ -161,11 +176,19 @@
 
             if (mode === 'edit' && data) {
                 $('#service-modal-title').text('Edit Clinical Service');
+                $('#service-uuid').val(data.uuid);
                 $('#service-name').val(data.name);
-                // Populate other fields...
+                $('#service-category').val(data.category_id);
+                $('#service-specialization').val(data.specialization_id); // Populate Specialization
+                $('#service-desc').val(data.description);
+                $('#service-duration').val(data.duration);
+                $('#service-price').val(data.price);
+                // Set checkbox based on status 'active' or 'inactive'
+                $('input[name="status"]').prop('checked', data.status === 'active');
             } else {
                 $('#service-modal-title').text('Add New Clinical Service');
                 $form[0].reset();
+                $('#service-uuid').val('');
             }
         };
 
@@ -182,6 +205,32 @@
         $('.service-modal-close').on('click', closeServiceModal);
         $modal.on('click', function (e) {
             if ($(e.target).is($modal)) closeServiceModal();
+        });
+
+        // Service Submit
+        $form.on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const uuid = $('#service-uuid').val();
+            // Append explicit action if not present (though usually expected by backend)
+            // But manage-services.php might check 'action' or request method. 
+            // Previous code appended 'action' manually.
+            formData.append('action', uuid ? 'update' : 'store');
+
+            $.ajax({
+                url: apiUrl('services') + 'manage-services.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (!response.success) return alert(response.message);
+                    alert(response.message);
+                    window.closeServiceModal();
+                    $(document).trigger('service-saved');
+                },
+                error: ajaxErrorHandler
+            });
         });
     });
 </script>

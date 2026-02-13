@@ -83,6 +83,18 @@
                         id="category-desc" name="description"
                         placeholder="Enter a brief description of this category..." rows="4"></textarea>
                 </div>
+
+                <!-- Status & ID -->
+                <input type="hidden" name="id" id="category-id">
+                <div class="flex items-center gap-3">
+                    <label class="text-[11px] font-bold text-muted-foreground uppercase tracking-wider"
+                        for="category-status">Status</label>
+                    <select id="category-status" name="status"
+                        class="bg-muted/50 border border-border rounded-lg py-1 px-2 text-sm focus:ring-primary focus:border-primary">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
             </form>
         </div>
 
@@ -129,6 +141,7 @@
             } else {
                 $('#category-modal-title').text('Add New Category');
                 $form[0].reset();
+                $('#category-id').val('');
                 $('.icon-select-btn').removeClass('border-2 border-primary bg-primary/5 text-primary').addClass('border-border text-muted-foreground');
                 $('#category-icon').val('');
             }
@@ -154,6 +167,35 @@
             $('.icon-select-btn').removeClass('border-2 border-primary bg-primary/5 text-primary').addClass('border-border text-muted-foreground');
             $(this).removeClass('border-border text-muted-foreground').addClass('border-2 border-primary bg-primary/5 text-primary');
             $('#category-icon').val($(this).data('icon'));
+        });
+
+        // Category Submit
+        $form.on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const id = $('#category-id').val();
+            formData.append('action', id ? 'update' : 'store');
+
+            // console.log('frontend:', formData);
+            // return false;
+
+            $.ajax({
+                url: apiUrl('shared') + 'categories.php',
+                method: 'POST',
+                data: formData,
+                headers: { 'X-Reference-Model': 'services' },
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    // console.log('backend:', response);
+                    // return false;
+                    if (!response.success) return false;
+                    alert(response.message);
+                    window.closeCategoryModal();
+                    $(document).trigger('category-saved');
+                },
+                error: ajaxErrorHandler
+            });
         });
     });
 </script>

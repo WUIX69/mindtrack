@@ -247,10 +247,10 @@ $role = $role ?? 'patient';
                 url: apiUrl("shared") + "services.php",
                 method: "GET",
                 dataType: "json",
+                data: { uuid: config.serviceUuid, action: 'single' },
                 success: function (response) {
                     if (!response.success) return;
-
-                    const s = response.data.find(x => x.uuid === config.serviceUuid);
+                    const s = response.data;
                     if (s) {
                         $('#service-name').text(s.name);
                         $('#service-desc').text(s.description);

@@ -28,6 +28,31 @@ class Services extends Base
         }
     }
 
+    public static function countWhereStatuses()
+    {
+        try {
+            $stmt = self::conn()->query("
+                SELECT 
+                    SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
+                    SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive
+                FROM services
+            ");
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return [
+                'active' => (int) ($result['active'] ?? 0),
+                'inactive' => (int) ($result['inactive'] ?? 0)
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            return [
+                'active' => 0,
+                'inactive' => 0
+            ];
+        }
+    }
+
     public static function single($uuid = null)
     {
         try {
