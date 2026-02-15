@@ -277,7 +277,26 @@ $servicesFilterConfig = [
                 },
                 {
                     data: 'status',
-                    render: (data) => `<span class="px-2 py-1 rounded text-xs font-semibold ${data === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} uppercase">${data}</span>`
+                    render: function (data) {
+                        const statusColors = {
+                            'active': 'emerald',
+                            'inactive': 'red',
+                        };
+                        const color = statusColors[data] || 'slate';
+
+                        // Map status for display
+                        const displayStatus = {
+                            'active': 'Active',
+                            'inactive': 'Inactive',
+                        }[data] || data || 'Unknown';
+
+                        return `
+                            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-${color}-100 text-${color}-700 dark:bg-${color}-900/30 dark:text-${color}-400">
+                                <span class="size-1.5 rounded-full bg-${color}-500"></span>
+                                ${displayStatus}
+                            </span>
+                        `;
+                    }
                 },
                 {
                     data: 'created_at',
@@ -468,7 +487,26 @@ $servicesFilterConfig = [
                 },
                 {
                     data: 'status',
-                    render: (data) => `<span class="px-2 py-1 rounded text-xs font-semibold ${data === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} uppercase">${data}</span>`
+                    render: function (data) {
+                        const statusColors = {
+                            'active': 'emerald',
+                            'inactive': 'red',
+                        };
+                        const color = statusColors[data] || 'slate';
+
+                        // Map status for display
+                        const displayStatus = {
+                            'active': 'Active',
+                            'inactive': 'Inactive',
+                        }[data] || data || 'Unknown';
+
+                        return `
+                            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-${color}-100 text-${color}-700 dark:bg-${color}-900/30 dark:text-${color}-400">
+                                <span class="size-1.5 rounded-full bg-${color}-500"></span>
+                                ${displayStatus}
+                            </span>
+                        `;
+                    }
                 },
                 {
                     data: 'created_at',
