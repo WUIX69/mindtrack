@@ -12,7 +12,8 @@ $headerData = null;
 include_once __DIR__ . '/layout.php';
 ?>
 
-<div class="flex h-full overflow-hidden -m-8"> <!-- Negative margin to bleed into the parent padding if necessary -->
+<div class="flex min-h-screen overflow-hidden -m-8">
+    <!-- Negative margin to bleed into the parent padding if necessary -->
     <!-- Inner Sidebar: Session List -->
     <aside class="w-80 border-r border-border bg-card flex flex-col shrink-0">
         <div class="p-6 border-b border-border">

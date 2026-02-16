@@ -162,8 +162,7 @@ include_once __DIR__ . '/layout.php';
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div
-                                    class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                                <div class="flex items-center justify-end gap-3">
                                     <button
                                         class="p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all"
                                         title="Add Clinical Note">
