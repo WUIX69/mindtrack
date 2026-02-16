@@ -60,10 +60,11 @@ $patientFilterConfig = [
                     <tr class="bg-muted/50 text-muted-foreground uppercase text-[11px] font-bold tracking-wider">
                         <th class="px-6 py-4">Patient</th>
                         <th class="px-6 py-4">Contact</th>
+                        <th class="px-6 py-4">Status</th>
                         <th class="px-6 py-4">Last Appointment</th>
                         <th class="px-6 py-4">Sessions</th>
                         <th class="px-6 py-4">Alerts</th>
-                        <th class="px-6 py-4 text-right">Actions</th>
+                        <th class="px-6 py-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-border/50">
@@ -215,7 +216,27 @@ $patientFilterConfig = [
                 },
                 {
                     data: 'status',
-                    visible: false
+                    render: function (data) {
+                        const statusColors = {
+                            'active': 'emerald',
+                            'inactive': 'red',
+                            'on_leave': 'amber'
+                        };
+                        const color = statusColors[data] || 'slate';
+                        // Map status for display
+                        const displayStatus = {
+                            'active': 'Active',
+                            'inactive': 'Inactive',
+                            'on_leave': 'On Leave'
+                        }[data] || data || 'Unknown';
+
+                        return `
+                            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-${color}-100 text-${color}-700 dark:bg-${color}-900/30 dark:text-${color}-400">
+                                <span class="size-1.5 rounded-full bg-${color}-500"></span>
+                                ${displayStatus}
+                            </span>
+                        `;
+                    }
                 },
                 {
                     data: 'last_appt_date',
@@ -261,15 +282,13 @@ $patientFilterConfig = [
                 },
                 {
                     data: 'uuid',
-                    className: 'text-right',
+                    className: '!text-left',
                     orderable: false,
                     render: function (data, type, row) {
                         return `
                             <div class="flex items-center justify-end gap-2">
-                                <button class="manage-btn px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded hover:bg-primary hover:text-white transition-all">Manage</button>
-                                <button class="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted transition-all">
-                                    <span class="material-symbols-outlined text-[20px]">more_vert</span>
-                                </button>
+                                <button type="button" data-id="${row.uuid}" class="manage-btn px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded hover:bg-primary hover:text-white transition-all">Manage</button>
+                                <button type="button" data-id="${row.uuid}" class="px-3 py-1.5 bg-red-500/10 text-red-600 text-xs font-bold rounded hover:bg-red-500 hover:text-white transition-all delete-patient-btn">Delete</button>
                             </div>
                         `;
                     }
@@ -318,15 +337,62 @@ $patientFilterConfig = [
 
         // Edit/Manage Patient
         $('#patients-table').on('click', '.manage-btn', function () {
-            const rowData = table.row($(this).closest('tr')).data();
-            // Fetch fresh details for the modal to be safe, or use rowData if complete
-            // Let's use rowData but ensure we have all fields in the DataTable response
-            // Actually, medical_history might need parsing if it came as string
-            let processedData = { ...rowData };
-            if (typeof processedData.medical_history === 'string' && processedData.medical_history !== '') {
-                try { processedData.medical_history = JSON.parse(processedData.medical_history); } catch (e) { }
+            const $btn = $(this);
+            const uuid = table.row($btn.closest('tr')).data().uuid;
+
+            // Show loading state
+            const originalHtml = $btn.html();
+            $btn.html('<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>').prop('disabled', true);
+
+            $.ajax({
+                url: apiUrl("shared") + "patients.php",
+                method: "GET",
+                data: { uuid: uuid, action: 'getPatientDetails' },
+                dataType: "json",
+                success: function (response) {
+                    // console.log(response);
+                    // return false;
+
+                    $btn.html(originalHtml).prop('disabled', false);
+                    if (!response.success) {
+                        toast.error(response.message || 'Failed to fetch patient details');
+                        return;
+                    }
+
+                    window.openPatientModal('edit', response.data);
+                },
+                error: function () {
+                    $btn.html(originalHtml).prop('disabled', false);
+                    toast.error('Connection error occurred');
+                }
+            });
+        });
+
+        // Trigger Delete Patient
+        $(document).on('click', '.delete-patient-btn', function (e) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent row click
+            const $btn = $(this);
+            const patientUuid = table.row($btn.closest('tr')).data().uuid;
+
+            // console.log(patientUuid);
+            // return false;
+
+            if (confirm("Are you sure you want to delete this patient? This action cannot be undone.")) {
+                $.ajax({
+                    url: apiUrl('patients') + 'manage-patient.php',
+                    type: 'DELETE',
+                    data: {
+                        uuid: patientUuid
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (!response.success) { console.log(response); return false; }
+                        table.ajax.reload();
+                    },
+                    error: ajaxErrorHandler
+                });
             }
-            window.openPatientModal('edit', processedData);
         });
     });
 </script>

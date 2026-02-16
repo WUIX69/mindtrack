@@ -16,6 +16,22 @@ if (!$session->has() || $session->get('role') !== 'admin') {
     exit;
 }
 
+// Handle DELETE Request
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    // For DELETE requests, we might need to parse the input or check $_GET depending on how it's sent
+    parse_str(file_get_contents("php://input"), $_DELETE);
+    $uuid = $_GET['uuid'] ?? $_DELETE['uuid'] ?? null;
+
+    if (!$uuid) {
+        echo json_encode(['success' => false, 'message' => 'UUID is required for deletion']);
+        exit;
+    }
+
+    $result = Patients::delete($uuid);
+    echo json_encode($result);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;

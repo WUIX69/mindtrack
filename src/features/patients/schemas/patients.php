@@ -13,7 +13,7 @@ class Patients
             ->key('lastname', v::stringType()->notEmpty())
             ->key('email', v::email()->notEmpty())
             ->key('phone', v::optional(v::stringType()))
-            ->key('status', v::optional(v::in(['active', 'inactive'])))
+            ->key('status', v::optional(v::in(['active', 'inactive', 'on_leave'])))
             ->key('date_of_birth', v::optional(v::date()))
             ->key('gender', v::optional(v::in(['male', 'female', 'other'])))
             ->key('address', v::optional(v::stringType()))

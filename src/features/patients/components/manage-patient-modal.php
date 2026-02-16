@@ -83,6 +83,18 @@
                         </div>
                         <div>
                             <label
+                                class="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Status</label>
+                            <select name="status" id="patient-status"
+                                class="w-full bg-muted/50 border border-border rounded-lg py-2 px-3 text-sm focus:ring-primary focus:border-primary transition-all">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="on_leave">On Leave</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label
                                 class="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Gender</label>
                             <select name="gender"
                                 class="w-full bg-muted/50 border border-border rounded-lg py-2 px-3 text-sm focus:ring-primary focus:border-primary transition-all">
@@ -242,6 +254,7 @@
                 $form.find('[name="lastname"]').val(data.lastname);
                 $form.find('[name="email"]').val(data.email);
                 $form.find('[name="phone"]').val(data.phone);
+                $form.find('[name="status"]').val(data.status || 'active');
                 $form.find('[name="date_of_birth"]').val(data.date_of_birth);
                 $form.find('[name="gender"]').val(data.gender);
                 $form.find('[name="address"]').val(data.address);
@@ -279,6 +292,9 @@
             const originalText = $submitBtn.text();
 
             $submitBtn.prop('disabled', true).html('<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Processing...');
+
+            // console.log(formData);
+            // return false;
 
             $.ajax({
                 url: url,
