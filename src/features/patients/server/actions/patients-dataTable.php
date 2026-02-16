@@ -27,7 +27,8 @@ $format_table = "
         pi.medical_history,
         (SELECT MAX(sched_date) FROM appointments WHERE patient_uuid = u.uuid AND status IN ('confirmed', 'completed')) as last_appt_date,
         (SELECT s.name FROM appointments a JOIN services s ON a.service_uuid = s.uuid WHERE a.patient_uuid = u.uuid AND a.status IN ('confirmed', 'completed') ORDER BY a.sched_date DESC, a.sched_time DESC LIMIT 1) as last_service_name,
-        (SELECT COUNT(*) FROM appointments WHERE patient_uuid = u.uuid AND status = 'completed') as total_sessions
+        (SELECT COUNT(*) FROM appointments WHERE patient_uuid = u.uuid AND status = 'completed') as total_sessions,
+        u.created_at
     FROM users u
     LEFT JOIN user_patient_info pi ON u.uuid = pi.user_uuid
     WHERE u.role = 'patient'
@@ -49,16 +50,12 @@ $columns = array(
     ['db' => 'last_service_name', 'dt' => 'last_service_name'],
     ['db' => 'total_sessions', 'dt' => 'total_sessions'],
     ['db' => 'uuid', 'dt' => 'uuid'], // For actions
+    ['db' => 'created_at', 'dt' => 'created_at'], // For sorting
     ['db' => null, 'dt' => 'actions'], // Placeholder for client-side actions
 );
 
-// Apply Filters (Status)
+// Apply Filters (Native DataTables handling)
 $whereResult = null;
-if (isset($_GET['status']) && !empty($_GET['status'])) {
-    $status = $_GET['status'];
-    $whereResult = "status = '$status'";
-}
-
 $whereAll = null;
 
 // Get Data

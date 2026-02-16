@@ -183,16 +183,14 @@ $patientFilterConfig = [
             ajax: {
                 url: apiUrl('patients') + 'patients-dataTable.php',
                 data: function (d) {
-                    const filters = window.currentFilters || {};
-                    d.status = filters.status || '';
-                    d.sort = filters.sort || 'recent';
+                    // Optional: Add global filters if needed, but we use column-based search now
                 }
             },
             columns: [
                 {
                     data: 'firstname',
                     render: function (data, type, row) {
-                        const avatar = row.avatar || 'https://ui-avatars.com/api/?name=' + row.firstname + '+' + row.lastname + '&background=random';
+                        const avatar = 'https://ui-avatars.com/api/?name=' + row.firstname + '+' + row.lastname + '&background=random';
                         return `
                             <div class="flex items-center gap-3">
                                 <div class="size-9 rounded-full bg-muted bg-cover bg-center shrink-0" style="background-image: url('${avatar}')"></div>
@@ -214,6 +212,10 @@ $patientFilterConfig = [
                             </div>
                         `;
                     }
+                },
+                {
+                    data: 'status',
+                    visible: false
                 },
                 {
                     data: 'last_appt_date',
@@ -254,6 +256,10 @@ $patientFilterConfig = [
                     }
                 },
                 {
+                    data: 'created_at',
+                    visible: false
+                },
+                {
                     data: 'uuid',
                     className: 'text-right',
                     orderable: false,
@@ -271,9 +277,6 @@ $patientFilterConfig = [
             ],
             drawCallback: function () {
                 // Style pagination
-                // $('.paginate_button').addClass('px-3 py-1 text-xs font-bold rounded bg-muted text-foreground border border-border mx-0.5 hover:bg-muted/80 transition-all');
-                // $('.paginate_button.current').addClass('bg-primary text-white border-primary').removeClass('bg-muted text-foreground');
-                // $('.paginate_button.disabled').addClass('opacity-50 cursor-not-allowed');
             }
         });
 
@@ -287,27 +290,26 @@ $patientFilterConfig = [
             }, 300);
         });
 
-        // Filter Integration
+        // Event Listeners for Filters
         $(document).on('filter:change', function (e, filters) {
-            window.currentFilters = filters;
-            table.ajax.reload();
+            console.log("Filters changed:", filters);
+
+            // Handle Status (Column 2)
+            if (filters.status !== undefined) {
+                table.column(2).search(filters.status);
+            }
+
+            // Handle Sort
+            if (filters.sort) {
+                switch (filters.sort) {
+                    case 'recent': table.order([6, 'desc']); break;
+                    case 'oldest': table.order([6, 'asc']); break;
+                    case 'name_asc': table.order([0, 'asc']); break;
+                    case 'name_desc': table.order([0, 'desc']); break;
+                }
+            }
+            table.draw();
         });
-
-        // Filter Integration
-        // $(document).on('filter:change', function (e, filters) {
-        //     console.log("Filters changed:", filters);
-
-        //     // Handle Sort
-        //     if (filters.sort) {
-        //         switch (filters.sort) {
-        //             case 'recent': table.order([9, 'desc']); break;
-        //             case 'oldest': table.order([9, 'asc']); break;
-        //             case 'name_asc': table.order([0, 'asc']); break;
-        //             case 'name_desc': table.order([0, 'desc']); break;
-        //         }
-        //     }
-        //     table.draw();
-        // });
 
         // Add Patient
         $('#add-patient-btn').on('click', function () {
