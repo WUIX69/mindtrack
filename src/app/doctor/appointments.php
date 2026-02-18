@@ -6,8 +6,6 @@ $pageTitle = "My Appointments - MindTrack Doctor";
 
 $headerData = [
     'title' => 'My Appointments',
-    'actionLabel' => 'Add Appointment',
-    'actionIcon' => 'add',
     'extraContent' => '
         <div class="bg-muted p-1 rounded-lg inline-flex">
             <button id="tab-calendar"
