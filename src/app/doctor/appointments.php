@@ -28,7 +28,7 @@ include_once __DIR__ . '/layout.php';
 shared('components', 'elements/dataTables/styles');
 ?>
 
-<div class="flex flex-col lg:flex-row gap-8 min-h-0 h-full">
+<div class="flex flex-col lg:flex-row gap-8 min-h-0 h-full mb-0">
     <!-- Main Content Area -->
     <div class="flex-1 min-w-0 h-full">
         <!-- Calendar View Container -->
@@ -155,10 +155,14 @@ shared('components', 'elements/dataTables/styles');
 </div>
 
 <?= featured('appointments', 'components/summary-modal') ?>
-<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <?= shared('components', 'elements/dataTables/scripts'); ?>
+
+<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <script>
     $(document).ready(function () {
+        // Ensure global appointments array exists
+        window.allAppointments = window.allAppointments || [];
+
         // --- Shared Logic ---
 
         // Tab Switching

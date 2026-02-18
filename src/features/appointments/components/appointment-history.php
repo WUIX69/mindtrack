@@ -95,7 +95,7 @@
 
                         // Add view-summary-btn class and data-uuid attribute
                         html += `
-                            <tr class="hover:bg-muted/30 transition-colors cursor-pointer view-summary-btn" data-uuid="${a.uuid}">
+                            <tr class="hover:bg-muted/30 transition-colors cursor-pointer" onclick="openSummaryModal('${a.uuid}')">
                                 <td class="px-6 py-4">
                                     <p class="text-sm font-bold">${dateStr}</p>
                                     <p class="text-xs text-muted-foreground">${timeStr}</p>

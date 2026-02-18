@@ -287,7 +287,7 @@ include __DIR__ . '/../layout.php';
                                 <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>`}
                                 <button data-uuid="${a.uuid}" class="withdraw-btn px-5 py-2.5 rounded-xl border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors">Withdraw</button>
                             ` : `
-                                <button data-uuid="${a.uuid}" class="view-summary-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors">View Summary</button>
+                                <button onclick="openSummaryModal('${a.uuid}')" class="px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors">View Summary</button>
                             `}
                         </div>
                     </div>

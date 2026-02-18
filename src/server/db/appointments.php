@@ -18,14 +18,14 @@ class appointments extends Base
      * @param string $uuid
      * @return array|false
      */
-    public static function find($uuid)
+    public static function single($uuid)
     {
         try {
             $stmt = self::conn()->prepare("SELECT * FROM appointments WHERE uuid = ? LIMIT 1");
             $stmt->execute([$uuid]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("SQL Error (appointments::find): " . $e->getMessage());
+            error_log("SQL Error (appointments::single): " . $e->getMessage());
             return false;
         }
     }

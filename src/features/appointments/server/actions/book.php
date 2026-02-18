@@ -83,7 +83,7 @@ try {
         // Ownership check for non-admins
         if ($user_type !== 'admin') {
             // Check if appointment exists and belongs to user
-            $appt = appointments::find($existing_uuid);
+            $appt = appointments::single($existing_uuid);
 
             if (!$appt) {
                 $response['message'] = 'Appointment not found.';

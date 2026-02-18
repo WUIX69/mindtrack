@@ -70,7 +70,7 @@ shared('components', 'layout/filterbar', $filterConfig);
 </div>
 
 <!-- Modals -->
-<?= featured('appointments', 'components/summary-modal') ?>
+
 <?= featured('appointments', 'components/reschedule-modal') ?>
 
 <script>
@@ -79,8 +79,8 @@ shared('components', 'layout/filterbar', $filterConfig);
         const TABLE_ID = '#schedule-list-table';
         const API_ENDPOINT = apiUrl('appointments') + '/list-view-dataTable.php';
 
-        // Initialize global array
-        window.allAppointments = [];
+        // Initialize global array (safely)
+        window.allAppointments = window.allAppointments || [];
 
         // --- Helper: Format Date ---
         function formatDateTime(dateString, timeString) {
@@ -129,9 +129,18 @@ shared('components', 'layout/filterbar', $filterConfig);
                     Object.assign(d, filters);
                 },
                 dataSrc: function (response) {
-                    // Populate global appointments for modals
+                    // Populate global appointments for modals (merge)
                     if (response.data) {
-                        window.allAppointments = response.data;
+                        window.allAppointments = window.allAppointments || [];
+                        const newData = response.data;
+                        newData.forEach(item => {
+                            const idx = window.allAppointments.findIndex(x => String(x.uuid) === String(item.uuid));
+                            if (idx > -1) {
+                                window.allAppointments[idx] = item;
+                            } else {
+                                window.allAppointments.push(item);
+                            }
+                        });
                     }
                     return response.data;
                 }
@@ -260,7 +269,7 @@ shared('components', 'layout/filterbar', $filterConfig);
                                     <div class="h-px bg-border my-1"></div>
                                     
                                     <p class="text-left py-2 pl-3.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Manage</p>
-                                    <button class="view-summary-btn w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${uuid}">
+                                    <button class="w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" onclick="openSummaryModal('${uuid}')">
                                         <span>👁</span> View
                                     </button>
                                     ${rescheduleAction}
@@ -282,6 +291,24 @@ shared('components', 'layout/filterbar', $filterConfig);
                         $(`#count-${status}`).text(response.counts[status] || 0);
                     });
                 }
+            },
+            createdRow: function (row, data, dataIndex) {
+                // Add cursor-pointer and data-uuid for row click
+                $(row).addClass('cursor-pointer hover:bg-muted/50 transition-colors');
+                $(row).attr('data-uuid', data.uuid || data.id);
+            }
+        });
+
+        // --- Row Click Handler (Open Summary) ---
+        $(TABLE_ID + ' tbody').on('click', 'tr', function (e) {
+            // Prevent if clicking on the Actions column (last column) or any interactive element
+            if ($(e.target).closest('td:last-child').length || $(e.target).closest('button, a, input, select').length) {
+                return;
+            }
+
+            const uuid = $(this).data('uuid');
+            if (uuid) {
+                openSummaryModal(uuid);
             }
         });
 

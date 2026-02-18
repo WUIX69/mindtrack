@@ -381,7 +381,7 @@ include_once __DIR__ . '/layout.php';
                                     data-time="${row.sched_time}">
                                     <span>✏️</span> Edit
                                 </button>
-                                <button class="view-summary-btn w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" data-uuid="${row.uuid}">
+                                <button class="w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" onclick="openSummaryModal('${row.uuid}')">
                                     <span>👁</span> View
                                 </button>
                                 <div class="border-t border-border my-1"></div>
@@ -526,7 +526,10 @@ include_once __DIR__ . '/layout.php';
             // Get data from DataTables row
             const data = $dashboardTable.row(this).data();
             if (data && data.uuid) {
-                $(this).find('.view-summary-btn').trigger('click');
+                const uuid = $(this).data('uuid');
+                if (uuid) {
+                    openSummaryModal(uuid);
+                }
             }
         });
 

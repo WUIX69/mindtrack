@@ -243,8 +243,8 @@
                 const colorClasses = this.getColorClasses(event.service_name);
 
                 const cardHtml = `
-                    <div class="view-summary-btn absolute left-1 right-1 p-2 rounded-r-md border-l-4 shadow-sm hover:z-20 transition-all cursor-pointer pointer-events-auto group flex flex-col justify-center ${colorClasses.bg} ${colorClasses.border}"
-                         data-uuid="${event.uuid}"
+                    <div class="absolute left-1 right-1 p-2 rounded-r-md border-l-4 shadow-sm hover:z-20 transition-all cursor-pointer pointer-events-auto group flex flex-col justify-center ${colorClasses.bg} ${colorClasses.border}"
+                         onclick="openSummaryModal('${event.uuid}')"
                          style="top: ${top}px; min-height: ${height}px; grid-column: ${dayIndex + 1} / span 1; z-index: 10;">
                         <p class="text-[10px] font-bold ${colorClasses.text} uppercase truncate leading-tight">${event.service_name}</p>
                         <p class="text-xs font-bold text-foreground truncate leading-tight">${event.patient_firstname} ${event.patient_lastname}</p>
