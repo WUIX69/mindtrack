@@ -63,7 +63,6 @@
     </div>
 </div>
 
-<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <script>
     $(function () {
         // Initialize global array if not already present

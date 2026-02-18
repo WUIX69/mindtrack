@@ -1,5 +1,5 @@
 <?php
-namespace Mindtrack\Schemas;
+namespace Mindtrack\Features\Appointments\Schemas;
 
 use Respect\Validation\Validator as v;
 use Respect\Validation\Exceptions\NestedValidationException;

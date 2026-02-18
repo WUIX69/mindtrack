@@ -8,7 +8,7 @@ require_once dirname(__DIR__, 5) . '/src/core/app.php';
 apiHeaders();
 
 use Mindtrack\Server\Db\appointments;
-use Mindtrack\Schemas\Appointment;
+use Mindtrack\Features\Appointments\Schemas\Appointment;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method.';

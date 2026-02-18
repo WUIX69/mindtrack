@@ -93,6 +93,7 @@ include __DIR__ . '/../layout.php';
 <!-- Reschedule Modal -->
 <?= featured('appointments', 'components/reschedule-modal') ?>
 
+<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <script src="<?= shared('data', 'icons.js', true) ?>"></script>
 <script>
     $(document).ready(function () {

@@ -1,6 +1,6 @@
 <?php
 
-use Mindtrack\Features\Schedule\Server\Db\Schedules;
+use Mindtrack\Server\Db\appointments;
 
 require_once dirname(__DIR__, 5) . '/src/core/app.php';
 apiHeaders();
@@ -22,7 +22,7 @@ try {
             $startDate = $_GET['start'] ?? date('Y-m-d');
             $endDate = $_GET['end'] ?? date('Y-m-d', strtotime('+7 days'));
 
-            $response = Schedules::getRange($currentUserUuid, $startDate, $endDate);
+            $response = appointments::getRange($currentUserUuid, $startDate, $endDate);
         }
     }
 
@@ -35,7 +35,7 @@ try {
             if (empty($data['uuid'])) {
                 $data['uuid'] = uuid();
             }
-            $response = Schedules::store($data);
+            $response = appointments::store($data);
         }
 
         if ($action === 'update_status') {
@@ -43,7 +43,7 @@ try {
             $status = $data['status'] ?? null;
 
             if ($uuid && $status) {
-                $response = Schedules::updateStatus($uuid, $status);
+                $response = appointments::updateStatus($uuid, $status);
             } else {
                 $response['message'] = 'Missing UUID or Status.';
             }
@@ -53,7 +53,7 @@ try {
             $uuid = $data['uuid'] ?? null;
 
             if ($uuid) {
-                $response = Schedules::delete($uuid);
+                $response = appointments::delete($uuid);
             } else {
                 $response['message'] = 'Missing UUID.';
             }

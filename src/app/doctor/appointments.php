@@ -2,10 +2,10 @@
 /**
  * Doctor Schedule Page - Main Shell
  */
-$pageTitle = "My Schedule - MindTrack Doctor";
+$pageTitle = "My Appointments - MindTrack Doctor";
 
 $headerData = [
-    'title' => 'Weekly Schedule',
+    'title' => 'My Appointments',
     'actionLabel' => 'Add Appointment',
     'actionIcon' => 'add',
     'extraContent' => '
@@ -33,12 +33,12 @@ shared('components', 'elements/dataTables/styles');
     <div class="flex-1 min-w-0 h-full">
         <!-- Calendar View Container -->
         <div id="calendar-view-container" class="h-full">
-            <?= featured('schedule', 'components/calendar-view') ?>
+            <?= featured('appointments', 'components/calendar-view') ?>
         </div>
 
         <!-- List View Container -->
         <div id="list-view-container" class="hidden h-full">
-            <?= featured('schedule', 'components/list-view') ?>
+            <?= featured('appointments', 'components/list-view') ?>
         </div>
     </div>
 
@@ -154,9 +154,8 @@ shared('components', 'elements/dataTables/styles');
     </div>
 </div>
 
-<?= featured('schedule', 'components/summary-modal') ?>
-
-<!-- <script src="<?= shared('data', 'appointment-statuses.js', true); ?>"></script> -->
+<?= featured('appointments', 'components/summary-modal') ?>
+<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <?= shared('components', 'elements/dataTables/scripts'); ?>
 <script>
     $(document).ready(function () {

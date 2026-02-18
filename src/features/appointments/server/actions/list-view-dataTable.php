@@ -12,7 +12,7 @@ require_once dirname(__DIR__, 5) . '/src/core/app.php';
 
 use Mindtrack\Server\Db\Base;
 use Mindtrack\Lib\DataTables;
-use Mindtrack\Features\Schedule\Server\Db\Schedules;
+use Mindtrack\Server\Db\appointments;
 
 apiHeaders();
 
@@ -72,7 +72,7 @@ try {
     $response = DataTables::complex($_GET, $conn, $table, $primaryKey, $columns, $whereResult, $whereAll);
 
     // Append Counts
-    $response['counts'] = Schedules::countWhereStatus($currentDoctorUuid);
+    $response['counts'] = appointments::countWhereStatus(['doctor_uuid' => $currentDoctorUuid]);
 
     // Clear buffer and output JSON
     ob_clean();

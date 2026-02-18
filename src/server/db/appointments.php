@@ -30,6 +30,54 @@ class appointments extends Base
         }
     }
     /**
+     * Fetch appointments for a specific doctor within a date range.
+     * Joins with patients and services to get full details.
+     * 
+     * @param string $doctorUuid
+     * @param string $startDate (Y-m-d)
+     * @param string $endDate (Y-m-d)
+     * @return array
+     */
+    public static function getRange($doctorUuid, $startDate, $endDate)
+    {
+        try {
+            // Using Base::conn() to get the connection
+            $stmt = self::conn()->prepare("
+                SELECT 
+                    a.*, 
+                    s.name as service_name, 
+                    s.duration as service_duration,
+                    u.firstname as patient_firstname, 
+                    u.lastname as patient_lastname,
+                    u.email as patient_email,
+                    d.firstname as doctor_firstname,
+                    d.lastname as doctor_lastname
+                FROM appointments a
+                LEFT JOIN services s ON a.service_uuid = s.uuid
+                LEFT JOIN users u ON a.patient_uuid = u.uuid
+                LEFT JOIN users d ON a.doctor_uuid = d.uuid
+                WHERE a.doctor_uuid = ? 
+                AND a.sched_date BETWEEN ? AND ?
+                ORDER BY a.sched_date ASC, a.sched_time ASC
+            ");
+            $stmt->execute([$doctorUuid, $startDate, $endDate]);
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+
+            return [
+                'success' => true,
+                'message' => 'Schedule fetched successfully.',
+                'data' => $data,
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error (appointments::getRange): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch schedule: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
      * Fetch all appointments for a specific patient.
      * 
      * @param string $patient_uuid

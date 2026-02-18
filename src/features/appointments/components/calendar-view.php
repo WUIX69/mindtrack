@@ -88,7 +88,7 @@
     class CalendarManager {
         constructor() {
             this.currentDate = new Date();
-            this.apiUrl = apiUrl('schedule') + '/schedules.php';
+            this.apiUrl = apiUrl('appointments') + '/schedules.php';
             this.init();
         }
 

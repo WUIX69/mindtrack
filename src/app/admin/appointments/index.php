@@ -136,6 +136,7 @@ shared('components', 'layout/filterbar', $filterConfig);
     'message' => 'Are you sure you want to permanently delete this appointment? This action cannot be undone.',
     'confirm_text' => 'Yes, Delete',
 ]); ?>
+<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <?= shared('components', 'elements/dataTables/scripts'); ?>
 <script>
     $(document).ready(function () {

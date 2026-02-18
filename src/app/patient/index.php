@@ -130,3 +130,4 @@ include __DIR__ . '/layout.php';
 
 <!-- Modals -->
 <?= featured('appointments', 'components/summary-modal') ?>
+<script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>

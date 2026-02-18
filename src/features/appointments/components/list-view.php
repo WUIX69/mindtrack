@@ -77,7 +77,7 @@ shared('components', 'layout/filterbar', $filterConfig);
     $(document).ready(function () {
         // --- Constants & Config ---
         const TABLE_ID = '#schedule-list-table';
-        const API_ENDPOINT = apiUrl('schedule') + '/list-view-dataTable.php';
+        const API_ENDPOINT = apiUrl('appointments') + '/list-view-dataTable.php';
 
         // Initialize global array
         window.allAppointments = [];
@@ -357,7 +357,7 @@ shared('components', 'layout/filterbar', $filterConfig);
             if (!confirm(`Are you sure you want to mark this appointment as ${status}?`)) return;
 
             $.ajax({
-                url: apiUrl('schedule') + '/schedules.php?action=update_status',
+                url: apiUrl('appointments') + '/schedules.php?action=update_status',
                 method: 'POST',
                 data: JSON.stringify({ uuid: uuid, status: status }),
                 contentType: 'application/json',
