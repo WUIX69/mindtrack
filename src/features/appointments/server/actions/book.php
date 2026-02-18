@@ -82,18 +82,34 @@ try {
     if ($existing_uuid) {
         // Ownership check for non-admins
         if ($user_type !== 'admin') {
-            // Check if appointment belongs to patient
-            $check = appointments::allWherePatients($user_uuid);
-            $isOwner = false;
-            if ($check['success']) {
-                foreach ($check['data'] as $appt) {
-                    if ($appt['uuid'] === $existing_uuid) {
-                        $isOwner = true;
-                        break;
-                    }
+            // Check if appointment exists and belongs to user
+            $appt = appointments::find($existing_uuid);
+
+            if (!$appt) {
+                $response['message'] = 'Appointment not found.';
+                echo json_encode($response);
+                exit;
+            }
+
+            $isAuthorized = false;
+
+            if ($user_type === 'doctor') {
+                // Doctor check: must be the assigned doctor
+                if ($appt['doctor_uuid'] === $user_uuid) {
+                    $isAuthorized = true;
+                }
+            } else {
+                // Patient check: must be the patient
+                /* 
+                   Note: appointments::allWherePatients matches patient_uuid.
+                   We check against the record found.
+                */
+                if ($appt['patient_uuid'] === $user_uuid) {
+                    $isAuthorized = true;
                 }
             }
-            if (!$isOwner) {
+
+            if (!$isAuthorized) {
                 $response['message'] = 'Unauthorized modification.';
                 echo json_encode($response);
                 exit;
