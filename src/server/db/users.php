@@ -166,24 +166,43 @@ class Users extends Base
     {
         try {
             $stmt = self::conn()->prepare("
-                SELECT u.uuid as id, CONCAT(u.firstname, ' ', u.lastname) as name, u.email 
-                FROM users u 
-                WHERE u.role = 'patient' AND u.status = 'active' AND u.uuid = ?
+                SELECT 
+                    u.uuid,
+                    u.firstname,
+                    u.lastname,
+                    u.email,
+                    u.phone,
+                    u.status,
+                    u.created_at,
+                    pi.date_of_birth,
+                    pi.gender,
+                    pi.address,
+                    pi.emergency_contact_name,
+                    pi.emergency_contact_phone,
+                    pi.medical_history
+                FROM users u
+                LEFT JOIN user_patient_info pi ON u.uuid = pi.user_uuid
+                WHERE u.uuid = ? AND u.role = 'patient'
             ");
             $stmt->execute([$uuid]);
-            $data = $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$data) {
+            if ($data) {
+                // Decode JSON fields if they are strings
+                if (isset($data['medical_history']) && is_string($data['medical_history'])) {
+                    $data['medical_history'] = json_decode($data['medical_history'], true) ?? [];
+                }
+
                 return [
-                    'success' => false,
-                    'message' => 'Patient not found',
+                    'success' => true,
+                    'message' => 'Patient fetched successfully',
+                    'data' => $data
                 ];
             }
 
             return [
-                'success' => true,
-                'message' => 'Patient fetched successfully',
-                'data' => $data
+                'success' => false,
+                'message' => 'Patient not found',
             ];
         } catch (PDOException $e) {
             error_log("SQL Error (Users::singleWherePatient): " . $e->getMessage());
@@ -191,6 +210,69 @@ class Users extends Base
                 'success' => false,
                 'message' => 'Failed to fetch patient',
             ];
+        }
+    }
+
+    public static function updateWherePatient($data)
+    {
+        try {
+            self::beginTransaction();
+
+            // 1. Update User
+            $query = "UPDATE users SET firstname=?, lastname=?, email=?, phone=?";
+            $params = [
+                $data['firstname'],
+                $data['lastname'],
+                $data['email'],
+                $data['phone']
+            ];
+
+            // Only update password if provided
+            if (!empty($data['password'])) {
+                $query .= ", password=?";
+                $params[] = $data['password'];
+            }
+
+            $query .= " WHERE uuid=?";
+            $params[] = $data['uuid']; // User UUID
+
+            $stmt = self::conn()->prepare($query);
+            $stmt->execute($params);
+
+            // 2. Upsert Patient Info
+            $stmt = self::conn()->prepare("
+                INSERT INTO user_patient_info (
+                    user_uuid, 
+                    date_of_birth, 
+                    gender, 
+                    address, 
+                    emergency_contact_name, 
+                    emergency_contact_phone
+                ) VALUES (?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    date_of_birth = VALUES(date_of_birth),
+                    gender = VALUES(gender),
+                    address = VALUES(address),
+                    emergency_contact_name = VALUES(emergency_contact_name),
+                    emergency_contact_phone = VALUES(emergency_contact_phone)
+            ");
+
+            $stmt->execute([
+                $data['uuid'],
+                $data['date_of_birth'],
+                $data['gender'],
+                $data['address'],
+                $data['emergency_contact_name'],
+                $data['emergency_contact_phone'],
+            ]);
+
+            self::commit();
+            return ['success' => true, 'message' => 'Patient profile updated successfully'];
+
+        } catch (PDOException $e) {
+            self::rollBack();
+            error_log("SQL Error (Users::updateWherePatient): " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to update patient profile'];
         }
     }
 
