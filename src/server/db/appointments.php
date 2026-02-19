@@ -361,6 +361,7 @@ class appointments extends Base
             // Map DB statuses to UI filter keys
             // UI "Upcoming" (value='confirmed') should include 'confirmed' + 'scheduled'
             $counts = [
+                'all' => 0,
                 'pending' => 0,
                 'confirmed' => 0,
                 'completed' => 0,
@@ -368,11 +369,14 @@ class appointments extends Base
             ];
 
             foreach ($rawCounts as $status => $count) {
-                if ($status === 'scheduled' || $status === 'confirmed') {
+                // Map DB statuses to UI
+                if ($status === 'scheduled') {
                     $counts['confirmed'] += $count;
                 } elseif (isset($counts[$status])) {
                     $counts[$status] += $count;
                 }
+                // Always add to all
+                $counts['all'] += $count;
             }
 
             return $counts;

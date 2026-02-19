@@ -179,7 +179,6 @@ shared('components', 'elements/dataTables/styles');
                 // Toggle Views
                 $calendarView.removeClass('hidden');
                 $listView.addClass('hidden');
-                $rightSidebar.removeClass('hidden'); // Show Sidebar
             } else {
                 // Update Tabs
                 $tabList.addClass('bg-card shadow-sm text-primary').removeClass('text-muted-foreground hover:text-foreground');
@@ -188,7 +187,6 @@ shared('components', 'elements/dataTables/styles');
                 // Toggle Views
                 $listView.removeClass('hidden');
                 $calendarView.addClass('hidden');
-                $rightSidebar.addClass('hidden'); // Hide Sidebar
             }
         }
 

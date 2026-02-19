@@ -1,9 +1,10 @@
 <?php
 // Define Filter Configuration
 $filterConfig = [
+    'isTransparent' => true,
     'primary' => [
         'name' => 'status',
-        'label' => 'Status:',
+        // 'label' => 'Status:',
         'options' => [
             ['value' => '', 'label' => 'All', 'count_id' => 'count-all'],
             ['value' => 'pending', 'label' => 'Pending', 'count_id' => 'count-pending'],
