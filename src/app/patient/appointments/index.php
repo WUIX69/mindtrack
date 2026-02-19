@@ -281,10 +281,10 @@ include __DIR__ . '/../layout.php';
                         </div>
                         <div class="lg:w-1/4 flex flex-col sm:flex-row gap-3 lg:justify-end">
                             ${isConfirmed ? `
-                                <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>
+                                <button data-uuid="${a.uuid}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>
                             ` : (isPending || isRescheduled) ? `
                                 ${isPending ? `<button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" data-date="${a.sched_date}" data-time="${a.sched_time}" class="edit-request-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors">Edit Request</button>` : `
-                                <button data-uuid="${a.uuid}" data-service="${a.service_uuid}" data-doctor="${a.doctor_uuid}" data-notes="${a.notes}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>`}
+                                <button data-uuid="${a.uuid}" class="reschedule-btn px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors w-full lg:w-auto">Reschedule</button>`}
                                 <button data-uuid="${a.uuid}" class="withdraw-btn px-5 py-2.5 rounded-xl border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors">Withdraw</button>
                             ` : `
                                 <button onclick="openSummaryModal('${a.uuid}')" class="px-5 py-2.5 rounded-xl border border-border text-sm font-bold hover:bg-muted transition-colors">View Summary</button>

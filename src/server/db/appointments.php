@@ -212,6 +212,56 @@ class appointments extends Base
     }
 
     /**
+     * Fetch a single appointment with full details (joins).
+     * 
+     * @param string $uuid
+     * @return array
+     */
+    public static function getSingleAppointment($uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT 
+                    a.*,
+                    s.name as service_name, 
+                    s.duration as service_duration,
+                    s.price as service_price,
+                    p.firstname as patient_firstname, 
+                    p.lastname as patient_lastname,
+                    p.email as patient_email,
+                    d.firstname as doctor_firstname,
+                    d.lastname as doctor_lastname
+                FROM appointments a
+                LEFT JOIN services s ON a.service_uuid = s.uuid
+                LEFT JOIN users p ON a.patient_uuid = p.uuid
+                LEFT JOIN users d ON a.doctor_uuid = d.uuid
+                WHERE a.uuid = ?
+                LIMIT 1
+            ");
+            $stmt->execute([$uuid]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($data) {
+                return [
+                    'success' => true,
+                    'data' => $data
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Appointment not found.'
+                ];
+            }
+        } catch (PDOException $e) {
+            error_log("SQL Error (appointments::getSingleAppointment): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * Update an existing appointment.
      * 
      * @param string $uuid

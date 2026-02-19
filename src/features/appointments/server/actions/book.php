@@ -55,6 +55,12 @@ try {
             echo json_encode($response);
             exit;
         }
+    } elseif ($user_type === 'doctor' && $existing_uuid) {
+        // Doctor reschedule: keep the original patient
+        $appt = appointments::single($existing_uuid);
+        if ($appt) {
+            $target_patient_uuid = $appt['patient_uuid'];
+        }
     }
 
     // Determine status

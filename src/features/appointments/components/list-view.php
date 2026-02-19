@@ -226,10 +226,7 @@ shared('components', 'layout/filterbar', $filterConfig);
                         if (['pending', 'confirmed', 'rescheduled'].includes(row.status)) {
                             rescheduleAction = `
                                 <button class="reschedule-btn w-full text-left px-3 py-2 text-sm hover:bg-muted/50 transition-colors flex items-center gap-2" 
-                                    data-uuid="${uuid}"
-                                    data-service="${row.service_uuid}"
-                                    data-doctor="${row.doctor_uuid}"
-                                    data-notes="${row.notes || ''}">
+                                    data-uuid="${uuid}">
                                     <span>🔄</span> Reschedule
                                 </button>
                             `;

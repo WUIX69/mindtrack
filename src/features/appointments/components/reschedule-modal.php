@@ -17,9 +17,10 @@
                     <span class="material-symbols-outlined">schedule</span>
                 </div>
                 <div>
-                    <p class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-0.5">Current
+                    <p class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-0.5"
+                        id="reschedule-summary-label">Current
                         Specialist</p>
-                    <p class="text-base font-black text-foreground" id="reschedule-summary-doctor">---</p>
+                    <p class="text-base font-black text-foreground" id="reschedule-summary-name">---</p>
                 </div>
             </div>
 
@@ -74,21 +75,42 @@
 
         $('body').on('click', '.reschedule-btn', function () {
             const uuid = $(this).data('uuid');
-            const service = $(this).data('service');
-            const doctor = $(this).data('doctor');
-            const notes = $(this).data('notes');
-            const a = window.allAppointments.find(x => x.uuid === uuid);
 
-            if (!a) return;
+            // Show loading state if needed, but for now just fetch
+            $.ajax({
+                url: apiUrl('appointments') + '/get-appointment.php',
+                method: 'GET',
+                data: { uuid: uuid },
+                dataType: 'json',
+                success: function (res) {
+                    if (res.success) {
+                        const a = res.data;
+                        const role = res.viewer_role;
 
-            activeRescheduleUuid = uuid;
-            activeRescheduleService = service;
-            activeRescheduleDoctor = doctor;
-            activeRescheduleNotes = notes;
+                        activeRescheduleUuid = a.uuid;
+                        activeRescheduleService = a.service_uuid;
+                        activeRescheduleDoctor = a.doctor_uuid;
+                        activeRescheduleNotes = a.notes;
 
-            $('#reschedule-summary-doctor').text(`Dr. ${a.doctor_firstname} ${a.doctor_lastname}`);
-            renderRescheduleSlots();
-            $('#reschedule-modal').removeClass('hidden').addClass('flex');
+                        // Role-aware labels
+                        if (role === 'doctor') {
+                            $('#reschedule-summary-label').text('Patient');
+                            $('#reschedule-summary-name').text(`${a.patient_firstname} ${a.patient_lastname}`);
+                        } else {
+                            $('#reschedule-summary-label').text('Current Specialist');
+                            $('#reschedule-summary-name').text(`Dr. ${a.doctor_firstname} ${a.doctor_lastname}`);
+                        }
+
+                        renderRescheduleSlots();
+                        $('#reschedule-modal').removeClass('hidden').addClass('flex');
+                    } else {
+                        alert('Error: ' + res.message);
+                    }
+                },
+                error: function () {
+                    alert('Failed to fetch appointment details.');
+                }
+            });
         });
 
         function renderRescheduleSlots() {
