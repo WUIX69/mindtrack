@@ -7,12 +7,7 @@ $headerData = [
     'title' => 'Good Morning, Dr. Aris',
     'description' => "Welcome back to Wayside Psyche Resources Center.",
     'searchPlaceholder' => 'Search patient records, sessions, or clinical files...',
-    'actionLabel' => 'Export Report',
-    'extraContent' => '
-        <button class="px-4 py-2 bg-white dark:bg-card border border-border rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-muted transition-all">
-            <span class="material-symbols-outlined text-lg">add</span>
-            New Appointment
-        </button>'
+    'actionLabel' => 'Export Report'
 ];
 include_once __DIR__ . '/layout.php';
 ?>
@@ -69,96 +64,7 @@ include_once __DIR__ . '/layout.php';
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Today\'s Schedule -->
-    <div class="lg:col-span-2 space-y-4">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold text-foreground">Today\'s Schedule</h2>
-            <button class="text-primary text-sm font-semibold hover:underline">View Full Calendar</button>
-        </div>
-        <div class="space-y-4">
-            <!-- Appointment Card 1 -->
-            <div
-                class="group bg-card p-5 rounded-xl border border-border shadow-sm hover:border-primary transition-all flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div class="w-16 flex flex-col items-center justify-center border-r border-border pr-4">
-                    <span class="text-xs font-bold text-muted-foreground uppercase">09:00</span>
-                    <span class="text-sm font-extrabold text-foreground">AM</span>
-                </div>
-                <div class="flex-1 flex items-center gap-4 min-w-0">
-                    <img class="size-12 rounded-lg object-cover" data-alt="Patient Sarah Jenkins"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgZ5O4ZeiQPnCeFCkYe9R3m93uFqwNopkzpiJynk9qOmfuKCC1itOjJLeeSdPVfsfQZqnCPSjbLuoCsuT9fdYKQMQt1yjzE2cEnPyAJNDCzRFZw9ygISxuTDUaOMdmmUGN6GvU6NugfqKxWA-A7FwAwgwb87PxrkwWlI8C_dVV_rp_sHn-H4h-HacOW4dmPDAM-H_gQIBo8a4g6Uy8XJubcEDh3QWk9j2xLIhLdAjQrPm92ckFuFpA_XLOWr27Xe4GPz1uMRWIiLI" />
-                    <div class="min-w-0">
-                        <h4 class="font-bold text-base truncate text-foreground">Sarah Jenkins</h4>
-                        <p class="text-xs text-muted-foreground flex items-center gap-1">
-                            <span class="size-2 rounded-full bg-blue-500"></span>
-                            Routine Check-up • 45m
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
-                    <span
-                        class="px-2.5 py-1 bg-green-50 dark:bg-green-900/20 text-green-600 text-[10px] font-bold uppercase tracking-wider rounded-md">Checked
-                        In</span>
-                    <button
-                        class="flex-1 sm:flex-none px-4 py-2 bg-primary text-primary-foreground text-xs font-bold rounded-lg hover:bg-primary/90 shadow-md shadow-primary/10 transition-all">
-                        Start Session
-                    </button>
-                </div>
-            </div>
-            <!-- Appointment Card 2 -->
-            <div
-                class="group bg-card p-5 rounded-xl border border-border shadow-sm hover:border-primary transition-all flex flex-col sm:flex-row items-start sm:items-center gap-4 opacity-80 hover:opacity-100">
-                <div class="w-16 flex flex-col items-center justify-center border-r border-border pr-4">
-                    <span class="text-xs font-bold text-muted-foreground uppercase">10:30</span>
-                    <span class="text-sm font-extrabold text-foreground">AM</span>
-                </div>
-                <div class="flex-1 flex items-center gap-4 min-w-0">
-                    <img class="size-12 rounded-lg object-cover" data-alt="Patient Michael Ross"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAfb22TAnfpkFg7hBndFFxjAHCzhjPkLiQ3bJ_VlbRTKvSbI01uiuiUYEiUgPpTaTMlNVlnrlxsoH1VxsPdT3t_hcX2lnC_2cwCHruuduLbBl9bTT3fLP9Carv1_XiyUXqmTfToc_trexOJ5YTbNlEAvadxkCrhhTfGG9OVAdnAooDBEIXzJiRsL-8tzWiYEPOzSBSZx4UC7pdZMjqfimzZYMalDe0wPrGqqU8c6eiuh_S8yXQQwFbESVr4gtI78RiCrgAgBC6U1g" />
-                    <div class="min-w-0">
-                        <h4 class="font-bold text-base truncate text-foreground">Michael Ross</h4>
-                        <p class="text-xs text-muted-foreground flex items-center gap-1">
-                            <span class="size-2 rounded-full bg-primary"></span>
-                            Initial Assessment • 60m
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
-                    <span
-                        class="px-2.5 py-1 bg-muted text-muted-foreground text-[10px] font-bold uppercase tracking-wider rounded-md">Pending</span>
-                    <button
-                        class="flex-1 sm:flex-none px-4 py-2 bg-muted text-muted-foreground text-xs font-bold rounded-lg cursor-not-allowed">
-                        Start Session
-                    </button>
-                </div>
-            </div>
-            <!-- Appointment Card 3 -->
-            <div
-                class="group bg-card p-5 rounded-xl border border-border shadow-sm hover:border-primary transition-all flex flex-col sm:flex-row items-start sm:items-center gap-4 opacity-80 hover:opacity-100">
-                <div class="w-16 flex flex-col items-center justify-center border-r border-border pr-4">
-                    <span class="text-xs font-bold text-muted-foreground uppercase">01:15</span>
-                    <span class="text-sm font-extrabold text-foreground">PM</span>
-                </div>
-                <div class="flex-1 flex items-center gap-4 min-w-0">
-                    <img class="size-12 rounded-lg object-cover" data-alt="Patient Elena Rodriguez"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtqdxsSXDXF2JeFlffCcJ5saorwUXc3QoQ6Em9JDqVGxKiRApNzxl5qtpVUhnqSyT_mvW9yQwF_dSLDPM07QJnmqnq8YxhW2mYw4FKA0diUKlkXLT6uN6FUAa6LiFWzpKcxPqJg-RUllkkuCMczlLb6HzRkl2npmxev9kpn48veMf6easR7qBFNxQ-VHpDpfSR_blxwljl8IgFKW4vXPZeXiGL5ACMm2yVZ9u17Xojw65yYeV0S_mHpbdH0m5IW5QVzVzl6_K52PA" />
-                    <div class="min-w-0">
-                        <h4 class="font-bold text-base truncate text-foreground">Elena Rodriguez</h4>
-                        <p class="text-xs text-muted-foreground flex items-center gap-1">
-                            <span class="size-2 rounded-full bg-amber-500"></span>
-                            Follow-up Session • 30m
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
-                    <span
-                        class="px-2.5 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 text-[10px] font-bold uppercase tracking-wider rounded-md">Expected</span>
-                    <button
-                        class="flex-1 sm:flex-none px-4 py-2 bg-muted text-muted-foreground text-xs font-bold rounded-lg cursor-not-allowed">
-                        Start Session
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?= featured('appointments', 'components/todays-schedule') ?>
 
     <!-- Side Panels: Activity & Quick Links -->
     <div class="space-y-8">

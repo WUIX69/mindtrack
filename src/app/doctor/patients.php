@@ -34,6 +34,12 @@ include_once __DIR__ . '/layout.php';
         ],
         'secondary_filters' => [
             [
+                'type' => 'search',
+                'name' => 'search', // This matches input name
+                'placeholder' => 'Search Patients...',
+                'icon' => 'search'
+            ],
+            [
                 'type' => 'select',
                 'name' => 'sort',
                 'icon' => 'sort',
@@ -51,7 +57,7 @@ include_once __DIR__ . '/layout.php';
     <?= shared('components', 'layout/filterbar', $patientFilterConfig) ?>
 
     <!-- Data Table Container -->
-    <div class="bg-card rounded-2xl border border-border shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
+    <div class="bg-card rounded-2xl border border-border shadow-sm overflow-hidden min-h-0">
         <div class="flex-1 overflow-auto">
             <table id="patients-table" class="w-full text-left border-collapse min-w-[800px] stripe hover">
                 <thead>
@@ -115,11 +121,14 @@ include_once __DIR__ . '/layout.php';
                     render: function (data, type, row) {
                         // Updated: removed avatar, just name + ID badge
                         return `
-                            <div>
-                                <p class="text-sm font-black text-foreground">${data}</p>
-                                <p class="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1 mt-0.5">
-                                    ID: ${row.uuid.substring(0, 8)}
-                                </p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">P</div>
+                                <div>
+                                    <p class="text-sm font-black text-foreground">${data}</p>
+                                    <p class="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1 mt-0.5">
+                                        ID: ${row.uuid.substring(0, 8)}
+                                    </p>
+                                </div>
                             </div>
                         `;
                     }
