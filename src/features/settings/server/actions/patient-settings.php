@@ -1,6 +1,6 @@
 <?php
 
-include '../../../../core/app.php';
+require_once dirname(__DIR__, 4) . '/core/app.php';
 apiHeaders();
 
 use Mindtrack\Server\Db\Users;
@@ -70,13 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Call Model Update
         $result = Users::updateWherePatient($data);
-
-        if (!$result['success']) {
-            throw new Exception($result['message'] ?? 'Failed to update settings');
-        }
-
-        $response['success'] = true;
-        $response['message'] = 'Settings updated successfully';
+        $response = array_merge($response, $result);
 
     } catch (Exception $e) {
         error_log("Patient Settings Update Error: " . $e->getMessage());
