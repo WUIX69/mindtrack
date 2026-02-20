@@ -83,7 +83,7 @@
                 </div>
 
                 <!-- Password Strength -->
-                <div class="mt-4 bg-muted/20 p-4 rounded-xl border border-border/50">
+                <!-- <div class="mt-4 bg-muted/20 p-4 rounded-xl border border-border/50">
                     <div class="flex gap-2 h-2 w-full mb-4">
                         <div class="flex-1 bg-success rounded-full shadow-sm"></div>
                         <div class="flex-1 bg-success rounded-full shadow-sm"></div>
@@ -108,7 +108,7 @@
                             Special symbol
                         </li>
                     </ul>
-                </div>
+                </div> -->
             </div>
 
             <div class="flex flex-col gap-2.5">
@@ -214,7 +214,7 @@
                 const formData = $form.serialize();
 
                 $.ajax({
-                    url: apiUrl("shared") + "register.php",
+                    url: apiUrl("auth") + "register.php",
                     method: "POST",
                     data: formData,
                     dataType: "json",

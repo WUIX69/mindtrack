@@ -4,8 +4,8 @@ require_once dirname(__DIR__, 3) . '/src/core/app.php';
 apiHeaders();
 
 use Mindtrack\Server\Db\Users;
-
-use Mindtrack\Schemas\Register;
+use Mindtrack\Features\Auth\Schemas\Register;
+use Mindtrack\Lib\Email;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method.';
@@ -44,7 +44,13 @@ $result = Users::store([
     'phone' => $userData['phone'],
     'role' => 'patient'
 ]);
-$response = array_merge($response, $result);
 
+// Send Verification Email
+if ($result['success']) {
+    $email_response = Email::sendVerificationEmail($userData['email'], $userData['firstname'], $userData['lastname'], $userData['uuid']);
+    $response['email_response'] = $email_response;
+}
+
+$response = array_merge($response, $result);
 echo json_encode($response);
 exit;
