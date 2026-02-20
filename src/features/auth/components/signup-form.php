@@ -224,12 +224,9 @@
                         $submitBtn.find("span:first").text("Processing...");
                     },
                     success: function (response) {
-                        if (response.success) {
-                            alert(response.message);
-                            window.location.replace("index.php");
-                        } else {
-                            alert(response.message);
-                        }
+                        alert(response.message);
+                        if (!response.success) return false;
+                        window.location.replace("index.php");
                     },
                     complete: function () {
                         $submitBtn.prop("disabled", false).removeClass("opacity-70 cursor-not-allowed");

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__, 5) . '/src/core/app.php';
+require_once dirname(__DIR__, 4) . '/core/app.php';
 apiHeaders();
 
 use Mindtrack\Features\Auth\Schemas\Login;
@@ -26,6 +26,13 @@ try {
     $user = Users::singleWhereEmail($userData['email']);
 
     if ($user && password_verify($userData['password'], $user['password'] ?? '')) {
+        // Enforce email verification (super admin might bypass this if needed, but for patient/doctor it's required)
+        if (isset($user['is_email_verified']) && $user['is_email_verified'] == 0 && in_array($user['role'] ?? 'patient', ['patient', 'doctor'])) {
+            $response['message'] = 'Please verify your email address before logging in. Check your inbox for the verification link.';
+            echo json_encode($response);
+            exit;
+        }
+
         $role = $user['role'] ?? 'patient'; // Default to patient if role is missing
 
         $session->set($user);

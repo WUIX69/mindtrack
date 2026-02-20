@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__, 3) . '/src/core/app.php';
+require_once dirname(__DIR__, 4) . '/core/app.php';
 apiHeaders();
 
 use Mindtrack\Server\Db\Users;
@@ -35,8 +35,10 @@ if (!empty(Users::singleWhereEmail($userData['email']))) {
 $hashed_password = password_hash($userData['password'], PASSWORD_DEFAULT);
 
 // Store User
+$verificationToken = uuid();
 $result = Users::store([
     'uuid' => uuid(),
+    'email_verification_token' => $verificationToken,
     'firstname' => $userData['firstname'],
     'lastname' => $userData['lastname'],
     'email' => $userData['email'],
@@ -47,7 +49,7 @@ $result = Users::store([
 
 // Send Verification Email
 if ($result['success']) {
-    $email_response = Email::sendVerificationEmail($userData['email'], $userData['firstname'], $userData['lastname'], $userData['uuid']);
+    $email_response = Email::sendVerificationEmail($userData['email'], $userData['firstname'], $userData['lastname'], $verificationToken);
     $response['email_response'] = $email_response;
 }
 

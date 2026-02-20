@@ -47,10 +47,10 @@ class Email
             $mail->Subject = 'Verify Your Mindtrack Account';
 
             // Create verification URL
-            $verificationUrl = $config['app']['base_url'] . '/app/auth/verification.php?uuid=' . $verificationToken;
+            $verificationUrl = $config['app']['base_url'] . '/src/app/auth/verification.php?uuid=' . $verificationToken;
 
             // Email body
-            $mail->Body = `
+            $mail->Body = <<<HTML
                 <!DOCTYPE html>
                 <html>
                     <head>
@@ -68,7 +68,7 @@ class Email
                                 border-radius: 5px;
                             }
                             .header {
-                                background-color: #ff4500;
+                                background-color: #6d28d9;
                                 color: white;
                                 padding: 15px;
                                 text-align: center;
@@ -79,8 +79,8 @@ class Email
                             }
                             .button {
                                 display: inline-block;
-                                background-color: #ff4500;
-                                color: white;
+                                background-color: #6d28d9;
+                                color: white !important;
                                 padding: 10px 20px;
                                 text-decoration: none;
                                 border-radius: 5px;
@@ -97,30 +97,30 @@ class Email
                     <body>
                         <div class="container">
                             <div class="header">
-                                <h2>Mindtrack</h2>
+                                <h2>MindTrack</h2>
                             </div>
                             <div class="content">
-                                <h3>Hello ' . $firstName . ' ' . $lastName . ',</h3>
-                                <p>Thank you for registering with Mindtrack. To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
+                                <h3>Hello {$firstName} {$lastName},</h3>
+                                <p>Thank you for registering with MindTrack. To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
                                 
                                 <p style="text-align: center;">
-                                    <a href="' . $verificationUrl . '" class="button">Verify Email Address</a>
+                                    <a href="{$verificationUrl}" class="button">Verify Email Address</a>
                                 </p>
                                 
                                 <p>If you did not create an account, no further action is required.</p>
                                 
-                                <p>If you\'re having trouble clicking the button, copy and paste the following link into your web browser:</p>
-                                <p>' . $verificationUrl . '</p>
+                                <p>If you're having trouble clicking the button, copy and paste the following link into your web browser:</p>
+                                <p>{$verificationUrl}</p>
                                 
-                                <p>Thank you,<br>The Mindtrack Team</p>
+                                <p>Thank you,<br>The MindTrack Team</p>
                             </div>
                             <div class="footer">
-                                <p>&copy; ' . date('Y') . ' Mindtrack. All rights reserved.</p>
+                                <p>&copy; 2024 MindTrack. All rights reserved.</p>
                             </div>
                         </div>
                     </body>
                 </html>
-            `;
+HTML;
 
             // Plain text version for non-HTML mail clients
             $mail->AltBody = "Hello $firstName $lastName,\n\n"

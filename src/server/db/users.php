@@ -284,8 +284,8 @@ class Users extends Base
             // 1. Insert into users table
             $stmt = self::conn()->prepare("
                 INSERT INTO users (
-                    uuid, firstname, lastname, email, password, phone, role, status
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    uuid, firstname, lastname, email, password, phone, role, status, email_verification_token
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             $role = $data['role'] ?? 'patient';
@@ -300,6 +300,7 @@ class Users extends Base
                 $data['phone'],
                 $role,
                 $status,
+                $data['email_verification_token'] ?? null
             ]);
 
             // 2. Insert into role-specific table
@@ -433,6 +434,42 @@ class Users extends Base
             return [
                 'success' => false,
                 'message' => 'User deletion failed.',
+            ];
+        }
+    }
+
+    public static function verifyEmail($token)
+    {
+        try {
+            self::beginTransaction();
+            $stmt = self::conn()->prepare("
+                UPDATE users SET 
+                    is_email_verified = 1,
+                    email_verification_token = NULL
+                WHERE email_verification_token = ?
+            ");
+            $stmt->execute([$token]);
+
+            // Check if any row was actually updated
+            if ($stmt->rowCount() > 0) {
+                self::commit();
+                return [
+                    'success' => true,
+                    'message' => 'Email verified successfully.',
+                ];
+            } else {
+                self::rollBack();
+                return [
+                    'success' => false,
+                    'message' => 'Invalid or expired verification token.',
+                ];
+            }
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::verifyEmail): " . $e->getMessage());
+            self::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Failed to verify email.',
             ];
         }
     }
