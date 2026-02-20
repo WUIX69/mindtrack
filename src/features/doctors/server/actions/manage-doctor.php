@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__DIR__, 5) . '/src/core/app.php';
+require_once dirname(__DIR__, 4) . '/core/app.php';
 apiHeaders();
 
 use Mindtrack\Features\Doctors\Schemas\Doctors;
@@ -63,11 +63,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $data['uuid'] = uuid();
+        $verificationToken = uuid();
+        $data['email_verification_token'] = $verificationToken;
         $data['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
         $result = Users::storeWhereDoctor($data);
         if ($result['success']) {
             $response['data'] = ['uuid' => $data['uuid']];
+            \Mindtrack\Lib\Email::sendVerificationEmail($data['email'], $data['firstname'], $data['lastname'], $verificationToken);
         }
     }
 

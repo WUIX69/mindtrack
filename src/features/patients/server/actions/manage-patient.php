@@ -54,9 +54,11 @@ $isEdit = !empty($uuid);
 
 // Ensure UUID for new patients if not provided
 if (!$isEdit) {
-    if (!$data['uuid']) {
+    if (empty($data['uuid'])) {
         $data['uuid'] = uuid();
     }
+    $verificationToken = uuid();
+    $data['email_verification_token'] = $verificationToken;
 }
 
 // Handle Password for new patients
@@ -75,6 +77,9 @@ if ($isEdit) {
     $result = Patients::update($data);
 } else {
     $result = Patients::store($data);
+    if ($result['success']) {
+        \Mindtrack\Lib\Email::sendVerificationEmail($data['email'], $data['firstname'], $data['lastname'], $verificationToken);
+    }
 }
 
 echo json_encode($result);

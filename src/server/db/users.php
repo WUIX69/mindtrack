@@ -481,8 +481,8 @@ class Users extends Base
 
             // 1. Insert User
             $stmt = self::conn()->prepare("
-                INSERT INTO users (uuid, firstname, lastname, email, password, phone, role, status, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, 'doctor', 'active', NOW())
+                INSERT INTO users (uuid, firstname, lastname, email, password, phone, role, status, email_verification_token, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'doctor', 'active', ?, NOW())
             ");
 
             $stmt->execute([
@@ -491,7 +491,8 @@ class Users extends Base
                 $data['lastname'],
                 $data['email'],
                 $data['password'],
-                $data['phone']
+                $data['phone'],
+                $data['email_verification_token'] ?? null
             ]);
 
             // 2. Insert Doctor Info

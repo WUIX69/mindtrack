@@ -75,8 +75,8 @@ class Patients extends Base
 
             // 1. Insert into users
             $stmt = self::conn()->prepare("
-                INSERT INTO users (uuid, firstname, lastname, email, password, phone, role, status, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, 'patient', ?, NOW())
+                INSERT INTO users (uuid, firstname, lastname, email, password, phone, role, status, email_verification_token, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'patient', ?, ?, NOW())
             ");
 
             // Generate UUID if not provided (though typically passed from action)
@@ -92,7 +92,8 @@ class Patients extends Base
                 $data['email'],
                 $data['password'], // Hash this in the action before passing!
                 $data['phone'],
-                $data['status'] ?? 'active'
+                $data['status'] ?? 'active',
+                $data['email_verification_token'] ?? null
             ]);
 
             // 2. Insert into user_patient_info
