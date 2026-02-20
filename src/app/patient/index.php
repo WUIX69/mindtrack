@@ -1,6 +1,4 @@
 <?php
-include_once __DIR__ . '/../../core/app.php';
-
 $pageTitle = "MindTrack Patient Dashboard";
 $currentPage = 'dashboard';
 
@@ -15,7 +13,8 @@ $headerData = [
     'title' => 'Hello, Alex',
     'description' => 'Welcome back to your health dashboard. Everything looks great today.',
     'searchPlaceholder' => 'Search records...',
-    'actionLabel' => 'Book New Appointment'
+    'actionLabel' => 'Book New Appointment',
+    'actionUrl' => 'appointments/step-1-service.php',
 ];
 
 include __DIR__ . '/layout.php';
