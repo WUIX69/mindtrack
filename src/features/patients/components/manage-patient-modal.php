@@ -194,12 +194,18 @@
                     </h4>
                     <div>
                         <label
-                            class="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Password</label>
-                        <input type="password" name="password" id="p-password"
-                            class="w-full bg-muted/50 border border-border rounded-lg py-2 px-3 text-sm focus:ring-primary focus:border-primary transition-all"
-                            placeholder="Leave blank to auto-generate">
-                        <p class="text-[10px] text-muted-foreground mt-1">Default temporary password will be sent via
-                            email if left blank.</p>
+                            class="block text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Temporary Password</label>
+                        <div class="flex gap-2">
+                            <input type="text" name="password" id="p-password"
+                                class="flex-1 bg-muted/50 border border-border rounded-lg py-2 px-3 text-sm focus:ring-primary focus:border-primary transition-all font-mono"
+                                placeholder="Generate or type password">
+                            <button type="button" id="p-generate-password-btn"
+                                class="px-4 py-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">autorenew</span>
+                                Generate
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-muted-foreground mt-1">Required for new accounts. Patients can change this later.</p>
                     </div>
                 </div>
             </form>
@@ -239,6 +245,7 @@
                 $modal.addClass('hidden');
                 $form[0].reset();
                 $('#patient-uuid').val('');
+                $form.find('input[name="password"]').prop('required', true);
             }, 300);
         }
 
@@ -248,6 +255,7 @@
                 $('#p-modal-subtitle').text('Update Patient Record');
                 $submitBtn.text('Save Changes');
                 $('#p-password-container').addClass('hidden');
+                $form.find('input[name="password"]').prop('required', false);
 
                 $('#patient-uuid').val(data.uuid);
                 $form.find('[name="firstname"]').val(data.firstname);
@@ -281,9 +289,19 @@
                 $('#p-password-container').removeClass('hidden');
                 $('#patient-uuid').val('');
                 $form[0].reset();
+                $form.find('input[name="password"]').prop('required', true);
             }
             openModal();
         }
+
+        $('#p-generate-password-btn').on('click', function () {
+            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            $('#p-password').val(password);
+        });
 
         $form.on('submit', function (e) {
             e.preventDefault();

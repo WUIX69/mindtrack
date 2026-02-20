@@ -64,12 +64,10 @@ if (!$isEdit) {
 // Handle Password for new patients
 if (!$isEdit) {
     if (empty($_POST['password'])) {
-        // Generate a random temporary password if not provided
-        $tempPass = bin2hex(random_bytes(4));
-        $data['password'] = password_hash($tempPass, PASSWORD_DEFAULT);
-    } else {
-        $data['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        echo json_encode(['success' => false, 'message' => 'Password is required for new accounts.']);
+        exit;
     }
+    $data['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 }
 
 // Perform Operation
