@@ -15,7 +15,6 @@ class DoctorSettings
             ->key('specialization_id', v::optional(v::intVal()), false)
             ->key('license_number', v::optional(v::stringType()), false)
             ->key('bio', v::optional(v::stringType()), false)
-            ->key('availability', v::optional(v::stringType()), false)
             ->key('consultation_fee', v::optional(v::numericVal()), false);
 
         try {
@@ -30,7 +29,6 @@ class DoctorSettings
                     'specialization_id' => !empty($data['specialization_id']) ? (int) $data['specialization_id'] : null,
                     'license_number' => !empty($data['license_number']) ? $data['license_number'] : null,
                     'bio' => !empty($data['bio']) ? $data['bio'] : null,
-                    'availability' => !empty($data['availability']) ? $data['availability'] : null,
                     'consultation_fee' => !empty($data['consultation_fee']) ? (float) $data['consultation_fee'] : 0.00,
                 ]
             ];

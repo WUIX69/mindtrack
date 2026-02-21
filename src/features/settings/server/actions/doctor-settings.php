@@ -31,32 +31,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-// Handle POST Request (Update Settings)
-$validation = DoctorSettings::validate($_POST);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
 
-// Guard: Validation
-if (!$validation['valid']) {
-    $errors = $validation['errors'];
+    // Handle POST Request (Update Settings)
+    if ($action === 'updateWhereDoctorAvailability') {
+        // Route for Availability updates only
+        if (!isset($_POST['availability'])) {
+            $response['message'] = 'Availability data is required.';
+            echo json_encode($response);
+            exit;
+        }
 
-    // Extract first error message
-    $message = 'Validation failed';
-    if (is_array($errors)) {
-        $firstError = reset($errors);
-        $message = is_array($firstError) ? reset($firstError) : $firstError;
-    } elseif (is_string($errors)) {
-        $message = $errors;
+        $result = Users::updateWhereDoctorAvailability($doctor_uuid, $_POST['availability']);
+        $response = array_merge($response, $result);
+
+    } else if ($action === 'updateWhereDoctor') {
+        // Default Route: Update Profile Settings
+        $validation = DoctorSettings::validate($_POST);
+
+        // Guard: Validation
+        if (!$validation['valid']) {
+            $errors = $validation['errors'];
+
+            // Extract first error message
+            $message = 'Validation failed';
+            if (is_array($errors)) {
+                $firstError = reset($errors);
+                $message = is_array($firstError) ? reset($firstError) : $firstError;
+            } elseif (is_string($errors)) {
+                $message = $errors;
+            }
+
+            $response['message'] = $message;
+            $response['errors'] = $errors;
+            echo json_encode($response);
+            exit;
+        }
+
+        // Process Update
+        $data = array_merge($validation['data'], ['uuid' => $doctor_uuid]);
+        $result = Users::updateWhereDoctor($data);
+        $response = array_merge($response, $result);
     }
 
-    $response['message'] = $message;
-    $response['errors'] = $errors;
     echo json_encode($response);
     exit;
 }
 
-// Process Update
-$data = array_merge($validation['data'], ['uuid' => $doctor_uuid]);
-$result = Users::updateWhereDoctor($data);
-$response = array_merge($response, $result);
-
+$response['message'] = 'Invalid action.';
 echo json_encode($response);
 exit;

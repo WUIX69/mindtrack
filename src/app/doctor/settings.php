@@ -100,8 +100,10 @@ include_once __DIR__ . '/layout.php';
                 </button>
             </div>
         </section>
+    </form>
 
-        <!-- 2. Availability Management -->
+    <!-- 2. Availability Management -->
+    <form id="availability-form" class="flex flex-col gap-8">
         <section
             class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all hover:shadow-md">
             <div class="px-6 py-4 border-b border-border bg-muted/30 flex justify-between items-center">
@@ -183,12 +185,6 @@ include_once __DIR__ . '/layout.php';
             { id: 'saturday', label: 'Saturday' },
             { id: 'sunday', label: 'Sunday' }
         ];
-
-        // Track the clicked submit button
-        let $clickedSubmitBtn = null;
-        $('#profile-form').on('click', 'button[type="submit"]', function () {
-            $clickedSubmitBtn = $(this);
-        });
 
         const fetchSpecializations = () => {
             return $.ajax({
@@ -326,7 +322,7 @@ include_once __DIR__ . '/layout.php';
             submitHandler: function (form, e) {
                 e.preventDefault();
 
-                const $btn = $clickedSubmitBtn || $('#save-profile-btn');
+                const $btn = $('#save-profile-btn');
                 const $btnIcon = $btn.find('.material-symbols-outlined');
                 const originalIconText = $btnIcon.text();
 
@@ -338,19 +334,7 @@ include_once __DIR__ . '/layout.php';
                 formDataArray.forEach(item => {
                     data[item.name] = item.value;
                 });
-
-                // Gather Availability state into JSON
-                const availabilityData = {};
-                $('.availability-toggle').each(function () {
-                    const day = $(this).data('day');
-                    const $row = $(this).closest('.grid');
-                    availabilityData[day] = {
-                        start: $row.find('.availability-start').val() || '09:00',
-                        end: $row.find('.availability-end').val() || '17:00',
-                        active: $(this).is(':checked') ? "1" : "0"
-                    };
-                });
-                data['availability'] = JSON.stringify(availabilityData);
+                data.action = 'updateWhereDoctor';
 
                 $.ajax({
                     url: apiUrl('settings') + 'doctor-settings.php',
@@ -376,6 +360,59 @@ include_once __DIR__ . '/layout.php';
                     }
                 });
             }
+        });
+
+        // Availability Form Submission
+        $('#availability-form').on('submit', function (e) {
+            e.preventDefault();
+
+            const $btn = $('#save-availability-btn');
+            const $btnIcon = $btn.find('.material-symbols-outlined');
+            const originalIconText = $btnIcon.text();
+
+            $btn.prop('disabled', true);
+            $btnIcon.text('progress_activity').addClass('animate-spin');
+
+            // Gather Availability state into JSON
+            const availabilityData = {};
+            $('.availability-toggle').each(function () {
+                const day = $(this).data('day');
+                const $row = $(this).closest('.grid');
+                availabilityData[day] = {
+                    start: $row.find('.availability-start').val() || '09:00',
+                    end: $row.find('.availability-end').val() || '17:00',
+                    active: $(this).is(':checked') ? "1" : "0"
+                };
+            });
+
+            const data = {
+                action: 'updateWhereDoctorAvailability',
+                availability: JSON.stringify(availabilityData)
+            };
+
+            $.ajax({
+                url: apiUrl('settings') + 'doctor-settings.php',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function (response) {
+                    alert(response.message);
+                    if (response.success) {
+                        if (window.toast && window.toast.success) toast.success(response.message);
+                        fetchSettings();
+                    } else {
+                        if (window.toast && window.toast.error) toast.error(response.message || "Failed to update availability");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    if (window.toast && window.toast.error) toast.error("An unexpected error occurred");
+                    console.error("Save availability error:", error, xhr.responseText);
+                },
+                complete: function () {
+                    $btn.prop('disabled', false);
+                    $btnIcon.text(originalIconText).removeClass('animate-spin');
+                }
+            });
         });
 
         // Change Password Validation
@@ -414,7 +451,6 @@ include_once __DIR__ . '/layout.php';
                 data: formData,
                 dataType: 'json',
                 success: function (res) {
-                    alert(res.message);
                     if (res.success) {
                         if (window.toast && window.toast.success) toast.success(res.message);
                         $('#change-password-form')[0].reset();

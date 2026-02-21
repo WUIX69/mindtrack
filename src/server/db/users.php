@@ -543,20 +543,14 @@ class Users extends Base
                 SET specialization_id = ?, 
                     license_number = ?, 
                     bio = ?, 
-                    availability = ?,
                     consultation_fee = ?
                 WHERE user_uuid = ?
             ");
-
-            $availability = (is_array($data['availability']) || is_object($data['availability']))
-                ? json_encode($data['availability'])
-                : $data['availability'];
 
             $stmt->execute([
                 $data['specialization_id'],
                 $data['license_number'],
                 $data['bio'],
-                $availability,
                 $data['consultation_fee'],
                 $data['uuid']
             ]);
@@ -567,7 +561,28 @@ class Users extends Base
         } catch (PDOException $e) {
             self::rollBack();
             error_log("SQL Error (Users::updateWhereDoctor): " . $e->getMessage());
-            return ['success' => false, 'message' => 'Failed to update doctor'];
+            return ['success' => false, 'message' => 'Failed to update doctor profile'];
+        }
+    }
+
+    public static function updateWhereDoctorAvailability($uuid, $availability)
+    {
+        try {
+            $availabilityJson = (is_array($availability) || is_object($availability))
+                ? json_encode($availability)
+                : $availability;
+
+            $stmt = self::conn()->prepare("
+                UPDATE user_doctor_info 
+                SET availability = ? 
+                WHERE user_uuid = ?
+            ");
+            $stmt->execute([$availabilityJson, $uuid]);
+            return ['success' => true, 'message' => 'Availability updated successfully'];
+
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::updateWhereDoctorAvailability): " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to update availability.'];
         }
     }
 
