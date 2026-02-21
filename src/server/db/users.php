@@ -525,42 +525,40 @@ class Users extends Base
             self::beginTransaction();
 
             // 1. Update User
-            $query = "UPDATE users SET firstname=?, lastname=?, email=?, phone=?";
+            $query = "UPDATE users SET firstname=?, lastname=?, email=?, phone=? WHERE uuid=?";
             $params = [
                 $data['firstname'],
                 $data['lastname'],
                 $data['email'],
-                $data['phone']
+                $data['phone'],
+                $data['uuid']
             ];
-
-            if (!empty($data['password'])) {
-                $query .= ", password=?";
-                $params[] = $data['password'];
-            }
-
-            $query .= " WHERE uuid=?";
-            $params[] = $data['uuid'];
 
             $stmt = self::conn()->prepare($query);
             $stmt->execute($params);
 
-            // 2. Update Doctor Info (Upsert)
+            // 2. Update Doctor Info
             $stmt = self::conn()->prepare("
-                INSERT INTO user_doctor_info (user_uuid, specialization_id, license_number, bio, availability)
-                VALUES (?, ?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE
-                    specialization_id = VALUES(specialization_id),
-                    license_number = VALUES(license_number),
-                    bio = VALUES(bio),
-                    availability = VALUES(availability)
+                UPDATE user_doctor_info 
+                SET specialization_id = ?, 
+                    license_number = ?, 
+                    bio = ?, 
+                    availability = ?,
+                    consultation_fee = ?
+                WHERE user_uuid = ?
             ");
 
+            $availability = (is_array($data['availability']) || is_object($data['availability']))
+                ? json_encode($data['availability'])
+                : $data['availability'];
+
             $stmt->execute([
-                $data['uuid'],
                 $data['specialization_id'],
                 $data['license_number'],
                 $data['bio'],
-                json_encode($data['availability'])
+                $availability,
+                $data['consultation_fee'],
+                $data['uuid']
             ]);
 
             self::commit();
@@ -585,11 +583,13 @@ class Users extends Base
                     u.email,
                     u.phone,
                     u.status,
+                    u.created_at,
                     s.id as specialization_id,
                     s.name AS specialty,
                     di.license_number,
                     di.bio,
-                    di.availability
+                    di.availability,
+                    di.consultation_fee
                 FROM users u
                 LEFT JOIN user_doctor_info di ON u.uuid = di.user_uuid
                 LEFT JOIN specializations s ON di.specialization_id = s.id
