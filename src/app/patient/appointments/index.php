@@ -16,55 +16,57 @@ include __DIR__ . '/../layout.php';
 ?>
 
 <!-- Filter Sub-header -->
-<div class="bg-card rounded-2xl border border-border p-5 flex flex-wrap items-center gap-6 mb-10 shadow-sm">
-    <div class="flex items-center gap-3">
-        <span class="text-xs font-black text-muted-foreground uppercase tracking-widest">Status:</span>
-        <div class="flex bg-muted p-1 rounded-xl" id="status-filters">
-            <button data-status="all"
-                class="filter-btn px-5 py-2 text-xs font-bold rounded-lg bg-card shadow-sm text-primary transition-all">All</button>
-            <button data-status="confirmed"
-                class="filter-btn px-5 py-2 text-xs font-bold rounded-lg text-muted-foreground hover:text-foreground transition-all">Upcoming
-                (<span id="count-upcoming">0</span>)</button>
-            <button data-status="pending"
-                class="filter-btn px-5 py-2 text-xs font-bold rounded-lg text-muted-foreground hover:text-foreground transition-all">Pending
-                Approval (<span id="count-pending">0</span>)</button>
-            <button data-status="history"
-                class="filter-btn px-5 py-2 text-xs font-bold rounded-lg text-muted-foreground hover:text-foreground transition-all">History
-                (<span id="count-history">0</span>)</button>
-        </div>
-    </div>
-    <div class="h-8 w-px bg-border hidden lg:block"></div>
-    <div class="flex flex-wrap items-center gap-4 flex-1">
-        <div class="relative flex-1 min-w-[200px]">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground">medical_services</span>
-            <select id="service-filter"
-                class="w-full pl-10 pr-4 py-2.5 bg-muted border-none rounded-xl text-xs font-bold text-foreground focus:ring-2 focus:ring-primary/20 cursor-pointer appearance-none transition-all">
-                <option value="all">All Services</option>
-            </select>
-        </div>
-        <div class="relative flex-1 min-w-[200px]">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground">person</span>
-            <select id="doctor-filter"
-                class="w-full pl-10 pr-4 py-2.5 bg-muted border-none rounded-xl text-xs font-bold text-foreground focus:ring-2 focus:ring-primary/20 cursor-pointer appearance-none transition-all">
-                <option value="all">All Providers</option>
-            </select>
-        </div>
-        <div class="relative flex-1 min-w-[200px]">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground">calendar_month</span>
-            <input id="date-filter"
-                class="w-full pl-10 pr-4 py-2.5 bg-muted border-none rounded-xl text-xs font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
-                type="date" />
-        </div>
-    </div>
-    <button id="reset-filters"
-        class="flex items-center gap-2 text-xs font-bold text-primary hover:opacity-80 transition-all p-2 rounded-lg hover:bg-primary/5">
-        <span class="material-symbols-outlined text-lg">filter_alt_off</span>
-        Reset
-    </button>
-</div>
+<?= shared('components', 'layout/filterbar', [
+    // 'isTransparent' => true,
+    // 'mb' => '4',
+    'primary' => [
+        'name' => 'status',
+        'label' => 'Status:',
+        'options' => [
+            ['value' => '', 'label' => 'All', 'count_id' => 'count-all'],
+            ['value' => 'pending', 'label' => 'Pending', 'count_id' => 'count-pending'],
+            ['value' => 'confirmed', 'label' => 'Upcoming', 'count_id' => 'count-confirmed'],
+            ['value' => 'completed', 'label' => 'Completed', 'count_id' => 'count-completed'],
+            ['value' => 'cancelled', 'label' => 'Cancelled', 'count_id' => 'count-cancelled']
+        ]
+    ],
+    'secondary_filters' => [
+        [
+            'type' => 'select',
+            'name' => 'service',
+            'icon' => 'medical_services',
+            'placeholder' => 'All Services',
+            'options' => [] // Populated by JS
+        ],
+        [
+            'type' => 'select',
+            'name' => 'doctor',
+            'icon' => 'person',
+            'placeholder' => 'All Providers',
+            'options' => [] // Populated by JS
+        ],
+        [
+            'type' => 'select',
+            'name' => 'sort',
+            'icon' => 'sort',
+            'placeholder' => 'Sort By',
+            'options' => [
+                'newest' => 'Newest First',
+                'oldest' => 'Oldest First',
+                'name_asc' => 'Name (A-Z)',
+                'name_desc' => 'Name (Z-A)'
+            ]
+        ]
+    ],
+    'actions' => [
+        [
+            'label' => 'Reset Filters',
+            'icon' => 'filter_list_off',
+            'id' => 'reset-filters',
+            'class' => 'text-primary hover:opacity-80'
+        ]
+    ]
+]); ?>
 
 <div id="appointments-container" class="space-y-6">
     <!-- Skeleton Loading -->
@@ -72,6 +74,9 @@ include __DIR__ . '/../layout.php';
         <div class="h-32 bg-card rounded-[2rem] border border-border animate-pulse"></div>
     <?php endfor; ?>
 </div>
+
+<!-- Table Footer -->
+<?= shared('components', 'table-footer'); ?>
 
 <div
     class="mt-12 p-8 bg-primary/5 rounded-[2rem] border border-primary/10 flex flex-col md:flex-row items-center justify-between gap-6">
