@@ -427,6 +427,11 @@ class appointments extends Base
             $query = "SELECT status, COUNT(*) as count FROM appointments a WHERE 1=1";
             $params = [];
 
+            if (!empty($filters['patient_uuid'])) {
+                $query .= " AND patient_uuid = ?";
+                $params[] = $filters['patient_uuid'];
+            }
+
             if (!empty($filters['doctor_uuid']) || !empty($filters['filter_doctor'])) {
                 $query .= " AND doctor_uuid = ?";
                 $params[] = $filters['doctor_uuid'] ?? $filters['filter_doctor'];

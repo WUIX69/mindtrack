@@ -101,11 +101,13 @@ include __DIR__ . '/../layout.php';
 <script>
     $(document).ready(function () {
         window.allAppointments = [];
+        let tableFooter = null;
         let filters = {
-            status: 'all',
-            service: 'all',
-            doctor: 'all',
-            date: ''
+            status: '',
+            service: '',
+            doctor: '',
+            sort: '',
+            search: ''
         };
 
         function fetchDoctors() {
@@ -151,7 +153,7 @@ include __DIR__ . '/../layout.php';
                         return;
                     }
                     window.allAppointments = response.data;
-                    updateCounts();
+                    updateCounts(response.counts);
                     applyFilters();
                 },
                 error: function () {
@@ -160,40 +162,68 @@ include __DIR__ . '/../layout.php';
             });
         }
 
-        function updateCounts() {
-            const upcoming = window.allAppointments.filter(a => a.status === 'confirmed').length;
-            const pending = window.allAppointments.filter(a => ['pending', 'rescheduled'].includes(a.status)).length;
-            const history = window.allAppointments.filter(a => ['completed', 'cancelled', 'no_show'].includes(a.status)).length;
-            $('#count-upcoming').text(upcoming);
-            $('#count-pending').text(pending);
-            $('#count-history').text(history);
+        function updateCounts(counts) {
+            if (!counts) return;
+            $('#count-all').text(counts.all || 0);
+            $('#count-pending').text(counts.pending || 0);
+            $('#count-confirmed').text(counts.confirmed || 0);
+            $('#count-completed').text(counts.completed || 0);
+            $('#count-cancelled').text(counts.cancelled || 0);
         }
 
         function applyFilters() {
             let filtered = window.allAppointments;
 
             // Filter by Status
-            if (filters.status === 'confirmed') {
-                filtered = filtered.filter(a => a.status === 'confirmed');
-            } else if (filters.status === 'pending') {
-                filtered = filtered.filter(a => ['pending', 'rescheduled'].includes(a.status));
-            } else if (filters.status === 'history') {
-                filtered = filtered.filter(a => ['completed', 'cancelled', 'no_show'].includes(a.status));
+            if (filters.status) {
+                if (filters.status === 'confirmed') {
+                    filtered = filtered.filter(a => ['confirmed', 'scheduled'].includes(a.status));
+                } else if (filters.status === 'pending') {
+                    filtered = filtered.filter(a => ['pending', 'rescheduled'].includes(a.status));
+                } else if (filters.status === 'completed') {
+                    filtered = filtered.filter(a => a.status === 'completed');
+                } else if (filters.status === 'cancelled') {
+                    filtered = filtered.filter(a => a.status === 'cancelled');
+                }
             }
 
             // Filter by Doctor
-            if (filters.doctor !== 'all') {
+            if (filters.doctor) {
                 filtered = filtered.filter(a => a.doctor_uuid === filters.doctor);
             }
 
             // Filter by Service
-            if (filters.service !== 'all') {
+            if (filters.service) {
                 filtered = filtered.filter(a => a.service_uuid === filters.service);
             }
 
-            // Filter by Date
-            if (filters.date) {
-                filtered = filtered.filter(a => a.sched_date === filters.date);
+            // Sort
+            if (filters.sort) {
+                filtered.sort((a, b) => {
+                    if (filters.sort === 'newest') {
+                        return new Date(b.sched_date + ' ' + b.sched_time) - new Date(a.sched_date + ' ' + a.sched_time);
+                    } else if (filters.sort === 'oldest') {
+                        return new Date(a.sched_date + ' ' + a.sched_time) - new Date(b.sched_date + ' ' + b.sched_time);
+                    } else if (filters.sort === 'name_asc') {
+                        return (a.doctor_firstname + ' ' + a.doctor_lastname).localeCompare(b.doctor_firstname + ' ' + b.doctor_lastname);
+                    } else if (filters.sort === 'name_desc') {
+                        return (b.doctor_firstname + ' ' + b.doctor_lastname).localeCompare(a.doctor_firstname + ' ' + a.doctor_lastname);
+                    }
+                    return 0;
+                });
+            }
+
+            // Search
+            if (filters.search) {
+                const term = filters.search.toLowerCase();
+                filtered = filtered.filter(a => {
+                    const doctorName = `Dr. ${a.doctor_firstname} ${a.doctor_lastname}`.toLowerCase();
+                    const serviceName = (a.service_name || '').toLowerCase();
+                    const statusStr = (a.status || '').toLowerCase();
+                    const dateStr = new Date(a.sched_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toLowerCase();
+
+                    return doctorName.includes(term) || serviceName.includes(term) || statusStr.includes(term) || dateStr.includes(term);
+                });
             }
 
             renderAppointments(filtered);
@@ -201,8 +231,29 @@ include __DIR__ . '/../layout.php';
 
         function renderAppointments(data) {
             const $container = $('#appointments-container');
+            const total = data.length;
 
-            if (data.length === 0) {
+            if (!tableFooter) {
+                tableFooter = new TableFooter({
+                    currentPage: 1,
+                    onPageChange: function (page) {
+                        applyFilters();
+                        $('html, body').animate({
+                            scrollTop: $("#appointments-container").offset().top - 100
+                        }, 300);
+                    },
+                    onPerPageChange: function (perPage) {
+                        applyFilters();
+                    }
+                });
+            }
+
+            const paginationState = tableFooter.update(total);
+
+            // Paginate data
+            const paginatedData = data.slice(paginationState.startIdx, paginationState.endIdx);
+
+            if (paginatedData.length === 0) {
                 $container.html(`
                 <div class="bg-card p-12 rounded-[2rem] border border-dashed border-border flex flex-col items-center justify-center text-center">
                     <div class="size-20 rounded-3xl bg-primary/5 text-primary/30 flex items-center justify-center mb-6">
@@ -217,7 +268,7 @@ include __DIR__ . '/../layout.php';
             }
 
             let html = '';
-            data.forEach(a => {
+            paginatedData.forEach(a => {
                 const isConfirmed = a.status === 'confirmed';
                 const isPending = a.status === 'pending';
                 const isRescheduled = a.status === 'rescheduled';
@@ -311,42 +362,28 @@ include __DIR__ . '/../layout.php';
             window.location.href = `step-1-service.php?edit_uuid=${encodeURIComponent(uuid)}&service=${encodeURIComponent(service)}&doctor_uuid=${encodeURIComponent(doctor)}&notes=${encodeURIComponent(notes)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
         });
 
-        // Event Listeners for Filters
-        $('body').on('click', '.filter-btn', function () {
-            filters.status = $(this).data('status');
-
-            $('.filter-btn').removeClass('bg-card shadow-sm text-primary').addClass('text-muted-foreground hover:text-foreground');
-            $(this).addClass('bg-card shadow-sm text-primary').removeClass('text-muted-foreground hover:text-foreground');
-
+        // Listen to filter changes from the FilterBar component
+        $(document).on('filter:change', function (e, newFilters) {
+            // newFilters contains {status: 'x', doctor: 'y', service: 'z', sort: 'a'} depending on available filters
+            filters.status = newFilters.status || '';
+            filters.service = newFilters.service || '';
+            filters.doctor = newFilters.doctor || '';
+            filters.sort = newFilters.sort || '';
+            if (tableFooter) tableFooter.currentPage = 1;
             applyFilters();
         });
 
-        $('#doctor-filter').on('change', function () {
-            filters.doctor = $(this).val();
-            applyFilters();
+        // --- Global Search Filter Integration ---
+        let searchTimeout = null;
+        $('#global-search-input').on('keydown keyup input', function () {
+            filters.search = $(this).val();
+            if (tableFooter) tableFooter.currentPage = 1;
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function () {
+                applyFilters();
+            }, 300);
         });
 
-        $('#service-filter').on('change', function () {
-            filters.service = $(this).val();
-            applyFilters();
-        });
-
-        $('#date-filter').on('change', function () {
-            filters.date = $(this).val();
-            applyFilters();
-        });
-
-        $('#reset-filters').on('click', function () {
-            filters = { status: 'all', service: 'all', doctor: 'all', date: '' };
-
-            // Reset UI
-            $('.filter-btn[data-status="all"]').click();
-            $('#doctor-filter').val('all');
-            $('#service-filter').val('all');
-            $('#date-filter').val('');
-
-            applyFilters();
-        });
 
         fetchDoctors();
         fetchServices();

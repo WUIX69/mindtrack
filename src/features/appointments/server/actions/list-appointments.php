@@ -6,7 +6,7 @@
 require_once dirname(__DIR__, 5) . '/src/core/app.php';
 apiHeaders();
 
-use Mindtrack\Server\Db\appointments;
+use Mindtrack\Server\Db\Appointments;
 
 try {
     $user_type = $session->get('role');
@@ -19,9 +19,10 @@ try {
     }
 
     if ($user_type === 'admin') {
-        $result = appointments::all();
+        $result = Appointments::all();
     } else {
-        $result = appointments::allWherePatients($user_uuid);
+        $result = Appointments::allWherePatients($user_uuid);
+        $result['counts'] = Appointments::countWhereStatus(['patient_uuid' => $user_uuid]);
     }
 
     $response = array_merge($response, $result);
