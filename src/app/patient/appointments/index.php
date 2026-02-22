@@ -17,8 +17,6 @@ include __DIR__ . '/../layout.php';
 
 <!-- Filter Sub-header -->
 <?= shared('components', 'layout/filterbar', [
-    // 'isTransparent' => true,
-    // 'mb' => '4',
     'primary' => [
         'name' => 'status',
         'label' => 'Status:',
