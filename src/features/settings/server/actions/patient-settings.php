@@ -5,10 +5,9 @@ apiHeaders();
 
 use Mindtrack\Server\Db\Users;
 use Mindtrack\Features\Settings\Schemas\Settings;
+use Mindtrack\Server\Db\Attachments;
 
-global $response;
-
-$user_uuid = userData()['uuid'] ?? null;
+$user_uuid = $session->get('uuid') ?? userData()['uuid'] ?? null;
 if (!$user_uuid) {
 
     $response['message'] = 'User not authenticated.';
@@ -20,10 +19,8 @@ if (!$user_uuid) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $result = Users::singleWherePatient($user_uuid);
-        // Merge result into response
-        if (is_array($result)) {
-            $response = array_merge($response, $result);
-        }
+        $result['data']['profile'] = Attachments::single($user_uuid)['data'] ?? [];
+        $response = array_merge($response, $result);
     } catch (Exception $e) {
         error_log($e->getMessage());
 

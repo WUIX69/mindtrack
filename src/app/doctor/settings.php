@@ -266,6 +266,24 @@ include_once __DIR__ . '/layout.php';
                     if (!response.success || !response.data) return false;
                     const data = response.data;
 
+                    // Add profile image to pond
+                    if (data.profile) {
+                        if (data.profile && Object.keys(data.profile).length !== 0) {
+                            window.profilePond.addFile(data.profile.folder, {
+                                type: "local",
+                                options: {
+                                    file: {
+                                        name: data.profile.filename,
+                                    },
+                                    metadata: {
+                                        name: data.profile.filename,
+                                        serverId: data.profile.folder,
+                                    },
+                                },
+                            });
+                        }
+                    }
+
                     // Populate Profile Form
                     $('#firstname').val(data.firstname);
                     $('#lastname').val(data.lastname);

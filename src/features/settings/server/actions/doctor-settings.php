@@ -4,6 +4,7 @@ require_once dirname(__DIR__, 4) . '/core/app.php';
 apiHeaders();
 
 use Mindtrack\Server\Db\Users;
+use Mindtrack\Server\Db\Attachments;
 use Mindtrack\Features\Settings\Schemas\DoctorSettings;
 
 global $response;
@@ -26,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST
 // Handle GET Request (Fetch Settings)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $result = Users::singleWhereDoctor($doctor_uuid);
+    $result['data']['profile'] = Attachments::single($doctor_uuid)['data'];
     $response = array_merge($response, $result);
     echo json_encode($response);
     exit;

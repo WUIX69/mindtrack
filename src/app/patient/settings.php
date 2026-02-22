@@ -176,6 +176,24 @@ include __DIR__ . '/layout.php';
                     if (res.success && res.data) {
                         const data = res.data;
 
+                        // Add profile image to pond
+                        if (data.profile) {
+                            if (data.profile && Object.keys(data.profile).length !== 0) {
+                                window.profilePond.addFile(data.profile.folder, {
+                                    type: "local",
+                                    options: {
+                                        file: {
+                                            name: data.profile.filename,
+                                        },
+                                        metadata: {
+                                            name: data.profile.filename,
+                                            serverId: data.profile.folder,
+                                        },
+                                    },
+                                });
+                            }
+                        }
+
                         // Populate Profile Form
                         $('#firstname').val(data.firstname);
                         $('#lastname').val(data.lastname);
@@ -282,12 +300,17 @@ include __DIR__ . '/layout.php';
             const patientData = $('#patient-info-form').serializeArray();
             const formData = [...profileData, ...patientData];
 
+            let data = {};
+            formData.forEach(item => {
+                data[item.name] = item.value;
+            });
+
             // Loading State
             $btn.prop('disabled', true);
             const originalIconText = $btnIcon.text();
             $btnIcon.text('progress_activity').addClass('animate-spin');
 
-            $.post(apiUrl('settings') + 'patient-settings.php', formData, function (response) {
+            $.post(apiUrl('settings') + 'patient-settings.php', data, function (response) {
                 try {
                     const res = typeof response === 'string' ? JSON.parse(response) : response;
 
