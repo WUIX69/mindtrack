@@ -115,8 +115,8 @@ $userSub = match ($userRole) {
                 </div>
                 <div
                     class="size-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden shadow-sm shadow-primary/10">
-                    <div class="size-full rounded-full bg-cover bg-center"
-                        style="background-image: url('<?= $userAvatar ?>')"></div>
+                    <img src="<?= $userAvatar ?>" alt=""
+                        class="size-full rounded-full bg-cover bg-center user-profile-photo">
                 </div>
             </div>
         </div>

@@ -3,6 +3,7 @@
 namespace Mindtrack\Lib;
 
 use Mindtrack\Server\Db\Attachments;
+use Mindtrack\Utils\Helpers;
 
 class Media
 {
@@ -21,10 +22,10 @@ class Media
 
         if ($is_all) {
             return array_map(function ($item) {
-                return mediaHelper($item['reference_model'], $item['folder'], $item['filename']);
+                return Helpers::mediaUrl($item['reference_model'], $item['folder'], $item['filename']);
             }, $attachment ?? []);
         } else {
-            return mediaHelper($attachment['reference_model'], $attachment['folder'], $attachment['filename']);
+            return Helpers::mediaUrl($attachment['reference_model'], $attachment['folder'], $attachment['filename']);
         }
     }
 }

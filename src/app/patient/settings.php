@@ -14,6 +14,7 @@ $currentPage = 'settings';
 
 include __DIR__ . '/layout.php';
 ?>
+<?= shared('components', 'elements/filepond/styles') ?>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
     <div class="lg:col-span-2 space-y-8">
@@ -25,20 +26,8 @@ include __DIR__ . '/layout.php';
             <div class="p-6">
                 <form id="profile-form">
                     <div class="flex flex-col md:flex-row gap-8">
-                        <div class="flex flex-col items-center gap-4">
-                            <div class="relative group">
-                                <div class="w-32 h-32 rounded-full bg-cover bg-center border-4 border-background dark:border-border shadow-md"
-                                    id="profile-avatar"
-                                    style="background-image: url('https://ui-avatars.com/api/?name=User&background=random')">
-                                </div>
-                                <button type="button"
-                                    class="absolute bottom-0 right-0 bg-primary text-primary-foreground p-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
-                                    <span class="material-symbols-outlined text-sm">photo_camera</span>
-                                </button>
-                            </div>
-                            <p class="text-xs text-muted-foreground font-medium text-center">Update your profile photo
-                            </p>
-                        </div>
+                        <!-- Profile -->
+                        <?= featured('settings', 'components/profile'); ?>
                         <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="col-span-2 md:col-span-1">
                                 <label class="block text-sm font-bold text-foreground mb-1">First Name</label>
@@ -160,6 +149,7 @@ include __DIR__ . '/layout.php';
     </div>
 </div>
 
+<?= shared('components', 'elements/filepond/scripts') ?>
 <script>
 
     // Initialize jQuery Validation

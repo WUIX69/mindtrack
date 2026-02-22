@@ -2,6 +2,8 @@
 
 namespace Mindtrack\Utils;
 
+use Throwable;
+
 class Helpers
 {
     public static function productStatus($status)
@@ -66,5 +68,22 @@ class Helpers
         }
 
         return null;
+    }
+
+    public static function mediaUrl($dir = '', $folder = '', $filename = '')
+    {
+        try {
+            $fullPath = $dir . '/' . $folder . '/' . $filename;
+
+            $source = urlFileHelper('uploads', $fullPath);
+            if (!$source || $source == '') {
+                return asset('img/placeholders/image.png');
+            }
+
+            return $source;
+        } catch (Throwable $t) {
+            error_log($t->getMessage());
+            return null;
+        }
     }
 }
