@@ -34,8 +34,9 @@ $role = $role ?? 'patient';
                     <div class="hidden" id="patient-review-data">
                         <div class="flex items-start gap-6">
                             <div
-                                class="flex items-center justify-center rounded-[1.5rem] bg-indigo-50 text-indigo-600 p-5 shrink-0 shadow-inner">
-                                <span class="material-symbols-outlined text-5xl">person</span>
+                                class="flex items-center justify-center rounded-[1rem] text-indigo-600 shadow-inner w-25 h-25 overflow-hidden">
+                                <img src="https://ui-avatars.com/api/?name=John%20Doe&background=random" alt=""
+                                    id="patient-profile" class="w-full h-full">
                             </div>
                             <div class="flex flex-col">
                                 <p class="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
@@ -288,10 +289,14 @@ $role = $role ?? 'patient';
                 data: { uuid: config.patientUuid },
                 dataType: "json",
                 success: function (response) {
-                    if (!response.success) return;
+                    // console.log(response);
+                    // return false;
 
+                    if (!response.success) return;
                     const p = response.data;
-                    $('#patient-name').text(p.name);
+
+                    $('#patient-profile').attr('src', p.profile);
+                    $('#patient-name').text(p.firstname + ' ' + p.lastname);
                     $('#patient-email').text(p.email);
                     $('#patient-review-loading').addClass('hidden');
                     $('#patient-review-data').removeClass('hidden');

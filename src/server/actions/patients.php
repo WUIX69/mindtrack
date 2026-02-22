@@ -22,6 +22,7 @@ try {
     } else if ($uuid) {
         // Fetch single patient quick details
         $result = Users::singleWherePatient($uuid);
+        $result['data']['profile'] = userData($result['data']['uuid'])['profile'];
     } else {
         // Fetch all patients (default)
         $result = Users::allWherePatients();
