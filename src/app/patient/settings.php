@@ -133,58 +133,7 @@ include __DIR__ . '/layout.php';
         </section>
 
         <!-- Security Section -->
-        <section class="bg-card dark:bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-border flex items-center gap-2">
-                <h3 class="font-bold text-lg">Security</h3>
-            </div>
-            <div class="p-6 space-y-6">
-
-                <form id="change-password-form">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="space-y-2">
-                            <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Current
-                                Password</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-2.5 text-muted-foreground/70">lock</span>
-                                <input type="password" name="current_password"
-                                    class="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                    placeholder="••••••••">
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">New
-                                Password</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-2.5 text-muted-foreground/70">key</span>
-                                <input type="password" name="new_password" id="new_password"
-                                    class="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                    placeholder="••••••••">
-                            </div>
-                        </div>
-                        <div class="space-y-2 md:col-span-2">
-                            <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Confirm
-                                New Password</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-2.5 text-muted-foreground/70">check_circle</span>
-                                <input type="password" name="confirm_password"
-                                    class="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                    placeholder="••••••••">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="submit" id="update-password-btn"
-                            class="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">save</span>
-                            <span>Update Password</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
+        <?= featured('settings', 'components/change-password'); ?>
 
         <!-- Dangerous Zone Section -->
         <section
@@ -207,35 +156,28 @@ include __DIR__ . '/layout.php';
     <!-- Right Column: Summary & Decorative -->
     <div class="space-y-6">
         <!-- Decorative Image Card -->
-        <div class="relative h-full rounded-2xl overflow-hidden border border-border group shadow-lg">
-            <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000&auto=format&fit=crop"
-                alt="Mindfulness"
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-8 text-white">
-                <div
-                    class="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md border border-white/30">
-                    <span class="material-symbols-outlined text-white">self_improvement</span>
-                </div>
-                <h3 class="text-2xl font-black mb-2 leading-tight tracking-tight">Focus on Your Well-being</h3>
-                <p class="text-white/80 text-sm font-medium leading-relaxed">
-                    Take a moment to breathe and reflect. Your mental health journey is our priority.
-                </p>
-                <div class="mt-8 pt-6 border-t border-white/20">
-                    <p class="text-[10px] uppercase tracking-[0.2em] font-black text-white/50 mb-4 text-center">Quote of
-                        the Day</p>
-                    <p class="text-base font-medium italic text-center leading-relaxed">
-                        "Your mental health is a priority. Your happiness is an essential. Your self-care is a
-                        necessity."
-                    </p>
-                </div>
-            </div>
-        </div>
+        <?= featured('settings', 'components/decorative'); ?>
     </div>
 </div>
 
 <script>
+
+    // Initialize jQuery Validation
+    window.validatorConfig = {
+        errorElement: 'span',
+        errorClass: 'text-red-500 text-xs mt-1 block font-medium',
+        highlight: function (element) {
+            $(element).addClass('!border-red-500').removeClass('border-border');
+            $(element).parent().find('.material-symbols-outlined').addClass('text-red-500');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('!border-red-500').addClass('border-border');
+            $(element).parent().find('.material-symbols-outlined').removeClass('text-red-500');
+        }
+    };
+
     $(document).ready(function () {
+
         const fetchSettings = () => {
             $('.skeleton-loader').addClass('animate-pulse opacity-50');
 
@@ -297,24 +239,9 @@ include __DIR__ . '/layout.php';
         // Initial Load
         fetchSettings();
 
-        // Save Handler (Placeholder for Phase 2, but structurally ready)
         // Save Handler
-        // Initialize jQuery Validation
-        const validatorConfig = {
-            errorElement: 'span',
-            errorClass: 'text-red-500 text-xs mt-1 block font-medium',
-            highlight: function (element) {
-                $(element).addClass('!border-red-500').removeClass('border-border');
-                $(element).parent().find('.material-symbols-outlined').addClass('text-red-500');
-            },
-            unhighlight: function (element) {
-                $(element).removeClass('!border-red-500').addClass('border-border');
-                $(element).parent().find('.material-symbols-outlined').removeClass('text-red-500');
-            }
-        };
-
         $('#profile-form').validate({
-            ...validatorConfig,
+            ...window.validatorConfig,
             rules: {
                 firstname: "required",
                 lastname: "required",
@@ -329,7 +256,7 @@ include __DIR__ . '/layout.php';
         });
 
         $('#patient-info-form').validate({
-            ...validatorConfig,
+            ...window.validatorConfig,
             rules: {
                 date_of_birth: { required: false, date: true },
                 gender: { required: false }
@@ -411,70 +338,5 @@ include __DIR__ . '/layout.php';
                 });
         });
 
-        // Change Password Validation
-        $('#change-password-form').validate({
-            ...validatorConfig,
-            rules: {
-                current_password: "required",
-                new_password: { required: true, minlength: 6 },
-                confirm_password: { required: true, equalTo: "#new_password" }
-            },
-            messages: {
-                current_password: "Enter your current password",
-                new_password: { required: "Enter a new password", minlength: "Password must be at least 6 characters" },
-                confirm_password: { required: "Confirm your new password", equalTo: "Passwords do not match" }
-            }
-        });
-
-        // Change Password Handler
-        $('#update-password-btn').on('click', function (e) {
-            e.preventDefault();
-
-            if (!$('#change-password-form').valid()) return;
-
-            const $btn = $(this);
-            const $btnIcon = $btn.find('.material-symbols-outlined');
-            const originalIconText = $btnIcon.text();
-
-            $btn.prop('disabled', true);
-            $btnIcon.text('progress_activity').addClass('animate-spin');
-
-            const formData = $('#change-password-form').serialize();
-
-            $.post(apiUrl('settings') + 'change-password.php', formData, function (response) {
-                try {
-                    const res = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (res.success) {
-                        if (window.toast && window.toast.success) {
-                            window.toast.success(res.message);
-                        } else {
-                            alert(res.message);
-                        }
-                        $('#change-password-form')[0].reset();
-                    } else {
-                        if (window.toast && window.toast.error) {
-                            window.toast.error(res.message);
-                        } else {
-                            alert(res.message);
-                        }
-                    }
-                } catch (e) {
-                    if (window.toast && window.toast.error) {
-                        window.toast.error('An unexpected error occurred.');
-                    } else {
-                        alert('An unexpected error occurred.');
-                    }
-                }
-            })
-                .fail(function () {
-                    if (window.toast && window.toast.error) {
-                        window.toast.error('Connection error. Please try again.');
-                    }
-                })
-                .always(function () {
-                    $btn.prop('disabled', false);
-                    $btnIcon.text(originalIconText).removeClass('animate-spin');
-                });
-        });
     });
 </script>
