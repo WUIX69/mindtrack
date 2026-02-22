@@ -143,10 +143,8 @@ include __DIR__ . '/layout.php';
     </div>
 
     <!-- Right Column: Summary & Decorative -->
-    <div class="space-y-6">
-        <!-- Decorative Image Card -->
-        <?= featured('settings', 'components/decorative'); ?>
-    </div>
+    <!-- Decorative Image Card -->
+    <?= featured('settings', 'components/decorative'); ?>
 </div>
 
 <?= shared('components', 'elements/filepond/scripts') ?>

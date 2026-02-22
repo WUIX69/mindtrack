@@ -12,169 +12,156 @@ $headerData = [
 include_once __DIR__ . '/layout.php';
 ?>
 
-<div class="flex flex-col gap-8 pb-12">
-    <form id="profile-form" class="flex flex-col gap-8">
-        <!-- 1. Professional Profile Section -->
-        <section
-            class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all hover:shadow-md">
-            <div class="px-6 py-4 border-b border-border bg-muted/30 flex justify-between items-center">
-                <h3 class="font-black text-sm uppercase tracking-widest flex items-center gap-2 text-foreground">
-                    <span
-                        class="material-symbols-outlined text-primary text-xl font-variation-settings-['FILL'_1]">account_circle</span>
-                    Professional Profile
-                </h3>
-            </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">First
-                        Name</label>
-                    <input name="firstname" id="firstname"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        type="text" />
+<?= shared('components', 'elements/filepond/styles') ?>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-0">
+    <div class="lg:col-span-2 space-y-8">
+        <form id="profile-form" class="flex flex-col gap-8">
+            <!-- 1. Professional Profile Section -->
+            <section
+                class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all hover:shadow-md">
+                <div class="px-6 py-4 border-b border-border bg-muted/30 flex justify-between items-center">
+                    <h3 class="font-black text-sm uppercase tracking-widest flex items-center gap-2 text-foreground">
+                        <span
+                            class="material-symbols-outlined text-primary text-xl font-variation-settings-['FILL'_1]">account_circle</span>
+                        Professional Profile
+                    </h3>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Last
-                        Name</label>
-                    <input name="lastname" id="lastname"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        type="text" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Email</label>
-                    <input name="email" id="email"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        type="email" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Phone</label>
-                    <input name="phone" id="phone"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        type="text" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Specialization</label>
-                    <select name="specialization_id" id="specialization_id"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all">
-                        <option value="">Select Specialization</option>
-                        <!-- Populated via AJAX -->
-                    </select>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">License
-                        Number</label>
-                    <input name="license_number" id="license_number"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        type="text" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Consultation
-                        Fee</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-[10px] text-muted-foreground font-bold">₱</span>
-                        <input name="consultation_fee" id="consultation_fee"
-                            class="w-full pl-8 rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                            type="number" step="0.01" />
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="md:col-span-2 flex flex-col md:flex-row gap-8 items-start">
+                        <div class="flex-shrink-0 w-full md:w-auto flex justify-center">
+                            <?= featured('settings', 'components/profile'); ?>
+                        </div>
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                            <div class="flex flex-col gap-2">
+                                <label
+                                    class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">First
+                                    Name</label>
+                                <input name="firstname" id="firstname"
+                                    class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                                    type="text" />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label
+                                    class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Last
+                                    Name</label>
+                                <input name="lastname" id="lastname"
+                                    class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                                    type="text" />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label
+                                    class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Email</label>
+                                <input name="email" id="email"
+                                    class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                                    type="email" />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label
+                                    class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Phone</label>
+                                <input name="phone" id="phone"
+                                    class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                                    type="text" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label
+                            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Specialization</label>
+                        <select name="specialization_id" id="specialization_id"
+                            class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all">
+                            <option value="">Select Specialization</option>
+                            <!-- Populated via AJAX -->
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label
+                            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">License
+                            Number</label>
+                        <input name="license_number" id="license_number"
+                            class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                            type="text" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label
+                            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Consultation
+                            Fee</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-[10px] text-muted-foreground font-bold">₱</span>
+                            <input name="consultation_fee" id="consultation_fee"
+                                class="w-full pl-8 rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                                type="number" step="0.01" />
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 md:col-span-2">
+                        <label
+                            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Biography</label>
+                        <textarea name="bio" id="bio"
+                            class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-3 text-sm font-medium text-foreground/80 leading-relaxed transition-all"
+                            placeholder="Enter your professional summary for patients to see..." rows="4"></textarea>
                     </div>
                 </div>
-                <div class="flex flex-col gap-2 md:col-span-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Biography</label>
-                    <textarea name="bio" id="bio"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-3 text-sm font-medium text-foreground/80 leading-relaxed transition-all"
-                        placeholder="Enter your professional summary for patients to see..." rows="4"></textarea>
-                </div>
-            </div>
 
-            <div class="px-6 py-4 border-t border-border bg-muted/10 flex justify-end">
-                <button type="submit" id="save-profile-btn"
-                    class="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-md">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    <span>Save Profile Settings</span>
-                </button>
-            </div>
-        </section>
-    </form>
+                <div class="px-6 py-4 border-t border-border bg-muted/10 flex justify-end">
+                    <button type="submit" id="save-profile-btn"
+                        class="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-md">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        <span>Save Profile Settings</span>
+                    </button>
+                </div>
+            </section>
+        </form>
 
-    <!-- 2. Availability Management -->
-    <form id="availability-form" class="flex flex-col gap-8">
-        <section
-            class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all hover:shadow-md">
-            <div class="px-6 py-4 border-b border-border bg-muted/30 flex justify-between items-center">
-                <h3 class="font-black text-sm uppercase tracking-widest flex items-center gap-2 text-foreground">
-                    <span
-                        class="material-symbols-outlined text-primary text-xl font-variation-settings-['FILL'_1]">schedule</span>
-                    Availability Management
-                </h3>
-            </div>
-            <div class="p-6">
-                <div id="availability-container" class="flex flex-col gap-1">
-                    <!-- Dynamic rendering of 7 days via JS -->
+        <!-- 2. Availability Management -->
+        <form id="availability-form" class="flex flex-col gap-8">
+            <section
+                class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all hover:shadow-md">
+                <div class="px-6 py-4 border-b border-border bg-muted/30 flex justify-between items-center">
+                    <h3 class="font-black text-sm uppercase tracking-widest flex items-center gap-2 text-foreground">
+                        <span
+                            class="material-symbols-outlined text-primary text-xl font-variation-settings-['FILL'_1]">schedule</span>
+                        Availability Management
+                    </h3>
                 </div>
-            </div>
-            <div class="px-6 py-4 border-t border-border bg-muted/10 flex justify-end">
-                <button type="submit" id="save-availability-btn"
-                    class="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-md">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    <span>Save Availability</span>
-                </button>
-            </div>
-        </section>
-    </form>
+                <div class="p-6">
+                    <div id="availability-container" class="flex flex-col gap-1">
+                        <!-- Dynamic rendering of 7 days via JS -->
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t border-border bg-muted/10 flex justify-end">
+                    <button type="submit" id="save-availability-btn"
+                        class="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-md">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        <span>Save Availability</span>
+                    </button>
+                </div>
+            </section>
+        </form>
 
-    <!-- 3. Security Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <section
-            class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all hover:shadow-md h-fit">
-            <div class="px-6 py-4 border-b border-border bg-muted/30">
-                <h3 class="font-black text-sm uppercase tracking-widest flex items-center gap-2 text-foreground">
-                    <span
-                        class="material-symbols-outlined text-primary text-xl font-variation-settings-['FILL'_1]">security</span>
-                    Security & Access
-                </h3>
-            </div>
-            <form id="change-password-form" class="p-6 flex flex-col gap-6">
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Current
-                        Password</label>
-                    <input name="current_password" id="current_password"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        placeholder="••••••••" type="password" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">New
-                        Password</label>
-                    <input name="new_password" id="new_password"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        placeholder="Min. 6 characters" type="password" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Confirm
-                        New Password</label>
-                    <input name="confirm_password" id="confirm_password"
-                        class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
-                        placeholder="Re-type new password" type="password" />
-                </div>
-
-                <button type="submit" id="update-password-btn"
-                    class="w-full mt-2 text-[10px] font-black py-3 bg-foreground text-background rounded-xl transition-all uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-foreground/90">
-                    <span class="material-symbols-outlined text-[16px]">lock_reset</span>
-                    <span>Update Password</span>
-                </button>
-            </form>
-        </section>
+        <!-- 3. Security Section -->
+        <?= featured('settings', 'components/change-password'); ?>
+    </div>
+    <!-- Right Column: Summary & Decorative -->
+    <div class="space-y-6">
+        <!-- Decorative Image Card -->
+        <?= featured('settings', 'components/decorative'); ?>
     </div>
 </div>
 
+<?= shared('components', 'elements/filepond/scripts') ?>
 <script>
+    // Initialize validator config
+    window.validatorConfig = {
+        errorElement: 'span',
+        errorClass: 'text-red-500 text-xs mt-1 block font-medium',
+        highlight: function (element) {
+            $(element).addClass('!border-red-500').removeClass('border-border');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('!border-red-500').addClass('border-border');
+        }
+    };
+
     $(document).ready(function () {
         const daysOfWeek = [
             { id: 'monday', label: 'Monday' },
@@ -299,18 +286,6 @@ include_once __DIR__ . '/layout.php';
         // Initialize: Fetch specs then fetch settings
         fetchSpecializations().always(fetchSettings);
 
-        // Save Profile & Availability
-        const validatorConfig = {
-            errorElement: 'span',
-            errorClass: 'text-red-500 text-xs mt-1 block font-medium',
-            highlight: function (element) {
-                $(element).addClass('!border-red-500').removeClass('border-border');
-            },
-            unhighlight: function (element) {
-                $(element).removeClass('!border-red-500').addClass('border-border');
-            }
-        };
-
         $('#profile-form').validate({
             ...validatorConfig,
             rules: {
@@ -415,58 +390,5 @@ include_once __DIR__ . '/layout.php';
             });
         });
 
-        // Change Password Validation
-        $('#change-password-form').validate({
-            ...validatorConfig,
-            rules: {
-                current_password: "required",
-                new_password: { required: true, minlength: 6 },
-                confirm_password: { required: true, equalTo: "#new_password" }
-            },
-            messages: {
-                current_password: "Enter your current password",
-                new_password: { required: "Enter a new password", minlength: "Password must be at least 6 characters" },
-                confirm_password: { required: "Confirm your new password", equalTo: "Passwords do not match" }
-            }
-        });
-
-        // Change Password Handler
-        $('#change-password-form').on('submit', function (e) {
-            e.preventDefault();
-
-            if (!$(this).valid()) return;
-
-            const $btn = $('#update-password-btn');
-            const $btnIcon = $btn.find('.material-symbols-outlined');
-            const originalIconText = $btnIcon.text();
-
-            $btn.prop('disabled', true);
-            $btnIcon.text('progress_activity').addClass('animate-spin');
-
-            const formData = $(this).serialize();
-
-            $.ajax({
-                url: apiUrl('settings') + 'change-password.php',
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        if (window.toast && window.toast.success) toast.success(res.message);
-                        $('#change-password-form')[0].reset();
-                    } else {
-                        if (window.toast && window.toast.error) toast.error(res.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    if (window.toast && window.toast.error) toast.error('An unexpected error occurred.');
-                    console.error("Password update error:", error, xhr.responseText);
-                },
-                complete: function () {
-                    $btn.prop('disabled', false);
-                    $btnIcon.text(originalIconText).removeClass('animate-spin');
-                }
-            });
-        });
     });
 </script>

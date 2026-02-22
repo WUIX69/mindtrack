@@ -1,56 +1,45 @@
 <!-- Security Section -->
-<section class="bg-card dark:bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-    <div class="px-6 py-4 border-b border-border flex items-center gap-2">
-        <h3 class="font-bold text-lg">Security</h3>
-    </div>
-    <div class="p-6 space-y-6">
+<div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
+    <section
+        class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all hover:shadow-md h-fit">
+        <div class="px-6 py-4 border-b border-border bg-muted/30">
+            <h3 class="font-black text-sm uppercase tracking-widest flex items-center gap-2 text-foreground">
+                <span
+                    class="material-symbols-outlined text-primary text-xl font-variation-settings-['FILL'_1]">security</span>
+                Security & Access
+            </h3>
+        </div>
+        <form id="change-password-form" class="p-6 flex flex-col gap-6">
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Current
+                    Password</label>
+                <input name="current_password" id="current_password"
+                    class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                    placeholder="••••••••" type="password" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">New
+                    Password</label>
+                <input name="new_password" id="new_password"
+                    class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                    placeholder="Min. 6 characters" type="password" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Confirm
+                    New Password</label>
+                <input name="confirm_password" id="confirm_password"
+                    class="w-full rounded-xl border border-border bg-muted/20 focus:ring-primary/20 focus:border-primary px-4 py-2.5 text-sm font-bold text-foreground transition-all"
+                    placeholder="Re-type new password" type="password" />
+            </div>
 
-        <form id="change-password-form">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="space-y-2">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Current
-                        Password</label>
-                    <div class="relative">
-                        <span
-                            class="material-symbols-outlined absolute left-3 top-2.5 text-muted-foreground/70">lock</span>
-                        <input type="password" name="current_password"
-                            class="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                            placeholder="••••••••">
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">New
-                        Password</label>
-                    <div class="relative">
-                        <span
-                            class="material-symbols-outlined absolute left-3 top-2.5 text-muted-foreground/70">key</span>
-                        <input type="password" name="new_password" id="new_password"
-                            class="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                            placeholder="••••••••">
-                    </div>
-                </div>
-                <div class="space-y-2 md:col-span-2">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Confirm
-                        New Password</label>
-                    <div class="relative">
-                        <span
-                            class="material-symbols-outlined absolute left-3 top-2.5 text-muted-foreground/70">check_circle</span>
-                        <input type="password" name="confirm_password"
-                            class="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                            placeholder="••••••••">
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-end">
-                <button type="submit" id="update-password-btn"
-                    class="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary/20 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    <span>Update Password</span>
-                </button>
-            </div>
+            <button type="submit" id="update-password-btn"
+                class="w-full mt-2 text-[10px] font-black py-3 bg-foreground text-background rounded-xl transition-all uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-foreground/90">
+                <span class="material-symbols-outlined text-[16px]">lock_reset</span>
+                <span>Update Password</span>
+            </button>
         </form>
-    </div>
-</section>
+    </section>
+</div>
 
 <script>
     $(document).ready(function () {
