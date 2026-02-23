@@ -65,7 +65,7 @@
     }
 
     $('#btn-sign-note').click(function () {
-        if (typeof window.currentAppointmentUuid === 'undefined' || !window.currentAppointmentUuid || window.isNoteSigned) return;
+        if (!window.currentAppointmentUuid || window.isNoteSigned) return;
         openModal();
     });
 
@@ -74,11 +74,6 @@
     $backdrop.click(closeModal);
 
     $modal.find('.btn-confirm').click(function () {
-        if (typeof window.getNoteFormData !== 'function') {
-            alert('Cannot save note data. Missing function.');
-            return;
-        }
-
         const data = window.getNoteFormData('signed');
         const $btn = $(this);
         $btn.text('Signing...').prop('disabled', true);
@@ -101,10 +96,9 @@
                     alert(res.message);
                     if (res.success) {
                         closeModal();
-                        // Reload the editor to reflect signed status
-                        if (typeof loadNoteEditor === 'function') {
-                            loadNoteEditor(window.currentAppointmentUuid);
-                        }
+                        // Reload the editor and sidebar to reflect signed status
+                        window.loadNoteEditor(window.currentAppointmentUuid);
+                        window.fetchSidebarNotes();
                     } else {
                         alert(res.message);
                     }
