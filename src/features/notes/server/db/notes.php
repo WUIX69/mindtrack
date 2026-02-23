@@ -37,6 +37,49 @@ class Notes extends Base
     }
 
     /**
+     * Fetch a specific clinical note with joined appointment and provider details
+     * @param string $uuid
+     * @return array
+     */
+    public static function singleDetailed($uuid)
+    {
+        try {
+            $query = "
+                SELECT
+                    cn.*,
+                    a.sched_date,
+                    a.sched_time,
+                    s.name AS service_name,
+                    CONCAT(u.firstname, ' ', u.lastname) AS doctor_name,
+                    u.firstname AS doctor_firstname,
+                    u.lastname AS doctor_lastname
+                FROM clinical_notes cn
+                LEFT JOIN appointments a ON cn.appointment_uuid = a.uuid
+                LEFT JOIN services s ON a.service_uuid = s.uuid
+                LEFT JOIN users u ON cn.doctor_uuid = u.uuid
+                WHERE cn.uuid = :uuid
+            ";
+            $stmt = self::conn()->prepare($query);
+            $stmt->execute(['uuid' => $uuid]);
+            $note = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return [
+                'success' => true,
+                'message' => 'Note fetched successfully',
+                'data' => $note ?: null
+            ];
+
+        } catch (PDOException $e) {
+            error_log("Notes singleDetailed error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Database error while fetching note details',
+                'data' => null
+            ];
+        }
+    }
+
+    /**
      * Fetch a specific clinical note by appointment UUID
      * @param string $appointmentUuid
      * @return array Returns the note details inside a standardized response array

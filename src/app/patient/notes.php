@@ -151,6 +151,8 @@ include __DIR__ . '/layout.php';
     </div>
 </div>
 
+<?= featured('notes', 'components/summary-modal'); ?>
+
 <?= shared('components', 'elements/dataTables/scripts') ?>
 <script>
     $(document).ready(function () {
@@ -280,6 +282,35 @@ include __DIR__ . '/layout.php';
             },
             createdRow: function (row, data, dataIndex) {
                 $(row).addClass('hover:bg-muted/30 transition-colors cursor-pointer');
+            }
+        });
+
+        // Row Click to View Summary
+        $('#notes-table tbody').on('click', 'tr', function (e) {
+            // Ignore if click is on an interactive element (though we only have display elements mostly)
+            if ($(e.target).closest('button, a, input, select').length) return;
+
+            const rowData = table.row(this).data();
+            if (rowData && rowData.uuid) {
+                // Fetch fresh single note details from backend
+                $.ajax({
+                    url: apiUrl("notes") + "single-note.php",
+                    type: "GET",
+                    data: { uuid: rowData.uuid },
+                    dataType: "json",
+                    success: function (response) {
+                        // console.log(response);
+                        // return false;
+                        if (response.success && response.data) {
+                            NoteSummaryModal.open(response.data);
+                        } else {
+                            alert(response.message || 'Could not fetch note details.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error fetching note data from server.');
+                    }
+                });
             }
         });
 
