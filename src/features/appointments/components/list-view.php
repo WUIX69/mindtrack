@@ -211,7 +211,7 @@ shared('components', 'layout/filterbar', $filterConfig);
                         if (row.status === 'confirmed' || row.status === 'rescheduled') {
                             startBtn = `
                                 <button class="btn-start-session flex items-center gap-1 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm" 
-                                    onclick="window.location.href='session.php?id=${uuid}'" title="Start Session">
+                                    onclick="window.location.href='<?= app('doctor/notes.php') ?>?appointment_uuid=${uuid}'" title="Start Session">
                                     <span class="material-symbols-outlined text-[16px]">videocam</span>
                                     <span>Start</span>
                                 </button>

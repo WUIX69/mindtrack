@@ -77,7 +77,7 @@
                 const btnClass = canStart
                     ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/10'
                     : 'bg-muted text-muted-foreground cursor-not-allowed';
-                const btnOnClick = canStart ? `onclick="window.location.href='session.php?id=${apt.uuid}'"` : 'disabled';
+                const btnOnClick = canStart ? `onclick="window.location.href='<?= app('doctor/notes.php') ?>?appointment_uuid=${apt.uuid}'"` : 'disabled';
 
                 const card = `
                     <div class="group bg-card p-5 rounded-xl border border-border shadow-sm hover:border-primary transition-all flex flex-col sm:flex-row items-start sm:items-center gap-4 ${canStart ? '' : 'opacity-80 hover:opacity-100'}">
