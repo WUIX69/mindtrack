@@ -93,6 +93,11 @@ if ($method === 'POST') {
             $validatedData['doctor_uuid'] = $doctorUuid;
 
             $result = Notes::store($validatedData);
+
+            if ($result['success']) {
+                Appointments::updateStatus($validatedData['appointment_uuid'], 'completed');
+            }
+
             $response = array_merge($response, $result);
         }
 
