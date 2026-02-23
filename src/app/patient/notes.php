@@ -1,26 +1,26 @@
 <?php
 /**
- * Patient Medical Records Page
+ * Patient Medical Notes Page
  */
 
-$pageTitle = "My Medical Records";
+$pageTitle = "My Medical Notes";
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 // Set current page for sidebar highlighting
 $headerData = [
-    'title' => 'My Records',
+    'title' => 'My Notes',
     'description' => 'Access and manage your clinical documents and test results.',
     'searchPlaceholder' => 'Search by name or provider...',
     'actionLabel' => 'Upload New',
     'actionIcon' => 'upload'
 ];
-$currentPage = 'records';
+$currentPage = 'notes';
 
 include __DIR__ . '/layout.php';
 ?>
 
 <div class="flex flex-wrap items-center gap-2 mb-8 border-b border-border pb-px">
     <button class="px-6 py-3 text-sm font-semibold border-b-2 border-primary text-primary transition-all">All
-        Records</button>
+        Notes</button>
     <button
         class="px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-muted-foreground hover:text-foreground dark:hover:text-white hover:border-border-hover dark:hover:border-gray-600 transition-all">Clinical
         Notes</button>
@@ -198,7 +198,7 @@ include __DIR__ . '/layout.php';
             </div>
             <div
                 class="px-6 py-4 bg-muted/30 dark:bg-muted/10 border-t border-border flex items-center justify-between">
-                <p class="text-xs text-muted-foreground font-medium">Showing 1-4 of 12 records</p>
+                <p class="text-xs text-muted-foreground font-medium">Showing 1-4 of 12 notes</p>
                 <div class="flex gap-2">
                     <button
                         class="px-3 py-1.5 text-xs font-bold border border-border rounded bg-card hover:bg-muted/10 transition-colors disabled:opacity-50"
@@ -246,7 +246,7 @@ include __DIR__ . '/layout.php';
                 <h3 class="font-bold">Privacy Protected</h3>
             </div>
             <p class="text-xs text-muted-foreground leading-relaxed font-medium">
-                Your medical records are encrypted and HIPAA compliant. Only authorized providers can access your full
+                Your medical notes are encrypted and HIPAA compliant. Only authorized providers can access your full
                 medical history.
             </p>
             <button

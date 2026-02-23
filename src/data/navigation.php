@@ -21,7 +21,7 @@ if (!function_exists('getNavigation')) {
             'patient' => [
                 ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard', 'url' => app('patient')],
                 ['id' => 'appointments', 'label' => 'Appointments', 'icon' => 'calendar_month', 'url' => app('patient/appointments/')],
-                ['id' => 'records', 'label' => 'My Records', 'icon' => 'description', 'url' => app('patient/records.php')],
+                ['id' => 'notes', 'label' => 'My Notes', 'icon' => 'note', 'url' => app('patient/notes.php')],
                 ['id' => 'resources', 'label' => 'Resources', 'icon' => 'menu_book', 'url' => app('patient/resources.php')],
             ]
         ];
