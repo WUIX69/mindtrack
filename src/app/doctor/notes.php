@@ -4,9 +4,7 @@
  */
 $currentPage = 'notes';
 $pageTitle = "Clinical Notes - MindTrack Doctor";
-include_once __DIR__ . '/layout.php';
-?>
-
+$headContent = <<<'HTML'
 <style>
     .scrollbar-hide::-webkit-scrollbar {
         display: none;
@@ -17,6 +15,10 @@ include_once __DIR__ . '/layout.php';
         scrollbar-width: none;
     }
 </style>
+HTML;
+
+include_once __DIR__ . '/layout.php';
+?>
 
 <div class="flex h-[calc(100vh-80px)] lg:h-[calc(100vh-96px)] overflow-hidden -m-8">
     <!-- Inner Sidebar: Session List -->
