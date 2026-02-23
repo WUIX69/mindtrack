@@ -10,6 +10,7 @@ class Notes
     public static function validate(array $data)
     {
         $validator = v::key('appointment_uuid', v::stringType()->notEmpty())
+            ->key('patient_uuid', v::stringType()->notEmpty())
             ->key('uuid', v::optional(v::stringType()))
             ->key('subjective', v::optional(v::stringType()))
             ->key('objective', v::optional(v::stringType()))
@@ -36,10 +37,11 @@ class Notes
                 'data' => [
                     'uuid' => $data['uuid'] ?? null,
                     'appointment_uuid' => $data['appointment_uuid'],
-                    'subjective' => $data['subjective'] ?: '',
+                    'patient_uuid' => $data['patient_uuid'],
+                    'subjective' => $data['subjective'] ?: null,
                     'objective' => $objectiveJson, // Store combined objective as JSON
-                    'assessment' => $data['assessment'] ?: '',
-                    'plan' => $data['plan'] ?: '',
+                    'assessment' => $data['assessment'] ?: null,
+                    'plan' => $data['plan'] ?: null,
                     'status' => $data['status'] ?? 'draft'
                 ]
             ];

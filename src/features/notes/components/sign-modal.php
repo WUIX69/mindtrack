@@ -93,11 +93,12 @@
             dataType: 'json',
             contentType: 'application/json',
             success: function (resp) {
-                console.log(resp);
-                return false;
+                // console.log(resp);
+                // return false;
                 $btn.text('Yes, Sign Note').prop('disabled', false);
                 try {
                     const res = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    alert(res.message);
                     if (res.success) {
                         closeModal();
                         // Reload the editor to reflect signed status

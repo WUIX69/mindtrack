@@ -32,7 +32,7 @@ if ($method === 'GET') {
         $response = array_merge($response, $notesResult);
     } elseif ($appointmentUuid) {
         // Fetch a specific note and appointment info for an appointment
-        $noteResult = Notes::singleWhereAppointment($appointmentUuid);
+        $noteResult = Notes::findByAppointment($appointmentUuid);
         $appointment = Appointments::getSingleAppointment($appointmentUuid);
 
         if (!$appointment || !$appointment['success']) {
@@ -45,8 +45,8 @@ if ($method === 'GET') {
         $response['success'] = true;
         $response['message'] = 'Note and appointment fetched successfully.';
         $response['data'] = [
-            'note' => $noteResult['success'] ? $noteResult : [],
-            'appointment' => $appointment['success'] ? $appointment : []
+            'note' => ($noteResult['success'] && !empty($noteResult['data'])) ? $noteResult['data'] : null,
+            'appointment' => ($appointment['success'] && !empty($appointment['data'])) ? $appointment['data'] : null
         ];
     } else {
         $response['message'] = 'Invalid GET parameters.';
@@ -77,7 +77,7 @@ if ($method === 'POST') {
     $validatedData = $validation['data'];
 
     try {
-        $existingNoteResult = Notes::singleWhereAppointment($validatedData['appointment_uuid']);
+        $existingNoteResult = Notes::single($validatedData['uuid']);
 
         if ($existingNoteResult['success'] && !empty($existingNoteResult['data'])) {
             $existingNote = $existingNoteResult['data'];
@@ -91,16 +91,9 @@ if ($method === 'POST') {
         } else {
             // Insert new note
             $validatedData['doctor_uuid'] = $doctorUuid;
-            // We fetch the patient_uuid from the appointment
-            $appt = Appointments::getSingleAppointment($validatedData['appointment_uuid']);
-            if ($appt && $appt['success'] && !empty($appt['data'])) {
-                $apptData = current(is_array($appt['data']) && isset($appt['data'][0]) ? $appt['data'] : [$appt['data']]);
-                $validatedData['patient_uuid'] = $apptData['patient_uuid'];
-                $result = Notes::store($validatedData);
-                $response = array_merge($response, $result);
-            } else {
-                $response['message'] = 'Associated appointment not found.';
-            }
+
+            $result = Notes::store($validatedData);
+            $response = array_merge($response, $result);
         }
 
     } catch (\Exception $e) {

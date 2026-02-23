@@ -89,6 +89,7 @@ include_once __DIR__ . '/layout.php';
         <form id="note-form" class="flex-1 overflow-y-auto p-8 lg:p-12 flex flex-col">
             <input type="hidden" id="note-uuid" name="uuid" value="">
             <input type="hidden" id="note-appointment-uuid" name="appointment_uuid" value="">
+            <input type="hidden" id="note-patient-uuid" name="patient_uuid" value="">
 
             <div class="space-y-12 flex-1">
                 <!-- Subjective -->
@@ -360,7 +361,7 @@ include_once __DIR__ . '/layout.php';
                         $('#editor-loading').addClass('hidden');
 
                         if (res.success && res.data.appointment) {
-                            populateEditor(res.data.appointment.data, res.data.note.data);
+                            populateEditor(res.data.appointment, res.data.note);
                         } else {
                             alert('Could not load session details.');
                         }
@@ -389,6 +390,7 @@ include_once __DIR__ . '/layout.php';
 
             // Form Fields
             $('#note-appointment-uuid').val(appointment.uuid);
+            $('#note-patient-uuid').val(appointment.patient_uuid);
 
             if (note) {
                 // Parse the JSON objective field to get vitals
@@ -461,6 +463,7 @@ include_once __DIR__ . '/layout.php';
         window.getNoteFormData = function (status) {
             return {
                 appointment_uuid: $('#note-appointment-uuid').val(),
+                patient_uuid: $('#note-patient-uuid').val(),
                 uuid: $('#note-uuid').val() || null,
                 subjective: $('#note-subjective').val(),
                 objective: $('#note-objective').val(),
@@ -491,10 +494,11 @@ include_once __DIR__ . '/layout.php';
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (resp) {
-                    console.log(resp);
-                    return false;
+                    // console.log(resp);
+                    // return false;
                     try {
                         const res = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                        alert(res.message);
                         if (res.success) {
                             setSaveStatus('Draft saved successfully', 'check_circle', 'text-emerald-500');
                             if (res.uuid) {

@@ -9,42 +9,57 @@ use PDOException;
 class Notes extends Base
 {
     /**
+     * Fetch a specific clinical note by Note UUID
+     * @param string $uuid
+     * @return array Returns the note details inside a standardized response array
+     */
+    public static function single($uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare("SELECT * FROM clinical_notes WHERE uuid = :uuid");
+            $stmt->execute(['uuid' => $uuid]);
+            $note = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return [
+                'success' => true,
+                'message' => 'Note fetched successfully',
+                'data' => $note ?: null
+            ];
+
+        } catch (PDOException $e) {
+            error_log("Notes single error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Database error while fetching note',
+                'data' => null
+            ];
+        }
+    }
+
+    /**
      * Fetch a specific clinical note by appointment UUID
      * @param string $appointmentUuid
      * @return array Returns the note details inside a standardized response array
      */
-    public static function singleWhereAppointment($appointmentUuid)
+    public static function findByAppointment($appointmentUuid)
     {
         try {
-            $stmt = self::conn()->prepare("
-                SELECT 
-                    cn.*,
-                    p.firstname as patient_firstname,
-                    p.lastname as patient_lastname,
-                    a.sched_date,
-                    a.sched_time,
-                    s.name as service_name
-                FROM clinical_notes cn
-                JOIN appointments a ON cn.appointment_uuid = a.uuid
-                JOIN users p ON cn.patient_uuid = p.uuid
-                JOIN services s ON a.service_uuid = s.uuid
-                WHERE cn.appointment_uuid = :uuid
-            ");
+            $stmt = self::conn()->prepare("SELECT * FROM clinical_notes WHERE appointment_uuid = :uuid");
             $stmt->execute(['uuid' => $appointmentUuid]);
             $note = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return [
                 'success' => true,
                 'message' => 'Note fetched successfully',
-                'data' => $note
+                'data' => $note ?: null
             ];
 
         } catch (PDOException $e) {
-            error_log("Notes singleWhereAppointment error: " . $e->getMessage());
+            error_log("Notes findByAppointment error: " . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Database error while fetching note',
-                'data' => false
+                'data' => null
             ];
         }
     }
