@@ -16,196 +16,77 @@ $headerData = [
 $currentPage = 'notes';
 
 include __DIR__ . '/layout.php';
+
+// PHP data loading replaced by CSR
 ?>
 
-<div class="flex flex-wrap items-center gap-2 mb-8 border-b border-border pb-px">
-    <button class="px-6 py-3 text-sm font-semibold border-b-2 border-primary text-primary transition-all">All
-        Notes</button>
-    <button
-        class="px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-muted-foreground hover:text-foreground dark:hover:text-white hover:border-border-hover dark:hover:border-gray-600 transition-all">Clinical
-        Notes</button>
-    <button
-        class="px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-muted-foreground hover:text-foreground dark:hover:text-white hover:border-border-hover dark:hover:border-gray-600 transition-all">Test
-        Results</button>
-    <button
-        class="px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-muted-foreground hover:text-foreground dark:hover:text-white hover:border-border-hover dark:hover:border-gray-600 transition-all">Prescriptions</button>
+<?= shared('components', 'elements/dataTables/styles') ?>
+<div class="mb-4">
+    <?= shared('components', 'layout/filterbar', [
+        'isTransparent' => true,
+        'mb' => '4',
+        'primary' => [
+            'name' => 'status',
+            'options' => [
+                ['value' => '', 'label' => 'All', 'count_id' => 'count-all'],
+                ['value' => 'completed', 'label' => 'Completed', 'count_id' => 'count-completed'],
+                ['value' => 'draft', 'label' => 'Draft', 'count_id' => 'count-draft']
+            ]
+        ],
+        'secondary_filters' => [
+            [
+                'type' => 'search',
+                'name' => 'search',
+                'placeholder' => 'Search by name or provider...',
+                'icon' => 'search'
+            ],
+            [
+                'type' => 'select',
+                'name' => 'doctor',
+                'icon' => 'person',
+                'placeholder' => 'All Providers',
+                'options' => [] // Populated by JS
+            ],
+            [
+                'type' => 'select',
+                'name' => 'sortby',
+                'placeholder' => 'Sort by',
+                'options' => [
+                    'newest' => 'Newest First',
+                    'oldest' => 'Oldest First',
+                    'name_asc' => 'Name (A-Z)',
+                    'name_desc' => 'Name (Z-A)'
+                ],
+                'default' => 'newest'
+            ]
+        ],
+        'actions' => [
+            [
+                'label' => 'Reset Filters',
+                'icon' => 'filter_list_off',
+                'id' => 'reset-filters',
+                'class' => 'text-primary hover:opacity-80'
+            ]
+        ]
+    ]) ?>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2">
         <div class="bg-card dark:bg-card rounded-xl border border-border overflow-hidden shadow-sm">
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
+                <table id="notes-table" class="w-full text-left display responsive nowrap" style="width:100%">
                     <thead>
-                        <tr class="text-xs uppercase tracking-wider text-muted-foreground bg-muted/30 dark:bg-muted/10">
-                            <th class="px-6 py-4 font-semibold">Document Name</th>
-                            <th class="px-6 py-4 font-semibold">Date Added</th>
-                            <th class="px-6 py-4 font-semibold">Provider</th>
-                            <th class="px-6 py-4 font-semibold text-right">Action</th>
+                        <tr class="text-xs uppercase tracking-wider text-muted-foreground bg-muted/50">
+                            <th class="px-6 py-4 font-semibold !p-5">Document Info</th>
+                            <th class="px-6 py-4 font-semibold !p-5">Date / Service</th>
+                            <th class="px-6 py-4 font-semibold !p-5">Provider</th>
+                            <th class="px-6 py-4 font-semibold text-right !p-5">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-border">
-                        <tr class="hover:bg-muted/10 dark:hover:bg-muted/5 transition-colors">
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                                        <span class="material-symbols-outlined text-[20px]">assignment</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold">Initial Evaluation Report</p>
-                                        <p class="text-[11px] text-muted-foreground font-medium">PDF • 1.2 MB</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5">
-                                <p class="text-sm font-medium">Oct 14, 2023</p>
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-cover bg-center border border-border"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwNaISt-uuQ6MwqbUu4W9riQAALi05dkz7TlBceAuiGncVIY6Iy-FH_HyGHXGNHCJQYaD9nEDbuuqI3PgNONuLsN1jAEUwxNxCxRfzYrao7FfZcll9nYEuTBnr0_ZPz0D0paWUhXfDDCiGrCotMMGhlOe4SNCKd-xEm4UvhJXu5qIYlwoQOmKvYtJcJpx1JUBThFPJGdJRoiRnuh4WURoUnnO6jnJYkgthlN0jRc0Sagg9GmwhYqP_arsGwOPp2nsicIQXEXKUnlM')">
-                                    </div>
-                                    <span class="text-sm font-medium">Dr. Sarah Miller</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">visibility</span>
-                                    </button>
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">download</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-muted/10 dark:hover:bg-muted/5 transition-colors">
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600">
-                                        <span class="material-symbols-outlined text-[20px]">prescriptions</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold">Renewal: Escitalopram 10mg</p>
-                                        <p class="text-[11px] text-muted-foreground font-medium">Digital Copy</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5">
-                                <p class="text-sm font-medium">Oct 10, 2023</p>
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-cover bg-center border border-border"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBCFBx3LjXS7ZS1hLtcdC1XKxw2ERXcJ5v4WCMLpXeEyEL55xbpQfdFMyaqaplEMQcJaRNyX--f-PCOA2UkbOq0HFPLvbd7kwsdkkZ5Rhyq3ANh7u5NDbLPEdPWk3nWUQ5fzv67W-P3t2vCbgzZDvMEsrKjvWUWuEOwngmivXeGMo-MO7JwpdgK26FxStcCB2bdc065MeSlg9g0fN_wIKNxMqvuBFmku_gg7eYWLzZhLxpPq_gRe7pkJvc02voVY7AHOj6pNQ6ro8E')">
-                                    </div>
-                                    <span class="text-sm font-medium">Dr. James Chen</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">visibility</span>
-                                    </button>
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">download</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-muted/10 dark:hover:bg-muted/5 transition-colors">
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-9 h-9 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
-                                        <span class="material-symbols-outlined text-[20px]">biotech</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold">Blood Work Panel Results</p>
-                                        <p class="text-[11px] text-muted-foreground font-medium">PDF • 2.4 MB</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5">
-                                <p class="text-sm font-medium">Sep 28, 2023</p>
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-cover bg-center border border-border"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBNMpp18IwIrPN5Ru9UX3LP4D79qaKiAZh-grHt2TepPTmkmCb4wMBuW0A_jlQR4S680e-B7mV-XZK27SwxnEmeRvKF6Ftpk6sk8BXR5dJ3GD-GicQrmJ1IbdEHC0iPPWCgqQyoOdUelzIBedQewR6vXIUPnq2TKtIfIEXqFGGAsPNtJiIl1vn2QaEH0iyU0481XFD4F4A8Q2HZBG-W2fHA_2Z1gtT7by7ZFix40gI13e-Wx6-fEYRTXRDExjfxEWY3PxerwH82DWM')">
-                                    </div>
-                                    <span class="text-sm font-medium">Dr. Maria Garcia</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">visibility</span>
-                                    </button>
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">download</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-muted/10 dark:hover:bg-muted/5 transition-colors">
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-9 h-9 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600">
-                                        <span class="material-symbols-outlined text-[20px]">clinical_notes</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold">Progress Session Notes</p>
-                                        <p class="text-[11px] text-muted-foreground font-medium">DOCX • 500 KB</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5">
-                                <p class="text-sm font-medium">Sep 15, 2023</p>
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-cover bg-center border border-border"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwNaISt-uuQ6MwqbUu4W9riQAALi05dkz7TlBceAuiGncVIY6Iy-FH_HyGHXGNHCJQYaD9nEDbuuqI3PgNONuLsN1jAEUwxNxCxRfzYrao7FfZcll9nYEuTBnr0_ZPz0D0paWUhXfDDCiGrCotMMGhlOe4SNCKd-xEm4UvhJXu5qIYlwoQOmKvYtJcJpx1JUBThFPJGdJRoiRnuh4WURoUnnO6jnJYkgthlN0jRc0Sagg9GmwhYqP_arsGwOPp2nsicIQXEXKUnlM')">
-                                    </div>
-                                    <span class="text-sm font-medium">Dr. Sarah Miller</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">visibility</span>
-                                    </button>
-                                    <button
-                                        class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined">download</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody class="divide-y divide-border/50">
                     </tbody>
                 </table>
-            </div>
-            <div
-                class="px-6 py-4 bg-muted/30 dark:bg-muted/10 border-t border-border flex items-center justify-between">
-                <p class="text-xs text-muted-foreground font-medium">Showing 1-4 of 12 notes</p>
-                <div class="flex gap-2">
-                    <button
-                        class="px-3 py-1.5 text-xs font-bold border border-border rounded bg-card hover:bg-muted/10 transition-colors disabled:opacity-50"
-                        disabled="">Previous</button>
-                    <button
-                        class="px-3 py-1.5 text-xs font-bold border border-border rounded bg-card hover:bg-muted/10 transition-colors">Next</button>
-                </div>
             </div>
         </div>
     </div>
@@ -269,3 +150,188 @@ include __DIR__ . '/layout.php';
         </div>
     </div>
 </div>
+
+<?= shared('components', 'elements/dataTables/scripts') ?>
+<script>
+    $(document).ready(function () {
+        const table = $('#notes-table').DataTable({
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: "info",
+                bottomEnd: {
+                    features: ["pageLength", "paging"],
+                },
+            },
+            pageLength: 10,
+            deferRender: true,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            searching: true,
+            order: [[3, 'desc']], // Default sort by updated_at (hidden)
+            orderCellsTop: true,
+            autoWidth: false,
+            language: {
+                info: "Showing _START_ to _END_ of _TOTAL_ notes",
+                lengthMenu: "Entries per page _MENU_",
+                infoEmpty: "No notes found",
+                emptyTable: "No notes found.",
+                zeroRecords: "No matching notes found"
+            },
+            columns: [
+                {
+                    data: 'subjective',
+                    className: "px-6 py-4",
+                    orderable: false,
+                    render: function (data, type, row) {
+                        const noteType = row.status === 'signed' ? 'Clinical Note (Final)' : 'Clinical Note (Draft)';
+                        return `
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                    <span class="material-symbols-outlined text-[20px]">assignment</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold">${noteType}</p>
+                                    <p class="text-[11px] text-muted-foreground font-medium truncate max-w-[200px]">${data || 'No summary available'}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    data: 'sched_date',
+                    className: "px-6 py-4",
+                    render: function (data, type, row) {
+                        const dateObj = new Date(`${data} ${row.sched_time}`);
+                        const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        return `
+                            <p class="text-sm font-bold">${formattedDate}</p>
+                            <p class="text-xs text-muted-foreground">${row.service_name || 'No Service'}</p>
+                        `;
+                    }
+                },
+                {
+                    data: 'doctor_name',
+                    className: "px-6 py-4",
+                    orderable: false,
+                    render: function (data, type, row) {
+                        const doctorFullName = 'Dr. ' + (row.doctor_firstname || 'Unknown');
+                        return `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-muted border border-border overflow-hidden shrink-0">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(doctorFullName)}&background=random" class="size-full object-cover" />
+                            </div>
+                            <span class="text-sm font-medium whitespace-nowrap">${doctorFullName}</span>
+                        </div>`;
+                    }
+                },
+                {
+                    data: 'status',
+                    className: "px-6 py-4 text-right",
+                    render: function (data, type, row) {
+                        let statusClass = 'bg-muted text-muted-foreground';
+                        let statusLabel = 'Draft';
+
+                        if (data === 'signed') {
+                            statusClass = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400';
+                            statusLabel = 'Completed';
+                        } else if (data === 'draft') {
+                            statusClass = 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400';
+                            statusLabel = 'Draft';
+                        }
+
+                        // Added a download button (static layout for visual)
+                        return `
+                            <div class="flex justify-end gap-2 items-center">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide mr-2 ${statusClass}">${statusLabel}</span>
+                                <button class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined hidden">download</span>
+                                </button>
+                            </div>
+                        `;
+                    }
+                },
+                { data: 'updated_at', visible: false }, // Hidden column to allow proper sorting
+                { data: 'doctor_uuid', name: 'doctor_uuid', visible: false } // Hidden column to filter by doctor
+            ],
+            ajax: {
+                url: apiUrl("notes") + "patient-notes-dataTable.php",
+                method: "GET",
+                dataType: "json",
+                data: function (d) {
+                    return d;
+                },
+                dataSrc: function (response) {
+                    // Update Status Counts from response.counts
+                    if (response.counts) {
+                        let total = 0;
+                        for (const status in response.counts) {
+                            if (status !== 'all') {
+                                total += parseInt(response.counts[status]);
+                                $(`#count-${status}`).text(response.counts[status]);
+                            }
+                        }
+                        $('#count-all').text(response.counts.all !== undefined ? response.counts.all : total);
+                    }
+                    return response.data || [];
+                },
+                error: typeof ajaxErrorHandler !== 'undefined' ? ajaxErrorHandler : function (e) { console.error('DataTables load error', e); }
+            },
+            createdRow: function (row, data, dataIndex) {
+                $(row).addClass('hover:bg-muted/30 transition-colors cursor-pointer');
+            }
+        });
+
+        // --- Filters Interactivity ---
+
+        // Listen for filter changes from filterbar
+        $(document).on('filter:change', function (e, filters) {
+
+            if (filters.status !== undefined) {
+                // translate 'completed' back to 'signed' for backend filtering
+                let searchValue = filters.status;
+                if (searchValue === 'completed') searchValue = 'signed';
+
+                table.column(3).search(searchValue); // Map to DB status
+            }
+            if (filters.search !== undefined) {
+                table.search(filters.search);
+            }
+            if (filters.doctor !== undefined) {
+                table.column('doctor_uuid:name').search(filters.doctor);
+            }
+            if (filters.sortby !== undefined) {
+                if (filters.sortby === 'newest') table.order([4, 'desc']);
+                else if (filters.sortby === 'oldest') table.order([4, 'asc']);
+                else if (filters.sortby === 'name_asc') table.order([2, 'asc']); // index 2 is doctor_name
+                else if (filters.sortby === 'name_desc') table.order([2, 'desc']);
+            }
+
+            table.draw();
+        });
+
+
+
+        // --- Fetch Doctors CSR ---
+        fetchDoctors();
+
+        function fetchDoctors() {
+            $.ajax({
+                url: apiUrl("shared") + "doctors.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    // console.log(response);
+                    // return false;
+                    if (!response.success) return;
+                    // Filter component generates select tags with name="[name]", using bracket selector
+                    const select = $('select[name="doctor"]');
+                    response.data.forEach(function (doc) {
+                        select.append(`<option value="${doc.uuid}">Dr. ${doc.firstname} ${doc.lastname}</option>`);
+                    });
+                }
+            });
+        }
+    });
+</script>

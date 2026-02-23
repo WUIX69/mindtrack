@@ -235,4 +235,58 @@ class Notes extends Base
             return ['success' => false, 'message' => 'Database error while signing note'];
         }
     }
+
+    /**
+     * Get notes counts grouped by status.
+     * 
+     * @param array $filters (patient_uuid)
+     * @return array
+     */
+    public static function countWhereStatus($filters = [])
+    {
+        try {
+            $query = "SELECT status, COUNT(*) as count FROM clinical_notes WHERE 1=1";
+            $params = [];
+
+            if (!empty($filters['patient_uuid'])) {
+                $query .= " AND patient_uuid = ?";
+                $params[] = $filters['patient_uuid'];
+            }
+            if (!empty($filters['doctor_uuid'])) {
+                $query .= " AND doctor_uuid = ?";
+                $params[] = $filters['doctor_uuid'];
+            }
+
+            $query .= " GROUP BY status";
+
+            $stmt = self::conn()->prepare($query);
+            $stmt->execute($params);
+
+            $rawCounts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR) ?? [];
+
+            // UI filter keys
+            $counts = [
+                'all' => 0,
+                'signed' => 0,
+                'draft' => 0,
+                'completed' => 0 // completed is alias for signed in filter
+            ];
+
+            foreach ($rawCounts as $status => $count) {
+                if ($status === 'signed') {
+                    $counts['signed'] += $count;
+                    $counts['completed'] += $count;
+                } elseif (isset($counts[$status])) {
+                    $counts[$status] += $count;
+                }
+                // Always add to all
+                $counts['all'] += $count;
+            }
+
+            return $counts;
+        } catch (PDOException $e) {
+            error_log("SQL Error (Notes::countWhereStatus): " . $e->getMessage());
+            return [];
+        }
+    }
 }
