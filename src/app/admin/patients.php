@@ -3,6 +3,7 @@
  * Admin - Patients Management
  */
 $pageTitle = "Patients Management - MindTrack";
+$currentPage = 'patients';
 $headerData = [
     'title' => 'Patients',
     'description' => 'Maintain comprehensive health records and track clinical progress.',
@@ -10,50 +11,45 @@ $headerData = [
     'actionLabel' => 'Add New Patient',
     'actionIcon' => 'person_add',
     'actionId' => 'add-patient-btn',
-    'mb' => 4
 ];
-$currentPage = 'patients';
 
 include_once __DIR__ . '/layout.php';
 ?>
 
 <?= shared('components', 'elements/dataTables/styles') ?>
 
-<?php
-$patientFilterConfig = [
-    'primary' => [
-        'name' => 'status',
-        'label' => 'Status:',
-        'options' => [
-            ['value' => '', 'label' => 'All'],
-            ['value' => 'active', 'label' => 'Active'],
-            ['value' => 'inactive', 'label' => 'Inactive']
-        ]
-    ],
-    'secondary_filters' => [
-        [
-            'type' => 'select',
-            'name' => 'sort',
-            'icon' => 'sort',
-            'placeholder' => 'Sort Order',
-            'options' => [
-                'recent' => 'Recent First',
-                'oldest' => 'Oldest First',
-                'name_asc' => 'Name (A-Z)',
-                'name_desc' => 'Name (Z-A)'
-            ]
-        ]
-    ]
-];
-
-?>
-<!-- Filter Sub-header -->
-<?= shared('components', 'layout/filterbar', $patientFilterConfig) ?>
-
 <!-- Main Grid Layout -->
 <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
     <!-- Patients Table Section -->
     <div class="xl:col-span-3">
+        <!-- Filter Sub-header -->
+        <?= shared('components', 'layout/filterbar', [
+            'isTransparent' => true,
+            'mb' => '4',
+            'primary' => [
+                'name' => 'status',
+                'label' => 'Status:',
+                'options' => [
+                    ['value' => '', 'label' => 'All'],
+                    ['value' => 'active', 'label' => 'Active'],
+                    ['value' => 'inactive', 'label' => 'Inactive']
+                ]
+            ],
+            'secondary_filters' => [
+                [
+                    'type' => 'select',
+                    'name' => 'sort',
+                    'icon' => 'sort',
+                    'placeholder' => 'Sort Order',
+                    'options' => [
+                        'recent' => 'Recent First',
+                        'oldest' => 'Oldest First',
+                        'name_asc' => 'Name (A-Z)',
+                        'name_desc' => 'Name (Z-A)'
+                    ]
+                ]
+            ]
+        ]); ?>
         <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
             <table id="patients-table" class="w-full text-left border-collapse stripe hover">
                 <thead>

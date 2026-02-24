@@ -3,15 +3,14 @@
  * Admin - Services Management
  */
 $pageTitle = "Service Management - MindTrack";
+$currentPage = 'services';
 $headerData = [
     'title' => 'Service Management',
     'description' => 'Categorize and manage your clinical services and therapy offerings.',
     'actionLabel' => 'Add New Service',
     'actionIcon' => 'add',
-    'actionId' => 'add-service-btn',
-    'mb' => '6'
+    'actionId' => 'add-service-btn'
 ];
-$currentPage = 'services';
 
 include_once __DIR__ . '/layout.php';
 

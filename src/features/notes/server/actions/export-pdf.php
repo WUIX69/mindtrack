@@ -7,7 +7,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 
 // Ensure user is authenticated
-$validRoles = ['doctor', 'patient'];
+$validRoles = ['doctor', 'patient', 'admin'];
 if (!$session->get('uuid') || !in_array($session->get('role'), $validRoles)) {
     http_response_code(403);
     die('Unauthorized access.');

@@ -9,12 +9,12 @@ $headerData = [
     'searchPlaceholder' => 'Search appointments...',
     'actionLabel' => 'New Appointment',
     'actionIcon' => 'add',
-    'actionUrl' => 'step-1-service.php',
-    'mb' => 4
+    'actionUrl' => 'step-1-service.php'
 ];
 // $headContent = `shared('components', 'elements/dataTables/styles')`;
 include_once __DIR__ . '/../layout.php';
 ?>
+
 <?= shared('components', 'elements/dataTables/styles') ?>
 
 <?php

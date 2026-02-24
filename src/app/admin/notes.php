@@ -3,15 +3,7 @@
  * Admin Notes Page
  */
 
-// use Mindtrack\Core\Config;
-
 require_once dirname(__DIR__, 2) . '/core/app.php';
-
-// Security check
-// if (!$session->get('uuid') || $session->get('role') !== 'admin') {
-//     header("Location: " . Config::get('app.url') . "/src/auth/login.php");
-//     exit;
-// }
 
 // Page variables
 $pageTitle = "Clinical Notes - MindTrack";
@@ -22,90 +14,70 @@ $currentPage = 'notes';
 $headerData = [
     'title' => 'Clinical Notes',
     'description' => 'System-wide clinical session documentation',
-    'actions' => '',
-    'actionLabel' => 'New Note Entry',
-    'actionIcon' => 'add',
-    'actionUrl' => 'javascript:void(0);',
-    'actionClass' => 'bg-primary hover:bg-primary/90 text-primary-foreground text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-sm shadow-primary/20 flex items-center gap-2 manage-note-btn',
+    'searchPlaceholder' => 'Search notes by name or provider...',
 ];
 
-$headActions = <<<HTML
-    <div class="flex items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
-        <button type="button" class="w-full sm:w-auto px-5 py-2.5 bg-card hover:bg-muted text-foreground border border-border shadow-sm rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-            <span class="material-symbols-outlined text-lg">download</span>
-            Export Report
-        </button>
-        <!-- NOTE: The 'Add Note' button primarily requires patient/appointment selection context 
-             which is not built into the simple modal yet. Included for UI completeness,
-             but typical workflow is from the Appointments page -->
-        <button type="button" onclick="ManageNoteModal.open('add')" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-            <span class="material-symbols-outlined text-lg">add</span>
-            New Note Entry
-        </button>
-    </div>
-HTML;
-$headerData['actions'] = $headActions;// ----------------------------
-
-// Include layout (which includes headbar.php using $headerData)
 include_once __DIR__ . '/layout.php';
 ?>
 
 <?= shared('components', 'elements/dataTables/styles') ?>
 
 <!-- Main Content Area -->
-<!-- Filter Bar (using reusable component) -->
-<?= shared('components', 'layout/filterbar', [
-    'isTransparent' => true,
-    'mb' => '4',
-    'primary' => [
-        'name' => 'status',
-        'options' => [
-            ['value' => '', 'label' => 'All', 'count_id' => 'count-all'],
-            ['value' => 'completed', 'label' => 'Completed', 'count_id' => 'count-completed'],
-            ['value' => 'draft', 'label' => 'Draft', 'count_id' => 'count-draft']
-        ]
-    ],
-    'secondary_filters' => [
-        [
-            'type' => 'search',
-            'name' => 'search',
-            'placeholder' => 'Search by name or provider...',
-            'icon' => 'search'
-        ],
-        [
-            'type' => 'select',
-            'name' => 'doctor',
-            'icon' => 'person',
-            'placeholder' => 'All Providers',
-            'options' => [] // Populated by JS
-        ],
-        [
-            'type' => 'select',
-            'name' => 'sortby',
-            'placeholder' => 'Sort by',
-            'options' => [
-                'newest' => 'Newest First',
-                'oldest' => 'Oldest First',
-                'name_asc' => 'Name (A-Z)',
-                'name_desc' => 'Name (Z-A)'
-            ],
-            'default' => 'newest'
-        ]
-    ],
-    'actions' => [
-        [
-            'label' => 'Reset Filters',
-            'icon' => 'filter_list_off',
-            'id' => 'reset-filters',
-            'class' => 'text-primary hover:opacity-80'
-        ]
-    ]
-]); ?>
 
 <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
 
     <!-- Left Column: DataTable (Spans 3 columns) -->
     <div class="xl:col-span-3">
+        <!-- Filter Bar (using reusable component) -->
+        <?= shared('components', 'layout/filterbar', [
+            'isTransparent' => true,
+            'mb' => '4',
+            'primary' => [
+                'name' => 'status',
+                'label' => 'Status:',
+                'options' => [
+                    ['value' => '', 'label' => 'All', 'count_id' => 'count-all'],
+                    ['value' => 'completed', 'label' => 'Completed', 'count_id' => 'count-completed'],
+                    ['value' => 'draft', 'label' => 'Draft', 'count_id' => 'count-draft']
+                ]
+            ],
+            'secondary_filters' => [
+                // [
+                //     'type' => 'search',
+                //     'name' => 'search',
+                //     'placeholder' => 'Search by name or provider...',
+                //     'icon' => 'search'
+                // ],
+                [
+                    'type' => 'select',
+                    'name' => 'doctor',
+                    'icon' => 'person',
+                    'placeholder' => 'All Providers',
+                    'options' => [] // Populated by JS
+                ],
+                [
+                    'type' => 'select',
+                    'name' => 'sortby',
+                    'placeholder' => 'Sort by',
+                    'options' => [
+                        'newest' => 'Newest First',
+                        'oldest' => 'Oldest First',
+                        'name_asc' => 'Name (A-Z)',
+                        'name_desc' => 'Name (Z-A)'
+                    ],
+                    'default' => 'newest'
+                ]
+            ],
+            'actions' => [
+                [
+                    'label' => 'Reset Filters',
+                    'icon' => 'filter_list_off',
+                    'id' => 'reset-filters',
+                    'class' => 'text-primary hover:opacity-80'
+                ]
+            ]
+        ]); ?>
+
         <div class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
             <!-- Table -->
             <div class="overflow-x-auto w-full">
@@ -434,6 +406,16 @@ include_once __DIR__ . '/layout.php';
             order: [[2, 'desc']] // Sort by date descending initially
         });
 
+        // --- Global Search Filter Integration ---
+        let searchTimeout = null;
+        $('#global-search-input').on('keydown keyup input', function () {
+            const val = $(this).val();
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function () {
+                $table.search(val).draw();
+            }, 300);
+        });
+
         // Event listener for filter changes emitted by filterbar.js
         $(document).on('filter:change', function (e, filters) {
             console.log("Filters changed:", filters);
@@ -501,6 +483,7 @@ include_once __DIR__ . '/layout.php';
         $(document).on('click', '.download-pdf-btn', function (e) {
             e.preventDefault();
             e.stopPropagation();
+
             const id = $(this).data('id');
             window.open(apiUrl("notes") + "export-pdf.php?uuid=" + id, '_blank');
         });

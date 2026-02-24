@@ -3,6 +3,7 @@
  * Admin - Doctors Management
  */
 $pageTitle = "Doctors Management - MindTrack";
+$currentPage = 'doctors';
 $headerData = [
     'title' => 'Doctors',
     'description' => 'Manage clinical staff, specialties, and provider availability.',
@@ -10,66 +11,61 @@ $headerData = [
     'actionLabel' => 'Add New Doctor',
     'actionIcon' => 'person_add',
     'actionUrl' => 'javascript:void(0);',
-    'actionClass' => 'bg-primary hover:bg-primary/90 text-primary-foreground manage-doctor-btn',
-    'mb' => 4
+    'actionClass' => 'bg-primary hover:bg-primary/90 text-primary-foreground manage-doctor-btn'
 ];
-$currentPage = 'doctors';
 
 include_once __DIR__ . '/layout.php';
 ?>
 <?= shared('components', 'elements/dataTables/styles') ?>
 
-<?php
-// Define Filter Configuration
-$doctorFilterConfig = [
-    'primary' => [
-        'name' => 'status',
-        'label' => 'Status:',
-        'options' => [
-            ['value' => '', 'label' => 'All'],
-            ['value' => 'active', 'label' => 'Active'],
-            ['value' => 'on_leave', 'label' => 'On Leave'],
-            ['value' => 'inactive', 'label' => 'Inactive']
-        ]
-    ],
-    'secondary_filters' => [
-        [
-            'type' => 'select',
-            'name' => 'specialty',
-            'icon' => 'medical_services',
-            'placeholder' => 'All Specialties',
-            'options' => [] // Populated by JS
-        ],
-        [
-            'type' => 'select',
-            'name' => 'sort',
-            'icon' => 'sort',
-            'placeholder' => 'Sort By',
-            'options' => [
-                'newest' => 'Newest First',
-                'oldest' => 'Oldest First',
-                'name_asc' => 'Name (A-Z)',
-                'name_desc' => 'Name (Z-A)'
-            ]
-        ]
-    ],
-    'actions' => [
-        [
-            'label' => 'Reset Filters',
-            'icon' => 'filter_list_off',
-            'id' => 'reset-filters',
-            'class' => 'text-primary hover:opacity-80'
-        ]
-    ]
-];
-?>
-<!-- Filter Sub-header -->
-<?= shared('components', 'layout/filterbar', $doctorFilterConfig) ?>
-
 <!-- Main Grid Layout -->
 <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
     <!-- Doctors Table Section -->
     <div class="xl:col-span-3">
+        <!-- Filter Sub-header -->
+        <?= shared('components', 'layout/filterbar', [
+            'isTransparent' => true,
+            'mb' => '4',
+            'primary' => [
+                'name' => 'status',
+                'label' => 'Status:',
+                'options' => [
+                    ['value' => '', 'label' => 'All'],
+                    ['value' => 'active', 'label' => 'Active'],
+                    ['value' => 'on_leave', 'label' => 'On Leave'],
+                    ['value' => 'inactive', 'label' => 'Inactive']
+                ]
+            ],
+            'secondary_filters' => [
+                [
+                    'type' => 'select',
+                    'name' => 'specialty',
+                    'icon' => 'medical_services',
+                    'placeholder' => 'All Specialties',
+                    'options' => [] // Populated by JS
+                ],
+                [
+                    'type' => 'select',
+                    'name' => 'sort',
+                    'icon' => 'sort',
+                    'placeholder' => 'Sort By',
+                    'options' => [
+                        'newest' => 'Newest First',
+                        'oldest' => 'Oldest First',
+                        'name_asc' => 'Name (A-Z)',
+                        'name_desc' => 'Name (Z-A)'
+                    ]
+                ]
+            ],
+            'actions' => [
+                [
+                    'label' => 'Reset Filters',
+                    'icon' => 'filter_list_off',
+                    'id' => 'reset-filters',
+                    'class' => 'text-primary hover:opacity-80'
+                ]
+            ]
+        ]); ?>
         <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
             <table id="doctors-table" class="w-full text-left border-collapse display responsive nowrap"
                 style="width:100%">
@@ -476,9 +472,9 @@ $doctorFilterConfig = [
             console.log("Filters changed:", filters);
 
             // Handle Search
-            // if (filters.search !== undefined) {
-            //     $table.search(filters.search);
-            // }
+            if (filters.search !== undefined) {
+                $table.search(filters.search);
+            }
 
             // Handle Sort
             if (filters.sort) {
