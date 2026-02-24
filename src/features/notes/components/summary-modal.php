@@ -251,11 +251,14 @@
             }
         });
 
-        // Placeholder for PDF download
+        // Trigger PDF download
         $('#download-note-btn').on('click', function (e) {
             e.preventDefault();
             const id = $(this).data('id');
-            alert('PDF download functionality for note ' + id + ' will be implemented soon.');
+            if (id) {
+                // Open the PDF generation endpoint in a new tab to initiate download
+                window.open(apiUrl("notes") + "export-pdf.php?uuid=" + id, '_blank');
+            }
         });
     });
 </script>
