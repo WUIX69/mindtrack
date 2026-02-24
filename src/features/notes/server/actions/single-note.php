@@ -9,7 +9,7 @@ use Mindtrack\Features\Notes\Server\Db\Notes;
 global $response;
 
 // Ensure user is authenticated
-$validRoles = ['doctor', 'patient'];
+$validRoles = ['doctor', 'patient', 'admin'];
 if (!$session->get('uuid') || !in_array($session->get('role'), $validRoles)) {
     $response['message'] = 'Unauthorized access.';
     echo json_encode($response);

@@ -52,21 +52,24 @@ class Notes extends Base
                     s.name AS service_name,
                     CONCAT(u.firstname, ' ', u.lastname) AS doctor_name,
                     u.firstname AS doctor_firstname,
-                    u.lastname AS doctor_lastname
+                    u.lastname AS doctor_lastname,
+                    p.firstname AS patient_firstname,
+                    p.lastname AS patient_lastname
                 FROM clinical_notes cn
                 LEFT JOIN appointments a ON cn.appointment_uuid = a.uuid
                 LEFT JOIN services s ON a.service_uuid = s.uuid
                 LEFT JOIN users u ON cn.doctor_uuid = u.uuid
+                LEFT JOIN users p ON cn.patient_uuid = p.uuid
                 WHERE cn.uuid = :uuid
             ";
             $stmt = self::conn()->prepare($query);
             $stmt->execute(['uuid' => $uuid]);
-            $note = $stmt->fetch(PDO::FETCH_ASSOC);
+            $note = $stmt->fetch(PDO::FETCH_ASSOC) ?? [];
 
             return [
                 'success' => true,
                 'message' => 'Note fetched successfully',
-                'data' => $note ?: null
+                'data' => $note
             ];
 
         } catch (PDOException $e) {
@@ -210,7 +213,7 @@ class Notes extends Base
      * @param array $data Asssociative array containing the fields to update
      * @return array success status
      */
-    public static function update($uuid, $data = [])
+    public static function update($uuid, $data = [], $force = false)
     {
         try {
             // First check if note is already signed
@@ -218,7 +221,7 @@ class Notes extends Base
             $check->execute(['uuid' => $uuid]);
             $currentStatus = $check->fetchColumn();
 
-            if ($currentStatus === 'signed') {
+            if (!$force && $currentStatus === 'signed') {
                 return ['success' => false, 'message' => 'Cannot modify a signed note'];
             }
 
@@ -276,6 +279,32 @@ class Notes extends Base
         } catch (PDOException $e) {
             error_log("Notes sign error: " . $e->getMessage());
             return ['success' => false, 'message' => 'Database error while signing note'];
+        }
+    }
+
+    /**
+     * Delete a clinical note
+     * @param string $uuid Note UUID
+     * @return array success status
+     */
+    public static function delete($uuid)
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                DELETE FROM clinical_notes 
+                WHERE uuid = :uuid
+            ");
+
+            $stmt->execute(['uuid' => $uuid]);
+
+            if ($stmt->rowCount() > 0) {
+                return ['success' => true, 'message' => 'Clinical note deleted successfully'];
+            }
+            return ['success' => false, 'message' => 'Note not found or already deleted'];
+
+        } catch (PDOException $e) {
+            error_log("Notes delete error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Database error while deleting note'];
         }
     }
 
