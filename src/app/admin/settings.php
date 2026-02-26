@@ -177,86 +177,8 @@ include_once __DIR__ . '/layout.php';
         </section>
     </div>
 
-    <!-- 4. Security & Access -->
-    <section class="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-border/50 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-primary">security</span>
-                <h3 class="font-bold text-lg text-foreground">Security & Access</h3>
-            </div>
-            <div class="flex items-center gap-4">
-                <span class="text-xs font-semibold text-muted-foreground">Enforce 2FA for all:</span>
-                <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" class="sr-only peer" checked>
-                    <div
-                        class="w-11 h-6 bg-border peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary">
-                    </div>
-                </label>
-            </div>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-                <thead class="bg-muted/30 text-muted-foreground font-semibold border-b border-border">
-                    <tr>
-                        <th class="px-6 py-3">User</th>
-                        <th class="px-6 py-3">Role</th>
-                        <th class="px-6 py-3">Last Active</th>
-                        <th class="px-6 py-3 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-border/50">
-                    <tr>
-                        <td class="px-6 py-4 flex items-center gap-3">
-                            <div
-                                class="size-8 rounded bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
-                                SJ</div>
-                            <div>
-                                <p class="font-semibold text-foreground">Sarah Jenkins</p>
-                                <p class="text-[11px] text-muted-foreground">sarah.j@wayside.org</p>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary/10 text-primary">Admin</span>
-                        </td>
-                        <td class="px-6 py-4 text-muted-foreground">Just now</td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-muted-foreground hover:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-lg">edit</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 flex items-center gap-3">
-                            <div
-                                class="size-8 rounded bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 flex items-center justify-center font-bold text-xs">
-                                MK</div>
-                            <div>
-                                <p class="font-semibold text-foreground">Marcus Kren</p>
-                                <p class="text-[11px] text-muted-foreground">m.kren@wayside.org</p>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="px-2 py-0.5 rounded text-[11px] font-bold bg-muted text-foreground">Staff</span>
-                        </td>
-                        <td class="px-6 py-4 text-muted-foreground">2 hours ago</td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-muted-foreground hover:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-lg">edit</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="p-4 bg-muted/10 text-center border-t border-border">
-            <button
-                class="text-xs font-bold text-primary flex items-center justify-center gap-2 w-full hover:underline transition-all">
-                <span class="material-symbols-outlined text-sm">add</span> Add New User
-            </button>
-        </div>
-    </section>
+    <!-- 4. Admin Users Table -->
+    <?= featured('settings', 'components/admin-users-table'); ?>
 
     <!-- 5. Data Management -->
     <section class="bg-card rounded-xl border border-border shadow-sm overflow-hidden mb-12">
@@ -299,3 +221,8 @@ include_once __DIR__ . '/layout.php';
         </div>
     </section>
 </div>
+<script>
+    $(function () {
+        // Code here...
+    });
+</script>

@@ -284,8 +284,8 @@ class Users extends Base
             // 1. Insert into users table
             $stmt = self::conn()->prepare("
                 INSERT INTO users (
-                    uuid, firstname, lastname, email, password, phone, role, status, email_verification_token
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    uuid, firstname, lastname, email, password, phone, role, status, is_email_verified, email_verification_token
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             $role = $data['role'] ?? 'patient';
@@ -300,6 +300,7 @@ class Users extends Base
                 $data['phone'],
                 $role,
                 $status,
+                $data['is_email_verified'] ?? 0,
                 $data['email_verification_token'] ?? null
             ]);
 
@@ -414,6 +415,42 @@ class Users extends Base
                 'success' => false,
                 'message' => 'Password update failed.',
             ];
+        }
+    }
+
+    public static function updateWhereAdmin($data)
+    {
+        try {
+            self::beginTransaction();
+
+            $query = "UPDATE users SET firstname=?, lastname=?, email=?, phone=?, status=?, is_email_verified=?";
+            $params = [
+                $data['firstname'],
+                $data['lastname'],
+                $data['email'],
+                $data['phone'],
+                $data['status'] ?? 'active',
+                $data['is_email_verified'] ?? 0
+            ];
+
+            if (!empty($data['password'])) {
+                $query .= ", password=?";
+                $params[] = $data['password'];
+            }
+
+            $query .= " WHERE uuid=? AND role='admin'";
+            $params[] = $data['uuid'];
+
+            $stmt = self::conn()->prepare($query);
+            $stmt->execute($params);
+
+            self::commit();
+            return ['success' => true, 'message' => 'Admin profile updated successfully'];
+
+        } catch (PDOException $e) {
+            self::rollBack();
+            error_log("SQL Error (Users::updateWhereAdmin): " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to update admin profile'];
         }
     }
 
