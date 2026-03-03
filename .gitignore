@@ -12,7 +12,7 @@ src/core/tests
 .phpunit.result.cache
 phpunit.xml
 
-.agent
+.agents
 .vscode
 
 # Ignore everything inside src/uploads
