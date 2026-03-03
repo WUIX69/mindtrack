@@ -302,6 +302,9 @@ include_once __DIR__ . '/layout.php';
                 success: function (response) {
                     if (response.success) {
                         $dashboardTable.draw(false);
+                        window.fetchAdminQuickStats();
+                        window.fetchAdminSchedule();
+                        window.fetchAdminWorkload();
                     } else {
                         alert(response.message);
                     }
@@ -336,6 +339,9 @@ include_once __DIR__ . '/layout.php';
                     if (response.success) {
                         $('#withdraw-modal').addClass('hidden').removeClass('flex');
                         $dashboardTable.draw(false);
+                        window.fetchAdminQuickStats();
+                        window.fetchAdminSchedule();
+                        window.fetchAdminWorkload();
                     } else {
                         alert(response.message);
                     }

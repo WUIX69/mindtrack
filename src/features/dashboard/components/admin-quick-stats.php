@@ -60,7 +60,7 @@
     $(function () {
         const statsEndpoint = apiUrl('dashboard') + 'quick-stats.php';
 
-        function fetchQuickStats() {
+        window.fetchAdminQuickStats = function () {
             $.ajax({
                 url: statsEndpoint,
                 method: 'GET',
@@ -96,6 +96,6 @@
                 .addClass('text-muted-foreground');
         }
 
-        fetchQuickStats();
+        window.fetchAdminQuickStats();
     });
 </script>

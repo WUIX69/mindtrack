@@ -42,7 +42,7 @@
             'no_show': { label: 'No Show', borderClass: 'border-gray-400', textClass: 'text-gray-400' }
         };
 
-        function fetchAdminSchedule() {
+        window.fetchAdminSchedule = function () {
             $.ajax({
                 url: scheduleEndpoint,
                 method: 'GET',
@@ -137,6 +137,6 @@
             `);
         }
 
-        fetchAdminSchedule();
+        window.fetchAdminSchedule();
     });
 </script>

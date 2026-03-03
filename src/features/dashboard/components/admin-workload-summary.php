@@ -51,7 +51,7 @@
         const workloadContainer = $('#workload-container');
         const workloadEndpoint = apiUrl('dashboard') + 'doctor-workload.php';
 
-        function fetchWorkload() {
+        window.fetchAdminWorkload = function () {
             $.ajax({
                 url: workloadEndpoint,
                 method: 'GET',
@@ -126,6 +126,6 @@
             `);
         }
 
-        fetchWorkload();
+        window.fetchAdminWorkload();
     });
 </script>
