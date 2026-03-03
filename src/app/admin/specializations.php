@@ -21,55 +21,7 @@ include_once __DIR__ . '/layout.php';
 <?= shared('components', 'elements/dataTables/styles') ?>
 
 <!-- Stats Overview -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="bg-card dark:bg-card p-4 rounded-xl border border-border">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-muted-foreground text-xs font-semibold uppercase">Total Specializations</p>
-                <h3 class="text-2xl font-bold mt-1">12</h3>
-            </div>
-            <div
-                class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-2xl">category</span>
-            </div>
-        </div>
-    </div>
-    <div class="bg-card dark:bg-card p-4 rounded-xl border border-border">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-muted-foreground text-xs font-semibold uppercase">Active Status</p>
-                <h3 class="text-2xl font-bold mt-1">11</h3>
-            </div>
-            <div
-                class="w-10 h-10 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-2xl">check_circle</span>
-            </div>
-        </div>
-    </div>
-    <div class="bg-card dark:bg-card p-4 rounded-xl border border-border">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-muted-foreground text-xs font-semibold uppercase">Recently Updated</p>
-                <h3 class="text-2xl font-bold mt-1">3</h3>
-            </div>
-            <div
-                class="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-2xl">history</span>
-            </div>
-        </div>
-    </div>
-    <div class="bg-card dark:bg-card p-4 rounded-xl border border-border">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-muted-foreground text-xs font-semibold uppercase">Top Capacity</p>
-                <h3 class="text-2xl font-bold mt-1 text-primary">Clinical</h3>
-            </div>
-            <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-2xl">trending_up</span>
-            </div>
-        </div>
-    </div>
-</div>
+<?= featured('specializations', 'components/stats-overview') ?>
 
 <!-- Filter Sub-header -->
 <?= shared('components', 'layout/filterbar', [
@@ -308,6 +260,7 @@ include_once __DIR__ . '/layout.php';
                     success: function (response) {
                         if (response.success) {
                             $table.ajax.reload();
+                            window.fetchSpecializationStats();
                         } else {
                             alert(response.message || 'Failed to delete item.');
                         }
