@@ -359,6 +359,11 @@
                         if ($.fn.DataTable.isDataTable('#admin-notes-table')) {
                             $('#admin-notes-table').DataTable().ajax.reload(null, false);
                         }
+
+                        // Dynamically update stats widgets
+                        window.fetchDocumentationCompliance();
+                        window.fetchRecentFinalizations();
+                        window.fetchWidgetQuickStats();
                     } else {
                         alert(res.message || 'Failed to save note.');
                         console.error(res.errors || res);
@@ -392,6 +397,11 @@
                             if ($.fn.DataTable.isDataTable('#admin-notes-table')) {
                                 $('#admin-notes-table').DataTable().ajax.reload(null, false);
                             }
+
+                            // Dynamically update stats widgets
+                            window.fetchDocumentationCompliance();
+                            window.fetchRecentFinalizations();
+                            window.fetchWidgetQuickStats();
                         } else {
                             alert(res.message || 'Failed to delete note.');
                         }

@@ -116,135 +116,13 @@ include_once __DIR__ . '/layout.php';
     <div class="xl:col-span-1 space-y-6">
 
         <!-- Widget 1: Documentation Compliance -->
-        <div class="bg-card rounded-2xl border border-border shadow-sm p-6 relative overflow-hidden group">
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-            </div>
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-sm font-bold text-foreground">Documentation Compliance</h3>
-                <button
-                    class="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-muted">
-                    <span class="material-symbols-outlined text-[20px]">more_horiz</span>
-                </button>
-            </div>
-
-            <!-- Compliance Donut Chart (Placeholder SVG) -->
-            <div class="flex justify-center mb-6">
-                <div class="relative size-32">
-                    <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Background Circle -->
-                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-muted" stroke-width="3"
-                            stroke-dasharray="100" stroke-linecap="round"></circle>
-                        <!-- Progress Circle (Completed) -->
-                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-primary" stroke-width="3"
-                            stroke-dasharray="85, 100" stroke-linecap="round"></circle>
-                    </svg>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="text-2xl font-black text-foreground">85%</span>
-                        <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Signed</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <!-- Progress Bar 1 -->
-                <div>
-                    <div class="flex justify-between text-xs mb-1.5">
-                        <span class="font-bold text-muted-foreground">Within 24 Hours</span>
-                        <span class="font-bold text-foreground">92%</span>
-                    </div>
-                    <div class="w-full bg-muted rounded-full h-1.5">
-                        <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 92%"></div>
-                    </div>
-                </div>
-                <!-- Progress Bar 2 -->
-                <div>
-                    <div class="flex justify-between text-xs mb-1.5">
-                        <span class="font-bold text-muted-foreground">Late Submissions</span>
-                        <span class="font-bold text-foreground">8%</span>
-                    </div>
-                    <div class="w-full bg-muted rounded-full h-1.5">
-                        <div class="bg-amber-500 h-1.5 rounded-full" style="width: 8%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php featured('notes', 'components/documentation-compliance'); ?>
 
         <!-- Widget 2: Recent Finalizations (Static Placeholders) -->
-        <div class="bg-card rounded-2xl border border-border shadow-sm p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-sm font-bold text-foreground">Recent Finalizations</h3>
-                <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded text-center">Live</span>
-            </div>
-
-            <div class="space-y-5">
-                <!-- Feed Item -->
-                <div class="flex gap-4">
-                    <div class="relative mt-1">
-                        <div class="size-2.5 rounded-full bg-primary ring-4 ring-primary/20"></div>
-                        <div class="absolute top-4 bottom-[-16px] left-[4px] w-px bg-border"></div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-foreground">Dr. Sarah Jenkins</p>
-                        <p class="text-xs font-medium text-muted-foreground mt-0.5">Signed note for <span
-                                class="text-foreground">Emily Chen</span></p>
-                        <p class="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mt-1">2
-                            mins ago</p>
-                    </div>
-                </div>
-                <!-- Feed Item -->
-                <div class="flex gap-4">
-                    <div class="relative mt-1">
-                        <div class="size-2.5 rounded-full bg-primary ring-4 ring-primary/20"></div>
-                        <div class="absolute top-4 bottom-[-16px] left-[4px] w-px bg-border"></div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-foreground">Dr. Michael Chen</p>
-                        <p class="text-xs font-medium text-muted-foreground mt-0.5">Signed note for <span
-                                class="text-foreground">James Wilson</span></p>
-                        <p class="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mt-1">15
-                            mins ago</p>
-                    </div>
-                </div>
-                <!-- Feed Item (Last) -->
-                <div class="flex gap-4">
-                    <div class="mt-1">
-                        <div class="size-2.5 rounded-full bg-primary ring-4 ring-primary/20"></div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-foreground">Dr. Emily Williams</p>
-                        <p class="text-xs font-medium text-muted-foreground mt-0.5">Updated draft for <span
-                                class="text-foreground">Robert Fox</span></p>
-                        <p class="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mt-1">1
-                            hour ago</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php featured('notes', 'components/recent-finalizations'); ?>
 
         <!-- Widget 3: Quick Stats -->
-        <div class="grid grid-cols-2 gap-4">
-            <div
-                class="bg-card border border-border rounded-2xl p-4 shadow-sm flex flex-col items-center justify-center text-center">
-                <div
-                    class="size-10 rounded-full bg-amber-100 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-2">
-                    <span class="material-symbols-outlined text-[20px]">edit_document</span>
-                </div>
-                <span class="text-2xl font-black text-foreground">24</span>
-                <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Pending
-                    Notes</span>
-            </div>
-            <div
-                class="bg-card border border-border rounded-2xl p-4 shadow-sm flex flex-col items-center justify-center text-center">
-                <div
-                    class="size-10 rounded-full bg-red-100 dark:bg-red-950/30 text-red-600 dark:text-red-400 flex items-center justify-center mb-2">
-                    <span class="material-symbols-outlined text-[20px]">warning</span>
-                </div>
-                <span class="text-2xl font-black text-foreground">3</span>
-                <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Critical
-                    (>72h)</span>
-            </div>
-        </div>
+        <?php featured('notes', 'components/widget-quick-stats'); ?>
 
     </div>
 </div>
