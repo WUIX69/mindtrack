@@ -15,73 +15,7 @@ include_once __DIR__ . '/layout.php';
 <?= shared('components', 'elements/dataTables/styles') ?>
 
 <!-- Quick Stats -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <!-- Total Patients -->
-    <div class="bg-card p-6 rounded-2xl border border-border shadow-sm hover:shadow-md transition-all group">
-        <div class="flex justify-between items-start mb-4">
-            <div
-                class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                <span class="material-symbols-outlined text-2xl">group</span>
-            </div>
-            <span
-                class="flex items-center gap-1 text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-full text-nowrap">
-                <span class="material-symbols-outlined text-sm">trending_up</span>
-                12.5%
-            </span>
-        </div>
-        <h3 class="text-muted-foreground text-sm font-medium">Total Online Support</h3>
-        <p class="text-3xl font-black mt-1 text-foreground">1,284</p>
-    </div>
-
-    <!-- Active Doctors -->
-    <div class="bg-card p-6 rounded-2xl border border-border shadow-sm hover:shadow-md transition-all group">
-        <div class="flex justify-between items-start mb-4">
-            <div
-                class="size-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-primary-foreground transition-all">
-                <span class="material-symbols-outlined text-2xl">schedule</span>
-            </div>
-            <span
-                class="flex items-center gap-1 text-xs font-bold text-orange-500 bg-orange-500/10 px-2 py-1 rounded-full text-nowrap">
-                12 New
-            </span>
-        </div>
-        <h3 class="text-muted-foreground text-sm font-medium">Pending Requests</h3>
-        <p class="text-3xl font-black mt-1 text-foreground">12</p>
-    </div>
-
-    <!-- Appointments Today -->
-    <div class="bg-card p-6 rounded-2xl border border-border shadow-sm hover:shadow-md transition-all group">
-        <div class="flex justify-between items-start mb-4">
-            <div
-                class="size-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-primary-foreground transition-all">
-                <span class="material-symbols-outlined text-2xl">medical_services</span>
-            </div>
-            <span
-                class="flex items-center gap-1 text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full text-nowrap">
-                Stable
-            </span>
-        </div>
-        <h3 class="text-muted-foreground text-sm font-medium">Active Providers</h3>
-        <p class="text-3xl font-black mt-1 text-foreground">24</p>
-    </div>
-
-    <!-- Revenue -->
-    <div class="bg-card p-6 rounded-2xl border border-border shadow-sm hover:shadow-md transition-all group">
-        <div class="flex justify-between items-start mb-4">
-            <div
-                class="size-12 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500 group-hover:bg-green-500 group-hover:text-primary-foreground transition-all">
-                <span class="material-symbols-outlined text-2xl">forum</span>
-            </div>
-            <span
-                class="flex items-center gap-1 text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-full text-nowrap">
-                <span class="material-symbols-outlined text-sm">trending_up</span>
-                8%
-            </span>
-        </div>
-        <h3 class="text-muted-foreground text-sm font-medium">Monthly Stats</h3>
-        <p class="text-3xl font-black mt-1 text-foreground">450</p>
-    </div>
-</div>
+<?= featured('dashboard', 'components/admin-quick-stats') ?>
 
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
     <!-- Appointment Requests Table -->
@@ -141,121 +75,14 @@ include_once __DIR__ . '/layout.php';
             </table>
         </div>
     </div>
+
     <!-- Today's Schedule Sidebar Widget -->
-    <div class="space-y-4">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-bold">Today's Schedule</h3>
-            <button class="p-1.5 rounded-lg border border-border hover:bg-muted transition-all">
-                <span class="material-symbols-outlined text-[18px]">calendar_today</span>
-            </button>
-        </div>
-        <div class="bg-card rounded-xl border border-border p-5 shadow-sm">
-            <div
-                class="relative space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-muted">
-                <div class="relative pl-8 group">
-                    <div
-                        class="absolute left-0 top-1 size-[22px] rounded-full bg-card border-2 border-primary ring-4 ring-primary/5 z-10">
-                    </div>
-                    <div class="flex flex-col">
-                        <span
-                            class="text-[10px] font-bold text-primary uppercase tracking-widest leading-none mb-1">08:30
-                            AM - Confirmed</span>
-                        <h4 class="text-sm font-bold text-foreground">Initial Assessment</h4>
-                        <p class="text-xs text-muted-foreground mt-0.5">Patient: Arthur Morgan</p>
-                        <div class="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                            <span class="material-symbols-outlined text-[14px]">person</span> Dr. Aris Thorne
-                        </div>
-                    </div>
-                </div>
-                <div class="relative pl-8 group">
-                    <div class="absolute left-0 top-1 size-[22px] rounded-full bg-card border-2 border-border z-10">
-                    </div>
-                    <div class="flex flex-col">
-                        <span
-                            class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest leading-none mb-1">10:00
-                            AM - Confirmed</span>
-                        <h4 class="text-sm font-bold text-foreground">CBT Therapy</h4>
-                        <p class="text-xs text-muted-foreground mt-0.5">Patient: Sadie Adler</p>
-                        <div class="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                            <span class="material-symbols-outlined text-[14px]">person</span> Dr. Helena Smith
-                        </div>
-                    </div>
-                </div>
-                <div class="relative pl-8 group">
-                    <div class="absolute left-0 top-1 size-[22px] rounded-full bg-card border-2 border-orange-500 z-10">
-                    </div>
-                    <div class="flex flex-col">
-                        <span
-                            class="text-[10px] font-bold text-orange-500 uppercase tracking-widest leading-none mb-1">02:00
-                            PM - Next Session</span>
-                        <h4 class="text-sm font-bold text-foreground">Crisis Intervention</h4>
-                        <p class="text-xs text-muted-foreground mt-0.5">Patient: Javier Escuella</p>
-                        <div class="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                            <span class="material-symbols-outlined text-[14px]">person</span> Dr. Aris Thorne
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button
-                class="w-full mt-6 py-2.5 bg-muted text-muted-foreground text-xs font-bold rounded-lg hover:bg-muted/80 transition-all uppercase tracking-wider">
-                VIEW FULL CALENDAR
-            </button>
-        </div>
-    </div>
+    <?= featured('dashboard', 'components/admin-todays-schedule') ?>
 </div>
 
 <!-- Doctor Workload Summary -->
-<section class="bg-card rounded-xl border border-border p-6 shadow-sm">
-    <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-bold text-foreground">Provider Capacity Overview</h3>
-        <div class="flex gap-2">
-            <span class="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                <span class="size-2 rounded-full bg-primary"></span> High
-            </span>
-            <span class="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                <span class="size-2 rounded-full bg-primary/30"></span> Low
-            </span>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="space-y-3">
-            <div class="flex justify-between text-xs font-bold uppercase tracking-wide">
-                <span class="text-muted-foreground">Dr. Aris Thorne</span>
-                <span class="text-primary">85%</span>
-            </div>
-            <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                <div class="h-full bg-primary rounded-full w-[85%]"></div>
-            </div>
-        </div>
-        <div class="space-y-3">
-            <div class="flex justify-between text-xs font-bold uppercase tracking-wide">
-                <span class="text-muted-foreground">Dr. Helena Smith</span>
-                <span class="text-primary">62%</span>
-            </div>
-            <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                <div class="h-full bg-primary rounded-full w-[62%]"></div>
-            </div>
-        </div>
-        <div class="space-y-3">
-            <div class="flex justify-between text-xs font-bold uppercase tracking-wide">
-                <span class="text-muted-foreground">Dr. James Taylor</span>
-                <span class="text-primary">45%</span>
-            </div>
-            <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                <div class="h-full bg-primary rounded-full w-[45%]"></div>
-            </div>
-        </div>
-        <div class="space-y-3">
-            <div class="flex justify-between text-xs font-bold uppercase tracking-wide">
-                <span class="text-muted-foreground">Dr. Sarah Connor</span>
-                <span class="text-red-600">92%</span>
-            </div>
-            <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                <div class="h-full bg-red-600 rounded-full w-[92%]"></div>
-            </div>
-        </div>
-    </div>
-</section>
+<?= featured('dashboard', 'components/admin-workload-summary') ?>
+
 <!-- Modals -->
 <?= featured('appointments', 'components/summary-modal') ?>
 <?= featured('appointments', 'components/withdraw-modal', [
@@ -264,6 +91,7 @@ include_once __DIR__ . '/layout.php';
     'message' => 'Are you sure you want to permanently delete this appointment? This action cannot be undone.',
     'confirm_text' => 'Yes, Delete',
 ]); ?>
+
 <script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
 <?= shared('components', 'elements/dataTables/scripts'); ?>
 <script>

@@ -78,16 +78,16 @@ class appointments extends Base
     }
 
     /**
-     * Fetch appointments for a specific doctor for TODAY.
+     * Fetch appointments for a specific doctor or all for admin for TODAY.
      * Joins with patients and services to get full details.
      * 
      * @param string $doctorUuid
      * @return array
      */
-    public static function allWhereDoctorTodaysSchedule($doctorUuid)
+    public static function allWhereDoctorTodaysSchedule(?string $doctorUuid = null): array
     {
         try {
-            $stmt = self::conn()->prepare("
+            $query = "
                 SELECT 
                     a.uuid,
                     a.status,
@@ -96,15 +96,27 @@ class appointments extends Base
                     s.name as service_name, 
                     s.duration as service_duration,
                     u.firstname as patient_firstname, 
-                    u.lastname as patient_lastname
+                    u.lastname as patient_lastname,
+                    d.firstname as doctor_firstname,
+                    d.lastname as doctor_lastname
                 FROM appointments a
                 LEFT JOIN services s ON a.service_uuid = s.uuid
                 LEFT JOIN users u ON a.patient_uuid = u.uuid
-                WHERE a.doctor_uuid = ? 
-                AND a.sched_date = CURDATE()
-                ORDER BY a.sched_time ASC
-            ");
-            $stmt->execute([$doctorUuid]);
+                LEFT JOIN users d ON a.doctor_uuid = d.uuid
+                WHERE a.sched_date = CURDATE()
+            ";
+
+            $params = [];
+
+            if ($doctorUuid !== null) {
+                $query .= " AND a.doctor_uuid = ?";
+                $params[] = $doctorUuid;
+            }
+
+            $query .= " ORDER BY a.sched_time ASC";
+
+            $stmt = self::conn()->prepare($query);
+            $stmt->execute($params);
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
 
             return [
