@@ -169,13 +169,13 @@ src/features/[feature-name]/
     - Explicit control over parameter serialization.
     - Simplified integration of front-end validation before redirection.
 - **Bidirectional State Persistence**: Always carry and preserve user selections (e.g., `service`, `doctor_uuid`, `date`) via URL GET parameters during both forward ("Continue") and backward ("Back") navigation.
-- **Responses**:
-    - Use the `global $response` array (defined in `config.php`) for all API outputs.
-    - Merge logic results into the response using `$response = array_merge($response, $result);`.
-    - Always end with `echo json_encode($response); exit;`.
+- **Action Routing (Independent Fetching)**: Avoid "mega-endpoints" that return unrelated multi-component data. Build targeted API endpoints that use an `?action=` GET parameter (e.g. `stats.php?action=getDemographics`) to serve exactly what a single UI component needs independently.
+- **Responses (Full Payload from DB)**:
+    - Database mapping methods MUST format and return the fully ready response array directly (e.g. `['success' => true, 'message' => '...', 'data' => ...]`). Do not construct or wrap `data` payloads in the API action file.
+    - In the action endpoint, assign the DB method's return value to `$result` (or merge it with `global $response`) and end with `echo json_encode($result); exit;`.
 - **Naming Conventions**: Use **noun-based** naming for resource actions (e.g., `doctors.php`, `services.php`) rather than verb-based (e.g., `list-doctors.php`).
 - **Shared Actions**: Actions used across features (e.g., `doctors.php`, `register.php`) MUST go in `src/server/actions/`, not in feature specific folders.
-- **Database Logic**: Do NOT write raw SQL in actions. Encapsulate all DB logic in `src/server/db/` models (e.g., `Users::allWhereDoctors()`) if its logic is share-able, if its only specific to a feature, then write it in the feature `src/features/<feature>/server/db` specific folder. Actions should be "thin" and only handle validation/response.
+- **Database Logic**: Do NOT write raw SQL in actions. Encapsulate all DB logic in `src/server/db/` models (e.g., `Users::allWhereDoctors()`) if its logic is share-able, if its only specific to a feature, then write it in the feature `src/features/<feature>/server/db` specific folder. Actions should act as "thin" routers that validate auth, switch the `action`, call the DB method, and return the JSON.
 
 ### 📊 DataTables Implementation
 
