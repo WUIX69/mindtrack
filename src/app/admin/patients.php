@@ -73,65 +73,10 @@ include_once __DIR__ . '/layout.php';
     <!-- Sidebar Stats Content -->
     <div class="space-y-6">
         <!-- Demographics Widget -->
-        <div class="bg-card rounded-xl border border-border p-6 shadow-sm">
-            <h3 class="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-tight text-foreground">
-                <span class="material-symbols-outlined text-primary text-[20px]">analytics</span>
-                Patient Demographics
-            </h3>
-            <div class="space-y-4">
-                <div>
-                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
-                        <span class="text-muted-foreground">Adults (18-65)</span>
-                        <span class="text-foreground">65%</span>
-                    </div>
-                    <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div class="h-full bg-primary rounded-full w-[65%]"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
-                        <span class="text-muted-foreground">Adolescents (12-17)</span>
-                        <span class="text-foreground">22%</span>
-                    </div>
-                    <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div class="h-full bg-blue-400 rounded-full w-[22%]"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
-                        <span class="text-muted-foreground">Seniors (65+)</span>
-                        <span class="text-foreground">13%</span>
-                    </div>
-                    <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div class="h-full bg-warning rounded-full w-[13%]"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?= featured('patients', 'components/patient-demographic') ?>
 
         <!-- Growth Widget -->
-        <div class="bg-card rounded-xl border border-border p-6 shadow-sm">
-            <h3 class="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-tight text-foreground">
-                <span class="material-symbols-outlined text-success text-[20px]">person_add_alt</span>
-                New Patients This Month
-            </h3>
-            <div class="flex items-end gap-2 mb-4">
-                <span class="text-3xl font-bold text-foreground">42</span>
-                <span class="text-xs font-bold text-success mb-1 flex items-center">
-                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                    +12%
-                </span>
-            </div>
-            <div class="flex items-center gap-1 h-12">
-                <div class="flex-1 bg-primary/20 rounded-t h-[40%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[60%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[30%]"></div>
-                <div class="flex-1 bg-primary rounded-t h-[90%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[50%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[75%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[85%]"></div>
-            </div>
-        </div>
+        <?= featured('patients', 'components/new-patient-this-month') ?>
 
         <!-- Compliance Card -->
         <div class="bg-primary/5 rounded-xl border border-primary/10 p-5">
