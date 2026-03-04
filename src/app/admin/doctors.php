@@ -90,69 +90,10 @@ include_once __DIR__ . '/layout.php';
     <!-- Sidebar Stats Content -->
     <div class="space-y-6">
         <!-- Specialty Distribution Widget -->
-        <div class="bg-card rounded-xl border border-border p-6 shadow-sm">
-            <h3 class="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-tight text-foreground">
-                <span class="material-symbols-outlined text-primary text-[20px]">pie_chart</span>
-                Specialty Distribution
-            </h3>
-            <div class="space-y-4">
-                <div>
-                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
-                        <span class="text-muted-foreground">Psychotherapy</span>
-                        <span class="text-foreground">42%</span>
-                    </div>
-                    <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div class="h-full bg-primary rounded-full w-[42%]"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
-                        <span class="text-muted-foreground">CBT Therapy</span>
-                        <span class="text-foreground">35%</span>
-                    </div>
-                    <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div class="h-full bg-blue-500 rounded-full w-[35%]"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider mb-1.5">
-                        <span class="text-muted-foreground">Occupational Therapy</span>
-                        <span class="text-foreground">23%</span>
-                    </div>
-                    <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div class="h-full bg-success rounded-full w-[23%]"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?= featured('doctors', 'components/specialty-distribution'); ?>
 
         <!-- Capacity Widget -->
-        <div class="bg-card rounded-xl border border-border p-6 shadow-sm">
-            <h3 class="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-tight text-foreground">
-                <span class="material-symbols-outlined text-success text-[20px]">group_add</span>
-                Provider Capacity
-            </h3>
-            <div class="flex items-end gap-2 mb-4">
-                <span class="text-3xl font-bold text-foreground">88%</span>
-                <span class="text-xs font-bold text-success mb-1 flex items-center">
-                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                    Optimal
-                </span>
-            </div>
-            <div class="flex items-center gap-1 h-12">
-                <div class="flex-1 bg-primary/20 rounded-t h-[70%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[85%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[75%]"></div>
-                <div class="flex-1 bg-primary rounded-t h-[95%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[80%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[90%]"></div>
-                <div class="flex-1 bg-primary/20 rounded-t h-[85%]"></div>
-            </div>
-            <p class="mt-4 text-[11px] text-muted-foreground font-medium leading-relaxed">
-                Current clinic capacity is at <span class="text-foreground font-bold">high utilization</span>. Consider
-                onboarding new specialists.
-            </p>
-        </div>
+        <?= featured('doctors', 'components/capacity'); ?>
 
         <!-- Quality Control Card -->
         <div class="bg-primary/5 rounded-xl border border-primary/10 p-5">
@@ -175,6 +116,11 @@ include_once __DIR__ . '/layout.php';
 
 <script>
     $(document).ready(function () {
+        window.fetchDoctorsStats = function () {
+            window.fetchDoctorCapacity();
+            window.fetchSpecialtyDistribution();
+        };
+
         // Trigger Add Doctor Modal
         // Trigger Add/Edit Doctor Modal
         $(document).on('click', '.manage-doctor-btn', function (e) {
@@ -224,6 +170,7 @@ include_once __DIR__ . '/layout.php';
                         if (response.success) {
                             // alert(response.message);
                             $('#doctors-table').DataTable().ajax.reload();
+                            window.fetchDoctorsStats();
                         } else {
                             alert(response.message || 'Error deleting doctor');
                         }

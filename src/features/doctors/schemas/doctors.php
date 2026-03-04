@@ -45,6 +45,7 @@ class Doctors
                     'phone' => $data['phone'] ?: null,
                     'specialty' => $data['specialty'] ?: null,
                     'license_number' => $data['license_number'] ?: null,
+                    'consultation_fee' => $data['consultation_fee'] ?? null,
                     'bio' => $data['bio'] ?: null,
                     'availability' => $data['availability'] ?: [],
                     'password' => $data['password'] ?: null,

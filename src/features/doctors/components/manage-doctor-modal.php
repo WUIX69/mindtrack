@@ -386,9 +386,11 @@
                 contentType: false,
                 dataType: 'json',
                 success: function (response) {
+                    alert(response.message);
                     if (response.success) {
                         closeDoctorModal();
                         $('#doctors-table').DataTable().ajax.reload();
+                        window.fetchDoctorsStats();
                     } else {
                         alert(response.error || 'An error occurred');
                     }

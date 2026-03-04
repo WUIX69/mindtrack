@@ -580,7 +580,8 @@ class Users extends Base
                 SET specialization_id = ?, 
                     license_number = ?, 
                     bio = ?, 
-                    consultation_fee = ?
+                    consultation_fee = ?,
+                    availability = ?
                 WHERE user_uuid = ?
             ");
 
@@ -589,6 +590,7 @@ class Users extends Base
                 $data['license_number'],
                 $data['bio'],
                 $data['consultation_fee'],
+                json_encode($data['availability'] ?? []),
                 $data['uuid']
             ]);
 
