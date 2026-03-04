@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS user_deactivation_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_uuid VARCHAR(36) NOT NULL,
+    reason VARCHAR(255) NOT NULL,
+    feedback TEXT DEFAULT NULL,
+    deactivated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_uuid) REFERENCES users(uuid) ON DELETE CASCADE
+);

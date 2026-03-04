@@ -134,7 +134,7 @@ include __DIR__ . '/layout.php';
                         all
                         associated health records. This action is irreversible.</p>
                 </div>
-                <button
+                <button type="button" onclick="DeactivationModal.open()"
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md shadow-red-600/20 whitespace-nowrap">
                     Delete Account
                 </button>
@@ -146,6 +146,9 @@ include __DIR__ . '/layout.php';
     <!-- Decorative Image Card -->
     <?= featured('settings', 'components/decorative'); ?>
 </div>
+
+<!-- Deactivation Modal -->
+<?= featured('settings', 'components/deactivation-modal'); ?>
 
 <?= shared('components', 'elements/filepond/scripts') ?>
 <script>
