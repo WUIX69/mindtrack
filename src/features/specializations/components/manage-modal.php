@@ -205,9 +205,7 @@
                     if (response.success) {
                         closeSpecializationModal();
                         $('#specializations-table').DataTable().ajax.reload();
-                        if (typeof window.fetchSpecializationStats === 'function') {
-                            window.fetchSpecializationStats();
-                        }
+                        window.fetchSpecializationStats();
                     } else {
                         alert(response.message || 'An error occurred.');
                     }
