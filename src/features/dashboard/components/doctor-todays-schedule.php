@@ -15,7 +15,7 @@
 <script>
     $(function () {
         const scheduleContainer = $('#todays-schedule-list');
-        const endpoint = apiUrl('appointments') + '/todays-schedule.php';
+        const endpoint = apiUrl('dashboard') + 'todays-schedule.php';
 
         function fetchSchedule() {
             $.ajax({

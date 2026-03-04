@@ -64,6 +64,7 @@
             $.ajax({
                 url: statsEndpoint,
                 method: 'GET',
+                data: { action: 'getAdminStats' },
                 dataType: 'json',
                 success: function (response) {
                     if (!response.success || !response.data) {

@@ -9,14 +9,15 @@ apiHeaders();
 
 global $response;
 
-if (!$session->get('uuid') || $session->get('role') !== 'admin') {
+if (!$session->get('uuid') || !in_array($session->get('role'), ['admin', 'doctor'])) {
     $response['message'] = 'Unauthorized access.';
     echo json_encode($response);
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $result = appointments::allWhereDoctorTodaysSchedule(null);
+    $doctorUuid = $session->get('role') === 'doctor' ? $session->get('uuid') : null;
+    $result = appointments::allWhereDoctorTodaysSchedule($doctorUuid);
     $response = array_merge($response, $result);
 } else {
     $response['message'] = 'Invalid request method.';

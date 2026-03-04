@@ -1,23 +1,23 @@
 <?php
 
-use Mindtrack\Server\Db\appointments;
+declare(strict_types=1);
 
-require_once dirname(__DIR__, 5) . '/src/core/app.php';
+use Mindtrack\Features\Dashboard\Server\Db\RecentPatientActivity;
+
+require_once dirname(__DIR__, 4) . '/core/app.php';
 apiHeaders();
 
-global $response;
+global $response, $session;
 
-// Ensure user is authenticated and is a doctor
 if (!$session->get('uuid') || $session->get('role') !== 'doctor') {
     $response['message'] = 'Unauthorized access.';
     echo json_encode($response);
     exit;
 }
 
-$doctorUuid = $session->get('uuid');
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $result = appointments::allWhereDoctorTodaysSchedule($doctorUuid);
+    $doctorUuid = $session->get('uuid');
+    $result = RecentPatientActivity::getDoctorRecentActivity($doctorUuid);
     $response = array_merge($response, $result);
 } else {
     $response['message'] = 'Invalid request method.';
