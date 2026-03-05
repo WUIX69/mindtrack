@@ -26,6 +26,7 @@ $mb = $mb ?? 8;
 
 // Load Real User Data
 $user = userData();
+$userFirstName = $user['firstname'] ?? 'Guest';
 $userName = $user['name'] ?? 'Guest User';
 $userRole = $user['role'] ?? $role;
 $userAvatar = $user['profile']; // already handled on media
@@ -35,12 +36,18 @@ $userSub = match ($userRole) {
     default => 'WAYSIDE PSYCHE CENTER',
 };
 
+$userTitleIcon = match ($userRole) {
+    'doctor' => '👨🏻‍⚕️👋',
+    'patient' => '🙋🏻‍♂️👋',
+    default => '👋',
+};
+
 ?>
 
 <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-<?= $mb ?>">
     <div>
-        <h2 class="text-3xl font-black tracking-tight text-foreground">
-            <?= $title ?>
+        <h2 class="text-3xl font-black tracking-tight text-foreground capitalize">
+            <?= $title ?><?= $userRole !== 'admin' ? ' ' . $userFirstName . ' ' . $userTitleIcon : '' ?>
         </h2>
         <?php if ($description): ?>
             <p class="text-muted-foreground mt-1">

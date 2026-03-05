@@ -10,7 +10,7 @@ $currentPage = 'dashboard';
 $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transition-colors duration-200";
 
 $headerData = [
-    'title' => 'Hello, Alex',
+    'title' => 'Hello,',
     'description' => 'Welcome back to your health dashboard. Everything looks great today.',
     'searchPlaceholder' => 'Search records...',
     'actionLabel' => 'Book New Appointment',

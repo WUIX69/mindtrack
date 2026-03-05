@@ -4,7 +4,7 @@
  */
 $pageTitle = "MindTrack Doctor Dashboard";
 $headerData = [
-    'title' => 'Greetings, Doc 👨🏻‍⚕️👋',
+    'title' => 'Greetings, Dr.',
     'description' => "Welcome back to Wayside Psyche Resources Center",
     'searchPlaceholder' => 'Search patient records, sessions, or clinical files...',
     'actionLabel' => 'Export Report'
