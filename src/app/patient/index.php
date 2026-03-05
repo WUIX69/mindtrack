@@ -21,47 +21,7 @@ include __DIR__ . '/layout.php';
 ?>
 
 <!-- Metrics Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="bg-card p-6 rounded-xl border border-border shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-            <span class="text-muted-foreground text-sm font-medium">Upcoming Appointment</span>
-            <div
-                class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">event</span>
-            </div>
-        </div>
-        <p class="text-2xl font-bold mb-1">Oct 24, 2:00 PM</p>
-        <p class="text-sm text-primary font-semibold flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">schedule</span>
-            In 2 days • In Person
-        </p>
-    </div>
-    <div class="bg-card p-6 rounded-xl border border-border shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-            <span class="text-muted-foreground text-sm font-medium">Recent Status</span>
-            <div
-                class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600">
-                <span class="material-symbols-outlined">trending_up</span>
-            </div>
-        </div>
-        <p class="text-2xl font-bold mb-1">Mood: Improving</p>
-        <p class="text-sm text-green-600 font-semibold flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">keyboard_arrow_up</span>
-            +5% from last week
-        </p>
-    </div>
-    <div class="bg-card p-6 rounded-xl border border-border shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-            <span class="text-muted-foreground text-sm font-medium">Mental Health Tip</span>
-            <div
-                class="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
-                <span class="material-symbols-outlined">lightbulb</span>
-            </div>
-        </div>
-        <p class="text-2xl font-bold mb-1">Mindfulness</p>
-        <p class="text-sm text-muted-foreground">Daily practice reduces anxiety.</p>
-    </div>
-</div>
+<?= featured('dashboard', 'components/patient-metric-cards') ?>
 
 <!-- Content Grid: Table & Sidebar Cards -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -130,3 +90,8 @@ include __DIR__ . '/layout.php';
 <!-- Modals -->
 <?= featured('appointments', 'components/summary-modal') ?>
 <script src="<?= shared('data', 'appointment-statuses.js', true) ?>"></script>
+<script>
+    $(document).ready(function () {
+        // Code here...
+    });
+</script>
