@@ -91,36 +91,9 @@ include __DIR__ . '/layout.php';
         </div>
     </div>
     <div class="space-y-6">
-        <div class="bg-card dark:bg-card p-6 rounded-xl border border-border shadow-sm">
-            <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-primary">insights</span>
-                <h3 class="font-bold">Quick Insights</h3>
-            </div>
-            <div class="space-y-4">
-                <div class="p-4 bg-primary/5 rounded-lg border border-primary/10">
-                    <p class="text-xs font-bold text-primary uppercase tracking-wider mb-1">Most Recent Diagnosis</p>
-                    <p class="text-lg font-bold">Generalized Anxiety Disorder</p>
-                    <p class="text-xs text-muted-foreground mt-1 font-medium">Confirmed on Oct 14, 2023</p>
-                </div>
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold text-muted-foreground uppercase tracking-widest">Health Summary</h4>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium">Treatment Adherence</span>
-                        <span class="text-sm font-bold text-green-600">92%</span>
-                    </div>
-                    <div class="w-full bg-muted/20 dark:bg-muted/10 rounded-full h-1.5">
-                        <div class="bg-green-500 h-1.5 rounded-full" style="width: 92%"></div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium">Session Attendance</span>
-                        <span class="text-sm font-bold text-primary">100%</span>
-                    </div>
-                    <div class="w-full bg-muted/20 dark:bg-muted/10 rounded-full h-1.5">
-                        <div class="bg-primary h-1.5 rounded-full" style="width: 100%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Quick Insights -->
+        <?= featured('notes', 'components/quick-insights'); ?>
+
         <div class="bg-card dark:bg-card p-6 rounded-xl border border-border shadow-sm">
             <div class="flex items-center gap-2 mb-3">
                 <span class="material-symbols-outlined text-green-600">verified_user</span>
