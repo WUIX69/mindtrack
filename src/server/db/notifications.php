@@ -8,11 +8,14 @@ use PDOException;
 
 class Notifications extends Base
 {
-    public static function all()
+    /**
+     * Fetch all notifications for a specific user, ordered by newest first.
+     */
+    public static function allWhereUser(string $userUuid)
     {
         try {
-            $stmt = self::conn()->prepare('SELECT * FROM notifications');
-            $stmt->execute();
+            $stmt = self::conn()->prepare('SELECT * FROM notifications WHERE user_uuid = ? ORDER BY created_at DESC');
+            $stmt->execute([$userUuid]);
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
             return [
                 'success' => true,
@@ -28,60 +31,45 @@ class Notifications extends Base
         }
     }
 
-    public static function counts()
+    /**
+     * Count unread notifications for a specific user.
+     */
+    public static function countUnread(string $userUuid)
     {
         try {
-            $stmt = self::conn()->query("
-                SELECT 
-                    SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
-                    SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive
-                FROM notifications
-            ");
-
+            $stmt = self::conn()->prepare("SELECT COUNT(*) as unread FROM notifications WHERE user_uuid = ? AND is_read = 0");
+            $stmt->execute([$userUuid]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            return [
-                'active' => (int) ($result['active'] ?? 0),
-                'inactive' => (int) ($result['inactive'] ?? 0)
-            ];
+            return (int) ($result['unread'] ?? 0);
         } catch (PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
-            return [
-                'active' => 0,
-                'inactive' => 0
-            ];
+            return 0;
         }
     }
 
-    public static function store($data = [])
+    /**
+     * Store a new notification.
+     */
+    public static function store(array $data)
     {
         try {
             self::beginTransaction();
 
             $stmt = self::conn()->prepare("
                 INSERT INTO notifications (
-                    uuid, 
-                    category_id,
-                    name, 
-                    description, 
-                    status,
-                    price, 
-                    duration,
-                    specialization_id
+                    user_uuid, 
+                    type,
+                    data
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?
+                    ?, ?, ?
                 )
             ");
 
             $stmt->execute([
-                $data['uuid'],
-                $data['category_id'],
-                $data['name'],
-                $data['description'],
-                $data['status'],
-                $data['price'],
-                $data['duration'],
-                $data['specialization_id'] ?? null
+                $data['user_uuid'],
+                $data['type'],
+                $data['data']
             ]);
 
             self::commit();
@@ -99,21 +87,21 @@ class Notifications extends Base
         }
     }
 
-    public static function updateWhereRead($uuid, $read_status = false)
+    /**
+     * Mark a single notification as read.
+     */
+    public static function updateWhereRead(int $id)
     {
         try {
             self::beginTransaction();
 
             $stmt = self::conn()->prepare("
                 UPDATE notifications SET 
-                    is_read=?
-                WHERE uuid=?
+                    is_read = 1
+                WHERE id = ?
             ");
 
-            $stmt->execute([
-                $read_status ? 1 : 0,
-                $uuid
-            ]);
+            $stmt->execute([$id]);
 
             self::commit();
             return [
@@ -126,6 +114,63 @@ class Notifications extends Base
             return [
                 'success' => false,
                 'message' => 'Notification (READ) update failed: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Mark all notifications as read for a specific user.
+     */
+    public static function updateAllWhereRead(string $userUuid)
+    {
+        try {
+            self::beginTransaction();
+
+            $stmt = self::conn()->prepare("
+                UPDATE notifications SET 
+                    is_read = 1
+                WHERE user_uuid = ? AND is_read = 0
+            ");
+
+            $stmt->execute([$userUuid]);
+
+            self::commit();
+            return [
+                'success' => true,
+                'message' => 'All notifications updated (READ) successfully.',
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            self::rollBack();
+            return [
+                'success' => false,
+                'message' => 'All notifications (READ) update failed: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Delete a notification.
+     */
+    public static function delete(int $id)
+    {
+        try {
+            self::beginTransaction();
+
+            $stmt = self::conn()->prepare("DELETE FROM notifications WHERE id = ?");
+            $stmt->execute([$id]);
+
+            self::commit();
+            return [
+                'success' => true,
+                'message' => 'Notification deleted successfully.',
+            ];
+        } catch (PDOException $e) {
+            error_log("SQL Error: " . $e->getMessage());
+            self::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Notification deletion failed: ' . $e->getMessage(),
             ];
         }
     }
