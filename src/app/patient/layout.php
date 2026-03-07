@@ -27,6 +27,8 @@ if (!isset($currentPage)) {
         $currentPage = 'records';
     } elseif (strpos($_SERVER['REQUEST_URI'] ?? '', 'resources') !== false) {
         $currentPage = 'resources';
+    } elseif (strpos($_SERVER['REQUEST_URI'] ?? '', 'notifications') !== false) {
+        $currentPage = 'notifications';
     } elseif (strpos($_SERVER['REQUEST_URI'] ?? '', 'settings') !== false) {
         $currentPage = 'settings';
     } else {

@@ -22,7 +22,7 @@ include_once __DIR__ . '/../layout.php';
 if (!isset($currentPage)) {
     $currentPage = 'dashboard';
     $uri = $_SERVER['REQUEST_URI'] ?? '';
-    foreach (['appointments', 'patients', 'doctors', 'logs', 'settings'] as $key) {
+    foreach (['appointments', 'patients', 'doctors', 'logs', 'notifications', 'settings'] as $key) {
         if (strpos($uri, $key) !== false) {
             $currentPage = $key;
             break;
