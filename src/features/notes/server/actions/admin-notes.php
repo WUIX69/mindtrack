@@ -6,6 +6,7 @@ apiHeaders();
 use Mindtrack\Features\Notes\Server\Db\Notes;
 use Mindtrack\Features\Notes\Schemas\Notes as NotesSchema;
 use Mindtrack\Server\Db\Appointments;
+use Mindtrack\Lib\Notify;
 
 // Initialize global response
 global $response;
@@ -79,6 +80,26 @@ if ($method === 'POST') {
             }
 
             $response = array_merge($response, $result);
+        }
+
+        // Send Notifications on Success
+        if (($response['success'] ?? false) || ($result['success'] ?? false)) {
+            $apptResp = Appointments::getSingleAppointment($validatedData['appointment_uuid']);
+            if ($apptResp && $apptResp['success']) {
+                $appt = $apptResp['data'];
+                $notify = new Notify();
+
+                $notifyData = [
+                    'type' => 'note_updated',
+                    'title' => 'Clinical Note Updated',
+                    'description' => 'An administrator updated the clinical note for your appointment.',
+                    'icon' => 'edit_note',
+                    'color' => 'blue'
+                ];
+
+                $notify->send($appt['patient_uuid'], $notifyData['type'], $notifyData);
+                $notify->send($validatedData['doctor_uuid'], $notifyData['type'], $notifyData);
+            }
         }
 
     } catch (\Exception $e) {

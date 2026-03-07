@@ -9,6 +9,8 @@ apiHeaders();
 
 use Mindtrack\Server\Db\appointments;
 use Mindtrack\Features\Appointments\Schemas\Appointment;
+use Mindtrack\Server\Db\Users;
+use Mindtrack\Lib\Notify;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method.';
@@ -129,6 +131,57 @@ try {
 
     $response = array_merge($response, $result);
 
+    // Send Notifications on Success
+    if ($response['success'] ?? false) {
+        // Format date and time for notification description
+        $formattedDate = date('M j, Y', strtotime($data['sched_date']));
+        $formattedTime = date('g:i A', strtotime($data['sched_time']));
+
+        if (!$existing_uuid) {
+            // New booking
+            $notifyData = [
+                'type' => 'new_appointment',
+                'title' => 'New Appointment Scheduled',
+                'description' => "An appointment is booked for $formattedDate at $formattedTime.",
+                'icon' => 'calendar_month',
+                'color' => 'blue'
+            ];
+
+            $notify = new Notify();
+
+            // Notify admins
+            $notify->send($user_uuid, $notifyData['type'], $notifyData, 'admin', 'all');
+            // Notify assigned doctor (if not the one who booked)
+            if ($data['doctor_uuid'] !== $user_uuid) {
+                $notify->send($data['doctor_uuid'], $notifyData['type'], $notifyData);
+            }
+        } elseif ($existing_uuid && ($input['is_reschedule'] ?? false)) {
+            // Reschedule
+            $notifyData = [
+                'type' => 'appointment_rescheduled',
+                'title' => 'Appointment Rescheduled',
+                'description' => "An appointment is rescheduled to $formattedDate at $formattedTime.",
+                'icon' => 'event',
+                'color' => 'orange'
+            ];
+
+            // Notify admins
+            $notify->send($user_uuid, $notifyData['type'], $notifyData, 'admin', 'all');
+
+            // Notify the other party
+            if ($user_type === 'patient') {
+                // Patient rescheduled -> Notify doctor
+                $notify->send($data['doctor_uuid'], $notifyData['type'], $notifyData);
+            } elseif ($user_type === 'doctor') {
+                // Doctor rescheduled -> Notify patient
+                $notify->send($data['patient_uuid'], $notifyData['type'], $notifyData);
+            } else {
+                // Admin rescheduled -> Notify both
+                $notify->send($data['patient_uuid'], $notifyData['type'], $notifyData);
+                $notify->send($data['doctor_uuid'], $notifyData['type'], $notifyData);
+            }
+        }
+    }
 } catch (Exception $e) {
     error_log("Booking Error: " . $e->getMessage());
     $response['message'] = 'An internal error occurred.';

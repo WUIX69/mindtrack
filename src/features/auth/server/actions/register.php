@@ -6,6 +6,7 @@ apiHeaders();
 use Mindtrack\Server\Db\Users;
 use Mindtrack\Features\Auth\Schemas\Register;
 use Mindtrack\Lib\Email;
+use Mindtrack\Lib\Notify;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method.';
@@ -47,10 +48,21 @@ $result = Users::store([
     'role' => 'patient'
 ]);
 
-// Send Verification Email
+// Send Verification Email and Notifications
 if ($result['success']) {
     $email_response = Email::sendVerificationEmail($userData['email'], $userData['firstname'], $userData['lastname'], $verificationToken);
     $response['email_response'] = $email_response;
+
+    $notifyData = [
+        'type' => 'new_registration',
+        'title' => 'New Patient Registered',
+        'description' => $userData['firstname'] . ' ' . $userData['lastname'] . ' just signed up.',
+        'icon' => 'person_add',
+        'color' => 'purple'
+    ];
+
+    $notify = new Notify();
+    $notify->send(null, $notifyData['type'], $notifyData, 'admin', 'all');
 }
 
 $response = array_merge($response, $result);

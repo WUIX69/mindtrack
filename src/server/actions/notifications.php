@@ -19,8 +19,7 @@ if (!$session->get('uuid')) {
 $userUuid = $session->get('uuid');
 
 try {
-    $db = Base::conn();
-    $notify = new Notify($db);
+    $notify = new Notify();
 
     $method = $_SERVER['REQUEST_METHOD'];
     $action = $_GET['action'] ?? $_POST['action'] ?? '';

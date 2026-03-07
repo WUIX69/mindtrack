@@ -7,6 +7,8 @@ use Mindtrack\Features\Notes\Server\Db\Notes;
 
 use Mindtrack\Features\Notes\Schemas\Notes as NotesSchema;
 use Mindtrack\Server\Db\Appointments;
+use Mindtrack\Server\Db\Users;
+use Mindtrack\Lib\Notify;
 
 // Initialize global response
 global $response;
@@ -99,6 +101,41 @@ if ($method === 'POST') {
             }
 
             $response = array_merge($response, $result);
+        }
+
+        // Send Notifications on Success
+        if (($response['success'] ?? false) || ($result['success'] ?? false)) {
+            $apptResp = Appointments::getSingleAppointment($validatedData['appointment_uuid']);
+            if ($apptResp && $apptResp['success']) {
+                $appt = $apptResp['data'];
+                $notify = new Notify();
+
+                if ($validatedData['status'] === 'draft') {
+                    $notifyData = [
+                        'type' => 'note_draft',
+                        'title' => 'Clinical Note Drafted',
+                        'description' => 'Dr. ' . $session->get('lastname') . ' saved a draft note.',
+                        'icon' => 'edit_note',
+                        'color' => 'orange'
+                    ];
+
+                    $notify->send($doctorUuid, $notifyData['type'], $notifyData, 'admin', 'all');
+                } elseif ($validatedData['status'] === 'signed') {
+                    $notifyData = [
+                        'type' => 'note_finalized',
+                        'title' => 'Clinical Note Finalized',
+                        'description' => 'Dr. ' . $session->get('lastname') . ' finalized a clinical note.',
+                        'icon' => 'task',
+                        'color' => 'green'
+                    ];
+
+                    // Notify admins
+                    $notify->send($doctorUuid, $notifyData['type'], $notifyData, 'admin', 'all');
+
+                    // Notify patient
+                    $notify->send($appt['patient_uuid'], $notifyData['type'], $notifyData);
+                }
+            }
         }
 
     } catch (\Exception $e) {

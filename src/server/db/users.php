@@ -454,6 +454,32 @@ class Users extends Base
         }
     }
 
+    public static function allWhereAdminUuids(): array
+    {
+        try {
+            $stmt = self::conn()->prepare("SELECT uuid FROM users WHERE role = 'admin' AND status = 'active'");
+            $stmt->execute();
+            // Flatten the result into a simple array of UUID strings
+            $result = $stmt->fetchAll(PDO::FETCH_COLUMN) ?? [];
+            return $result;
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::allWhereAdminUuids): " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public static function allWhereUserUuids(): array
+    {
+        try {
+            $stmt = self::conn()->prepare("SELECT uuid FROM users WHERE role IN ('patient', 'doctor') AND status = 'active'");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN) ?? [];
+        } catch (PDOException $e) {
+            error_log("SQL Error (Users::allWhereUserUuids): " . $e->getMessage());
+            return [];
+        }
+    }
+
     public static function delete($user_uuid = null)
     {
         try {

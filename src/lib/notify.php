@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Mindtrack\Lib;
 
 use Mindtrack\Server\Db\Notifications;
+use Mindtrack\Server\Db\Users;
+
 use PDO;
 use PDOException;
 use Pusher\Pusher;
@@ -13,12 +15,10 @@ use Pusher\PusherException;
 class Notify
 {
 
-    private PDO $db;
     private Pusher $pusher;
 
-    public function __construct(PDO $db)
+    public function __construct()
     {
-        $this->db = $db;
 
         $this->pusher = new Pusher(
             $_ENV['PUSHER_APP_KEY'],
@@ -32,14 +32,48 @@ class Notify
     }
 
     /**
-     * Send a notification to a specific user.
+     * Send a notification.
      *
-     * @param string $userUuid The recipient's UUID.
-     * @param string $type     A short string identifier for the notification type.
-     * @param array $data      Associative array for the notification body containing UI details like title, description.
-     * @return bool            True on success, false on failure.
+     * @param string|null $userUuid       The recipient's UUID (required if send_type is 'single', or used to exclude actor if send_type is 'all').
+     * @param string      $type           A short string identifier for the notification type.
+     * @param array       $data           Associative array for the notification body containing UI details like title, description.
+     * @param string      $recipient_type 'user' or 'admin'.
+     * @param string      $send_type      'single' or 'all'.
+     * @return bool                       True on success, false on failure.
      */
-    public function send(string $userUuid, string $type, array $data): bool
+    public function send(?string $userUuid, string $type, array $data, string $recipient_type = 'user', string $send_type = 'single'): bool
+    {
+        if ($send_type === 'all') {
+            if ($recipient_type === 'admin') {
+                $recipients = Users::allWhereAdminUuids();
+            } else {
+                $recipients = Users::allWhereUserUuids();
+            }
+
+            $success = true;
+            foreach ($recipients as $recipientUuid) {
+                // If $userUuid is provided, exclude them from the broadcast (e.g. if the actor is also a recipient)
+                if ($userUuid && $recipientUuid === $userUuid) {
+                    continue;
+                }
+                if (!$this->sendWhereSingle($recipientUuid, $type, $data)) {
+                    $success = false;
+                }
+            }
+            return $success;
+        }
+
+        if ($send_type === 'single' && $userUuid) {
+            return $this->sendWhereSingle($userUuid, $type, $data);
+        }
+
+        return false;
+    }
+
+    /**
+     * Internal method to send a notification to a single user.
+     */
+    private function sendWhereSingle(string $userUuid, string $type, array $data): bool
     {
         try {
             // 1. Insert into database
