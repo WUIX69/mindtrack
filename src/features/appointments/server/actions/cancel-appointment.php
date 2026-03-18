@@ -33,7 +33,8 @@ try {
 
     if ($user_type === 'admin') {
         $isOwner = true;
-    } else {
+    }
+    else {
         // Double check ownership for patients
         $check = appointments::allWherePatients($user_uuid);
         if ($check['success']) {
@@ -80,23 +81,26 @@ try {
             if ($user_type === 'patient') {
                 // Patient cancelled -> Notify doctor
                 $notify->send($appt['doctor_uuid'], $notifyData['type'], $notifyData);
-            } elseif ($user_type === 'doctor') {
+            }
+            elseif ($user_type === 'doctor') {
                 // Doctor cancelled -> Notify patient
                 $notify->send($appt['patient_uuid'], $notifyData['type'], $notifyData);
-            } else {
+            }
+            else {
                 // Admin cancelled -> Notify both
                 $notify->send($appt['patient_uuid'], $notifyData['type'], $notifyData);
                 $notify->send($appt['doctor_uuid'], $notifyData['type'], $notifyData);
             }
         }
 
-    } else {
+    }
+    else {
         $response['message'] = $result['message'];
     }
-} catch (Exception $e) {
+}
+catch (Exception $e) {
     error_log("Cancel Appointment Error: " . $e->getMessage());
     $response['message'] = 'An internal error occurred.';
 }
 echo json_encode($response);
-exit;
 exit;
