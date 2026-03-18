@@ -14,13 +14,14 @@ class Attachments extends Base
             $sql = "SELECT * FROM attachments WHERE reference_uuid = :reference_uuid";
             $stmt = self::conn()->prepare($sql);
             $stmt->execute([':reference_uuid' => $reference_uuid]);
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
             return [
                 'success' => true,
                 'message' => 'Attachments fetched successfully',
                 'data' => $data,
             ];
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             error_log($e->getMessage());
             return [
                 'success' => false,
@@ -41,7 +42,8 @@ class Attachments extends Base
                 'message' => 'Attachment fetched successfully',
                 'data' => $data,
             ];
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             error_log($e->getMessage());
             return [
                 'success' => false,
@@ -79,7 +81,8 @@ class Attachments extends Base
                 'success' => true,
                 'message' => 'Attachment stored successfully',
             ];
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             error_log($e->getMessage());
             self::rollBack();
             return [
@@ -112,7 +115,8 @@ class Attachments extends Base
                 'success' => true,
                 'message' => 'Attachment updated successfully',
             ];
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             error_log($e->getMessage());
             self::rollBack();
             return [
@@ -141,7 +145,8 @@ class Attachments extends Base
                 'success' => true,
                 'message' => 'Attachment deleted successfully',
             ];
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             error_log($e->getMessage());
             self::rollBack();
             return [
@@ -165,7 +170,8 @@ class Attachments extends Base
                 'success' => true,
                 'message' => 'Successfully deleted attachment',
             ];
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             error_log($e->getMessage());
             self::rollBack();
             return [
