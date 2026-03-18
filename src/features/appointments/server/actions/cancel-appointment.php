@@ -31,7 +31,8 @@ try {
 
     if ($user_type === 'admin') {
         $isOwner = true;
-    } else {
+    }
+    else {
         // Double check ownership for patients
         $check = appointments::allWherePatients($user_uuid);
         if ($check['success']) {
@@ -56,13 +57,14 @@ try {
         $response['success'] = true;
         $response['message'] = 'Appointment withdrawn successfully.';
         $response = array_merge($response, $result);
-    } else {
+    }
+    else {
         $response['message'] = $result['message'];
     }
-} catch (Exception $e) {
+}
+catch (Exception $e) {
     error_log("Cancel Appointment Error: " . $e->getMessage());
     $response['message'] = 'An internal error occurred.';
 }
 echo json_encode($response);
-exit;
 exit;
