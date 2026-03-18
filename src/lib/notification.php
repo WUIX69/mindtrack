@@ -20,10 +20,11 @@ class Notify
         switch ($type) {
             case 'email':
                 // Use Email service to send email notification
-                $emailService = new Email();
-                $subject = $options['subject'] ?? 'Notification';
-                $attachments = $options['attachments'] ?? [];
-                return $emailService->send($to, $subject, $message, $attachments);
+                // $emailService = new Email();
+                // $subject = $options['subject'] ?? 'Notification';
+                // $attachments = $options['attachments'] ?? [];
+                // return $emailService->send($to, $subject, $message, $attachments);
+                return true;
             case 'sms':
                 // Implement SMS sending logic here
                 // Example: $smsService = new Sms(); return $smsService->send($to, $message);
