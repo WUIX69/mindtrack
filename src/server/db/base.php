@@ -13,7 +13,7 @@ abstract class Base
     /**
      * Get the database connection (Lazy Loading)
      */
-    public static function conn()
+    public static function conn(): PDO
     {
         global $config;
 
@@ -26,9 +26,10 @@ abstract class Base
                     ";port=" . $dbConfig['port'],
                     $dbConfig['username'],
                     $dbConfig['password']
-                );
+                    );
                 self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $e) {
+            }
+            catch (PDOException $e) {
                 error_log("Connection failed: " . $e->getMessage());
                 die("Database connection failed. Please check logs.");
             }
