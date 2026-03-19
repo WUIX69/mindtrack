@@ -220,19 +220,6 @@ $role = $role ?? 'patient';
             if (config.serviceUuid) backParams.append('service', config.serviceUuid);
             if (config.doctorUuid) backParams.append('doctor_uuid', config.doctorUuid);
             if (config.schedDate) backParams.append('date', config.schedDate);
-            if (config.schedTime) backParams.append('time', config.schedTime); // Use 'time' to match Step 2 input expectations if it reads 'time' or 'time_slot'
-            // Wait, Step 2 reads 'time' from URL: `time: params.get('time')` logic in Step 2.
-            // But Step 2 *submits* `time_slot`.
-            // My Step 2 refactor: `nextParams.append('time_slot', timeSlot);`
-            // So Step 3 receives `time_slot`.
-            // But Step 2 *initializes* from `config.time` which reads `params.get('time')`.
-            // AND Step 2 submit puts `time_slot` in the URL.
-            // So if I go Back from Step 3 -> Step 2, I should use `time` or `time_slot`?
-            // Helper: Step 2: `time: params.get('time') || ''`.
-            // So Step 2 expects `time` in URL to pre-select.
-            // BUT `step-2-schedule.php` form submits `time_slot` to `step-3`.
-            // So Step 3 URL has `time_slot`.
-            // When going back to Step 2, I should append `time` so Step 2 can read it.
             if (config.schedTime) backParams.append('time', config.schedTime);
 
             if (config.rescheduleUuid) backParams.append('reschedule_uuid', config.rescheduleUuid);

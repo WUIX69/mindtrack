@@ -231,6 +231,9 @@ $role = $role ?? 'patient';
 
             renderCalendar(currentYear, currentMonth);
             generateTimeSlots(config.date);
+            
+            // After initial hydration, clear the URL time so subsequent day-clicks default to the first slot
+            config.time = '';
         });
 
         // --- Core Functions ---
@@ -454,10 +457,22 @@ $role = $role ?? 'patient';
                 if (config.notes) backParams.append('notes', config.notes);
                 if (config.editUuid) backParams.append('edit_uuid', config.editUuid);
                 if (config.patientUuid) backParams.append('patient_uuid', config.patientUuid);
+                if (config.date) backParams.append('date', config.date);
+                if (config.time) backParams.append('time', config.time);
 
                 $backBtn.attr('href', `step-1-service.php?${backParams.toString()}`);
             }
         }
+
+        // Keep back-nav URL in sync when picking specific dates and times
+        $calendarDays.on('click', '.calendar-day', function () {
+             setupNavigation(); // ensure `config.date` from state updates back param
+        });
+
+        $timeSlotsContainer.on('change', 'input[name="time_slot"]', function() {
+              config.time = $(this).val(); // update the local state with the exact radio chosen
+              setupNavigation();
+        });
 
         // Manual Navigation Handler
         $form.on('submit', function (e) {

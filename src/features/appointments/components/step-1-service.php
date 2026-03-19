@@ -103,7 +103,6 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
             editUuid: params.get('edit_uuid') || '',
             doctorUuid: params.get('doctor_uuid') || '',
             notes: params.get('notes') || '',
-            notes: params.get('notes') || '',
             patientUuid: params.get('patient_uuid') || '',
             date: params.get('date') || '',
             time: params.get('time') || ''
@@ -256,7 +255,6 @@ $isEditMode = isset($_GET['edit_uuid']) && !empty($_GET['edit_uuid']);
             let targetUrl = `step-2-schedule.php?service=${encodeURIComponent(service)}`;
             if (patientUuid) targetUrl += `&patient_uuid=${encodeURIComponent(patientUuid)}`;
             if (config.editUuid) targetUrl += `&edit_uuid=${encodeURIComponent(config.editUuid)}`;
-            if (config.doctorUuid) targetUrl += `&doctor_uuid=${encodeURIComponent(config.doctorUuid)}`;
             if (config.doctorUuid) targetUrl += `&doctor_uuid=${encodeURIComponent(config.doctorUuid)}`;
             if (config.notes) targetUrl += `&notes=${encodeURIComponent(config.notes)}`;
             if (config.date) targetUrl += `&date=${encodeURIComponent(config.date)}`;
