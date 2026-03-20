@@ -339,7 +339,7 @@ $(document).ready(function() {
                                 </span>
                             </td>
                             <td class="py-4 text-right">
-                                <button type="button" class="text-[10px] font-black uppercase text-primary hover:underline" onclick="window.location.href='/mindtrack/app/doctor/notes.php?appointment=${s.uuid}'">
+                                <button type="button" class="text-[10px] font-black uppercase text-primary hover:underline" onclick="window.location.href='<?= app('doctor/notes') ?>?appointment_uuid=${s.uuid}'">
                                     Notes
                                 </button>
                             </td>
