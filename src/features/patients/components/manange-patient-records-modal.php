@@ -5,7 +5,7 @@
  * @param string $uuid (optional - injected via JS)
  */
 ?>
-<div id="manage-records-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 modal-overlay hidden">
+<div id="manage-records-modal" class="fixed inset-0 z-[100] h-screen flex items-center justify-center p-4 modal-overlay hidden">
     <div class="absolute min-h-screen inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0" id="records-modal-backdrop"></div>
 
     <div class="bg-card dark:bg-card w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] relative z-10 transform scale-95 opacity-0 transition-all duration-300" id="records-modal-panel">
