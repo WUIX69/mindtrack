@@ -81,6 +81,8 @@ include_once __DIR__ . '/layout.php';
     </div>
 </div>
 
+<?= featured('patients', 'components/manange-patient-records-modal') ?>
+
 <?= shared('components', 'elements/dataTables/scripts') ?>
 <script>
     $(document).ready(function () {
@@ -214,7 +216,7 @@ include_once __DIR__ . '/layout.php';
                                 <button class="p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all" title="Add Clinical Note">
                                     <span class="material-symbols-outlined text-lg">edit_note</span>
                                 </button>
-                                <button class="px-4 py-1.5 text-[10px] font-black text-primary border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground rounded-lg transition-all uppercase tracking-widest">
+                                <button class="px-4 py-1.5 text-[10px] font-black text-primary border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground rounded-lg transition-all uppercase tracking-widest view-records-btn" data-uuid="${data}">
                                     View Records
                                 </button>
                             </div>
@@ -224,6 +226,14 @@ include_once __DIR__ . '/layout.php';
             ],
             drawCallback: function () {
                 // Style pagination buttons if needed
+            }
+        });
+
+        // Event for View Records
+        $(document).on('click', '.view-records-btn', function() {
+            const uuid = $(this).data('uuid');
+            if (typeof window.openPatientRecordsModal === 'function') {
+                window.openPatientRecordsModal(uuid);
             }
         });
 

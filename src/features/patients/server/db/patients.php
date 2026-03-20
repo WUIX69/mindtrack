@@ -206,6 +206,104 @@ class Patients extends Base
     }
 
     /**
+     * Get a single patient's records for a specific doctor
+     * Includes basic info and session stats with this doctor.
+     */
+    public static function singleForDoctor(string $patientUuid, string $doctorUuid): array
+    {
+        try {
+            // Check if doctor has any relationship/appointments with this patient
+            $stmtCheck = self::conn()->prepare("
+                SELECT COUNT(*) FROM appointments 
+                WHERE patient_uuid = ? AND doctor_uuid = ?
+            ");
+            $stmtCheck->execute([$patientUuid, $doctorUuid]);
+            if ((int)$stmtCheck->fetchColumn() === 0) {
+                return ['success' => false, 'message' => 'No clinical relationship found with this patient.'];
+            }
+
+            $stmt = self::conn()->prepare("
+                SELECT 
+                    u.uuid, u.firstname, u.lastname, u.email, u.phone, u.status, u.created_at,
+                    pi.date_of_birth, pi.gender, pi.address, pi.emergency_contact_name, pi.emergency_contact_phone, pi.medical_history,
+                    (SELECT COUNT(*) FROM appointments WHERE patient_uuid = u.uuid AND doctor_uuid = ? AND status = 'completed') as total_doctor_sessions,
+                    (SELECT MAX(sched_date) FROM appointments WHERE patient_uuid = u.uuid AND doctor_uuid = ? AND status IN ('confirmed', 'completed')) as last_session
+                FROM users u
+                LEFT JOIN user_patient_info pi ON u.uuid = pi.user_uuid
+                WHERE u.uuid = ? AND u.role = 'patient'
+            ");
+            $stmt->execute([$doctorUuid, $doctorUuid, $patientUuid]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($data) {
+                if (isset($data['medical_history']) && is_string($data['medical_history'])) {
+                    $data['medical_history'] = json_decode($data['medical_history'], true) ?? [];
+                }
+                return ['success' => true, 'data' => $data];
+            }
+
+            return ['success' => false, 'message' => 'Patient not found.'];
+        } catch (PDOException $e) {
+            error_log("Patients::singleForDoctor Error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Database error.'];
+        }
+    }
+
+    /**
+     * Update only medical-related fields in user_patient_info
+     */
+    public static function updateMedicalHistory(string $patientUuid, string $doctorUuid, array $medicalHistory): array
+    {
+        try {
+            // Security: Verify relationship
+            $stmtCheck = self::conn()->prepare("
+                SELECT COUNT(*) FROM appointments 
+                WHERE patient_uuid = ? AND doctor_uuid = ?
+            ");
+            $stmtCheck->execute([$patientUuid, $doctorUuid]);
+            if ((int)$stmtCheck->fetchColumn() === 0) {
+                return ['success' => false, 'message' => 'Unauthorized: No clinical relationship found.'];
+            }
+
+            $stmt = self::conn()->prepare("
+                UPDATE user_patient_info 
+                SET medical_history = ? 
+                WHERE user_uuid = ?
+            ");
+            $stmt->execute([json_encode($medicalHistory), $patientUuid]);
+
+            return ['success' => true, 'message' => 'Medical records updated successfully.'];
+        } catch (PDOException $e) {
+            error_log("Patients::updateMedicalHistory Error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to update medical records.'];
+        }
+    }
+
+    /**
+     * Get session history for a specific doctor-patient pair
+     */
+    public static function getSessionHistory(string $patientUuid, string $doctorUuid): array
+    {
+        try {
+            $stmt = self::conn()->prepare("
+                SELECT a.uuid, a.sched_date, a.sched_time, a.status, a.notes, s.name as service_name
+                FROM appointments a
+                JOIN services s ON a.service_uuid = s.uuid
+                WHERE a.patient_uuid = ? AND a.doctor_uuid = ?
+                ORDER BY a.sched_date DESC, a.sched_time DESC
+            ");
+            $stmt->execute([$patientUuid, $doctorUuid]);
+            return [
+                'success' => true,
+                'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)
+            ];
+        } catch (PDOException $e) {
+            error_log("Patients::getSessionHistory Error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to fetch session history.'];
+        }
+    }
+
+    /**
      * Delete a patient
      */
     public static function delete($uuid)
