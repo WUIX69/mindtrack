@@ -13,6 +13,7 @@ src/core/tests
 phpunit.xml
 
 .agents
+.kiro
 .vscode
 
 # Ignore everything inside src/uploads
