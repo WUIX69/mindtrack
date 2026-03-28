@@ -1,5 +1,5 @@
 <!-- Inner Sidebar: Session List -->
-<aside class="w-80 border-r border-border bg-card flex flex-col shrink-0 h-[calc(100vh-80px)] lg:h-[calc(100vh-96px)]">
+<aside class="w-80 border-r border-border bg-card flex flex-col shrink-0 h-screen">
     <div class="p-6 border-b border-border">
         <div class="flex items-center justify-between mb-6">
             <h3 class="font-black text-foreground tracking-tight">Recent Sessions</h3>

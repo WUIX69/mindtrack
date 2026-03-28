@@ -20,7 +20,7 @@ HTML;
 include_once __DIR__ . '/layout.php';
 ?>
 
-<div class="flex h-[calc(100vh-80px)] lg:h-[calc(100vh-96px)] overflow-hidden -m-8">
+<div class="flex h-screen overflow-hidden -m-8">
     <!-- Inner Sidebar: Session List -->
     <?= featured('notes', 'components/sidebar-notes') ?>
 
