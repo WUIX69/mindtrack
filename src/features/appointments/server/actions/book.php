@@ -137,6 +137,8 @@ try {
         $formattedDate = date('M j, Y', strtotime($data['sched_date']));
         $formattedTime = date('g:i A', strtotime($data['sched_time']));
 
+        $notify = new Notify();
+
         if (!$existing_uuid) {
             // New booking
             $notifyData = [
@@ -146,8 +148,6 @@ try {
                 'icon' => 'calendar_month',
                 'color' => 'blue'
             ];
-
-            $notify = new Notify();
 
             // Notify admins
             $notify->send($user_uuid, $notifyData['type'], $notifyData, 'admin', 'all');

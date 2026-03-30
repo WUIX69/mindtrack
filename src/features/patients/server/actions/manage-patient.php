@@ -5,6 +5,7 @@
  */
 
 require_once dirname(__DIR__, 4) . '/core/app.php';
+apiHeaders();
 
 use Mindtrack\Features\Patients\Server\Db\Patients;
 use Mindtrack\Features\Patients\Schemas\Patients as PatientsSchema;

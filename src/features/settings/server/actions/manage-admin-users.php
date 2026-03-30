@@ -5,6 +5,7 @@
  */
 
 require_once dirname(__DIR__, 4) . '/core/app.php';
+apiHeaders();
 
 use Mindtrack\Server\Db\Users;
 use Mindtrack\Features\Settings\Schemas\AdminUsers as AdminUsersSchema;

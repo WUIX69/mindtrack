@@ -43,6 +43,16 @@
                     <div class="grid grid-cols-3 gap-3" id="reschedule-time-slots">
                         <!-- Rendered via JS -->
                     </div>
+                    <p id="reschedule-unavailable"
+                        class="hidden text-center text-sm font-bold text-red-500 dark:text-red-400 py-4">
+                        <span class="material-symbols-outlined text-base align-middle mr-1">event_busy</span>
+                        Provider is unavailable on this day. Please select another date.
+                    </p>
+                    <p id="reschedule-no-doctor"
+                        class="hidden text-center text-sm font-bold text-muted-foreground py-4">
+                        <span class="material-symbols-outlined text-base align-middle mr-1">person_off</span>
+                        No availability data found for this provider.
+                    </p>
                 </div>
             </div>
         </div>
@@ -64,7 +74,7 @@
         let activeRescheduleService = null;
         let activeRescheduleDoctor = null;
         let activeRescheduleNotes = null;
-        const MODAL_TIME_SLOTS = ['9:00 AM', '10:30 AM', '11:00 AM', '2:00 PM', '3:30 PM', '4:45 PM'];
+        let doctorAvailability = null;
 
         function initModalDates() {
             const today = new Date().toISOString().split('T')[0];
@@ -76,7 +86,6 @@
         $('body').on('click', '.reschedule-btn', function () {
             const uuid = $(this).data('uuid');
 
-            // Show loading state if needed, but for now just fetch
             $.ajax({
                 url: apiUrl('appointments') + '/get-appointment.php',
                 method: 'GET',
@@ -101,7 +110,8 @@
                             $('#reschedule-summary-name').text(`Dr. ${a.doctor_firstname} ${a.doctor_lastname}`);
                         }
 
-                        renderRescheduleSlots();
+                        initModalDates();
+                        fetchDoctorAvailability(a.doctor_uuid);
                         $('#reschedule-modal').removeClass('hidden').addClass('flex');
                     } else {
                         alert('Error: ' + res.message);
@@ -113,21 +123,115 @@
             });
         });
 
+        function fetchDoctorAvailability(doctorUuid) {
+            doctorAvailability = null;
+            $('#reschedule-time-slots').empty();
+            $('#reschedule-unavailable').addClass('hidden');
+            $('#reschedule-no-doctor').addClass('hidden');
+
+            $.ajax({
+                url: apiUrl("shared") + "doctors.php",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) {
+                        $('#reschedule-no-doctor').removeClass('hidden');
+                        return;
+                    }
+
+                    const doctor = response.data.find(d => d.uuid === doctorUuid);
+                    if (doctor && doctor.availability) {
+                        try {
+                            doctorAvailability = typeof doctor.availability === 'string'
+                                ? JSON.parse(doctor.availability)
+                                : doctor.availability;
+                        } catch (e) {
+                            doctorAvailability = null;
+                        }
+                    }
+
+                    renderRescheduleSlots();
+                },
+                error: function () {
+                    $('#reschedule-no-doctor').removeClass('hidden');
+                }
+            });
+        }
+
+        function formatTime12Hour(timeStr) {
+            const [hourStr, minStr] = timeStr.split(':');
+            let hours = parseInt(hourStr, 10);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return `${hours}:${minStr} ${ampm}`;
+        }
+
         function renderRescheduleSlots() {
-            let html = '';
-            MODAL_TIME_SLOTS.forEach((time, index) => {
-                html += `
+            const $slotsContainer = $('#reschedule-time-slots');
+            const $unavailableMsg = $('#reschedule-unavailable');
+            const $noDoctorMsg = $('#reschedule-no-doctor');
+
+            $slotsContainer.empty();
+            $unavailableMsg.addClass('hidden');
+            $noDoctorMsg.addClass('hidden');
+
+            if (!doctorAvailability) {
+                $noDoctorMsg.removeClass('hidden');
+                return;
+            }
+
+            const dateString = $('#reschedule-date').val();
+            if (!dateString) return;
+
+            const dateObj = new Date(dateString);
+            const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const dayName = daysOfWeek[dateObj.getDay()];
+
+            const daySchedule = doctorAvailability[dayName];
+
+            if (!daySchedule || daySchedule.active == 0 || daySchedule.active === false || daySchedule.active === 'false') {
+                $unavailableMsg.removeClass('hidden');
+                return;
+            }
+
+            const startStr = daySchedule.start || '09:00';
+            const endStr = daySchedule.end || '17:00';
+
+            const startHour = parseInt(startStr.split(':')[0], 10);
+            const endHour = parseInt(endStr.split(':')[0], 10);
+
+            let slotsGenerated = 0;
+
+            for (let hour = startHour; hour < endHour; hour++) {
+                if (hour === 12) continue;
+
+                const time24 = `${String(hour).padStart(2, '0')}:00`;
+                const time12 = formatTime12Hour(time24);
+                const checkedAttr = slotsGenerated === 0 ? 'checked' : '';
+
+                const slotHtml = `
                     <label class="cursor-pointer">
-                        <input type="radio" name="reschedule_time" value="${time}"
-                            class="peer absolute opacity-0" ${index === 0 ? 'checked' : ''} />
+                        <input type="radio" name="reschedule_time" value="${time12}"
+                            class="peer absolute opacity-0" ${checkedAttr} />
                         <div class="py-3 px-2 text-xs font-black rounded-xl border-2 border-transparent bg-muted/30 text-muted-foreground transition-all text-center peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:border-primary/30">
-                            ${time}
+                            ${time12}
                         </div>
                     </label>
                 `;
-            });
-            $('#reschedule-time-slots').html(html);
+
+                $slotsContainer.append(slotHtml);
+                slotsGenerated++;
+            }
+
+            if (slotsGenerated === 0) {
+                $unavailableMsg.removeClass('hidden');
+            }
         }
+
+        $('#reschedule-date').on('change', function () {
+            renderRescheduleSlots();
+        });
 
         $('#confirm-reschedule-btn').on('click', function () {
             if (!activeRescheduleUuid) return;
@@ -174,6 +278,7 @@
                 complete: function () {
                     btn.prop('disabled', false).html('Confirm New Schedule <span class="material-symbols-outlined text-xl">event_available</span>');
                     activeRescheduleUuid = null;
+                    doctorAvailability = null;
                 }
             });
         });
