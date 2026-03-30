@@ -10,8 +10,6 @@ $headerData = [
     'title' => 'My Notes',
     'description' => 'Access and manage your clinical documents and test results.',
     'searchPlaceholder' => 'Search by name or provider...',
-    'actionLabel' => 'Upload New',
-    'actionIcon' => 'upload'
 ];
 $currentPage = 'notes';
 
