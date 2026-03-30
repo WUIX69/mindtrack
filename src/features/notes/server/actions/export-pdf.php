@@ -399,7 +399,7 @@ if ($method === 'GET') {
                     <!-- Subjective -->
                     <div class="content-section">
                         <div class="section-header">
-                            <h3 class="section-title">Subjective</h3>
+                            <h3 class="section-title">Patient Report</h3>
                         </div>
                         <div class="section-body">{$subjective}</div>
                     </div>
@@ -407,7 +407,7 @@ if ($method === 'GET') {
                     <!-- Objective -->
                     <div class="content-section">
                         <div class="section-header">
-                            <h3 class="section-title">Objective</h3>
+                            <h3 class="section-title">Observed Data</h3>
                         </div>
                         
                         <table class="vitals-table">

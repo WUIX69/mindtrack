@@ -2,7 +2,7 @@
 <aside class="w-80 border-r border-border bg-card flex flex-col shrink-0 h-screen">
     <div class="p-6 border-b border-border">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="font-black text-foreground tracking-tight">Recent Sessions</h3>
+            <h3 class="font-black text-foreground tracking-tight">Reported Symptoms</h3>
         </div>
         <div class="relative group">
             <span
