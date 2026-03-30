@@ -9,7 +9,7 @@ $bodyClass = "bg-muted/50 dark:bg-background text-foreground font-display transi
 $headerData = [
     'title' => 'My Notes',
     'description' => 'Access and manage your clinical documents and test results.',
-    'searchPlaceholder' => 'Search by name or provider...',
+    'searchPlaceholder' => 'Search by name or provider...'
 ];
 $currentPage = 'notes';
 
