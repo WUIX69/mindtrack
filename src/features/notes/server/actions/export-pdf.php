@@ -54,7 +54,7 @@ if ($method === 'GET') {
     $serviceName = htmlspecialchars($data['service_name'] ?? 'General Consultation');
     $doctorFullName = htmlspecialchars('Dr. ' . ($data['doctor_firstname'] ?? 'Unknown Provider') . ' ' . ($data['doctor_lastname'] ?? ''));
     $patientUuid = 'Patient ID: ' . htmlspecialchars($data['patient_uuid']);
-    $patientName = htmlspecialchars(userData($data['patient_uuid'])['name']) ?? 'Unknown Patient';
+    $patientName = htmlspecialchars(trim(($data['patient_firstname'] ?? 'Unknown') . ' ' . ($data['patient_lastname'] ?? 'Patient')));
 
     $subjective = htmlspecialchars($data['subjective'] ?? '-');
     $assessment = htmlspecialchars($data['assessment'] ?? '-');

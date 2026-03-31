@@ -67,6 +67,15 @@ include_once __DIR__ . '/layout.php';
                     </p>
                 </div>
             </div>
+
+            <!-- Header Actions -->
+            <div id="header-actions" class="hidden">
+                 <a href="#" id="btn-export-pdf" target="_blank"
+                    class="px-5 py-2.5 rounded-xl border border-border text-foreground/70 font-bold text-xs hover:bg-muted hover:text-foreground transition-all flex items-center gap-2 uppercase tracking-widest shadow-sm">
+                    <span class="material-symbols-outlined text-sm">download</span>
+                    Export PDF
+                 </a>
+            </div>
         </div>
 
         <!-- Editor Content (Scrollable) -->
@@ -335,10 +344,17 @@ include_once __DIR__ . '/layout.php';
                 $btnSave.hide();
                 $btnSign.hide();
                 setSaveStatus('Note is signed and finalized', 'lock', 'text-amber-500');
+
+                // Show Export PDF
+                $('#header-actions').removeClass('hidden');
+                $('#btn-export-pdf').attr('href', apiUrl('notes') + 'export-pdf.php?uuid=' + note.uuid);
             } else {
                 $inputs.prop('readonly', false).removeClass('bg-muted/30 cursor-not-allowed opacity-80');
                 $btnSave.show();
                 $btnSign.show();
+
+                // Hide Export PDF
+                $('#header-actions').addClass('hidden');
             }
         }
 
